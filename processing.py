@@ -7,7 +7,7 @@ import numpy as np
 import math
 import random
 
-all_files  = glob.glob("*.csv")
+all_files  = glob.glob("data/*.csv")
 df_list = []
 
 for filepathname in sorted(all_files):
@@ -31,6 +31,9 @@ choice = list(sorteddata['responseKey.keys'])
 reward = (sorteddata['reward'])
 RTs = list(sorteddata['responseKey.rt'])
 cond = list(sorteddata['condition'])
+trial_onset = sorteddata['actualChoiceOnset']
+choice_onset = sorteddata['actualChoiceOffset']
+feedback_onset = sorteddata['actualFeedbackOnset']
 
 
 runId = sorteddata['runId']
@@ -46,6 +49,9 @@ runId = runId[~np.isnan(runId)]
 block = list(((runId - 1) * 4) + blockId)
 runId = list(runId)
 subject = list(subject)
+trial_onset = list(trial_onset[~np.isnan(trial_onset)]) 
+choice_onset = list(choice_onset[~np.isnan(choice_onset)]) 
+feedback_onset = list(feedback_onset[~np.isnan(feedback_onset)]) 
 
 
 
@@ -100,14 +106,14 @@ new_RTs = [i * 1000 for i in new_RTs]
 
 
 
-datafile = open('final_data.csv','a')
-headers = 'subject, block, trial, mu1, mu2, choice, reward, RT, cond \n'
+datafile = open('data.csv','w') # we process all subjects each time
+headers = 'subject, run, block, trial, mu1, mu2, choice, reward, RT, cond, trial_onset, choice_onset, feedback_onset \n'
 datafile.write(headers)
 
 for i in xrange(len(subject)):
     #print(subject[i])
     numeric_subject = int(filter(str.isdigit, subject[i]))
-    vals = str(numeric_subject)+ ","+ str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "\n"
+    vals = str(numeric_subject)+ "," + str(runId[i]) + "," + str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "," + str(trial_onset[i]) + "," + str(choice_onset[i]) + "," + str(feedback_onset[i]) + "\n"
     datafile.write(vals)
 datafile.close()
    

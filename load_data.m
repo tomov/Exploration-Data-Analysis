@@ -7,7 +7,7 @@ function data = load_data
     % cond: 1 = RS, 2 = SR, 3 = RR, 4 = SS
     
     X = csvread('data.csv',1);
-    F = {'subject' 'block' 'trial' 'mu1' 'mu2' 'choice' 'reward' 'RT' 'cond'};
+    F = {'subject' 'run', 'block' 'trial' 'mu1' 'mu2' 'choice' 'reward' 'RT' 'cond', 'trial_onset', 'choice_onset', 'feedback_onset'};
     S = unique(X(:,1));
     
     for s = 1:length(S)
