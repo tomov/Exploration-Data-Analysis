@@ -27,10 +27,10 @@ blockId = sorteddata['blockId']
 trial = sorteddata['trialId']
 mu1 = sorteddata['mu1']
 mu2 = sorteddata['mu2']
-choice = list(sorteddata['responseKey.keys'])
-reward = (sorteddata['reward'])
-RTs = list(sorteddata['responseKey.rt'])
-cond = list(sorteddata['condition'])
+choice = sorteddata['responseKey.keys']
+reward = sorteddata['reward']
+RTs = sorteddata['responseKey.rt']
+cond = sorteddata['condition']
 trial_onset = sorteddata['actualChoiceOnset']
 choice_onset = sorteddata['actualChoiceOffset']
 feedback_onset = sorteddata['actualFeedbackOnset']
@@ -39,19 +39,23 @@ feedback_onset = sorteddata['actualFeedbackOnset']
 runId = sorteddata['runId']
 reward = sorteddata['reward']
 
-blockId = list(blockId[~np.isnan(blockId)]) #done tbd changes
-subject = subject[~pd.isnull(subject)] #done
-trial = list(trial[~pd.isnull(trial)]) #done
-mu1 =  list(mu1[~pd.isnull(mu1)]) #done
-mu2 =  list(mu2[~pd.isnull(mu2)]) #done
-reward =  list(reward[~pd.isnull(reward)]) #done
-runId = runId[~np.isnan(runId)]
+which_rows = ~np.isnan(blockId)
+
+subject = list(subject[which_rows])
+runId = runId[which_rows]
+run = list(runId)
+blockId = list(blockId[which_rows])
 block = list(((runId - 1) * 4) + blockId)
-runId = list(runId)
-subject = list(subject)
-trial_onset = list(trial_onset[~np.isnan(trial_onset)]) 
-choice_onset = list(choice_onset[~np.isnan(choice_onset)]) 
-feedback_onset = list(feedback_onset[~np.isnan(feedback_onset)]) 
+trial = list(trial[which_rows])
+mu1 =  list(mu1[which_rows])
+mu2 =  list(mu2[which_rows])
+choice =  list(choice[which_rows])
+reward =  list(reward[which_rows])
+RTs = list(RTs[which_rows])
+cond = list(cond[which_rows])
+trial_onset = list(trial_onset[which_rows]) 
+choice_onset = list(choice_onset[which_rows]) 
+feedback_onset = list(feedback_onset[which_rows]) 
 
 
 
@@ -75,7 +79,7 @@ for i in xrange(len(cond)):
                 #new_choice.append(-1)
                 #print new_choice
                 #new_RTs.append(-1)
-                new_choice.append(1)
+                new_choice.append(1) # MOMCHIL TODO: what's this?
                 new_RTs.append(0.56)
             else:
                 new_choice.append(choice[i])
@@ -113,7 +117,7 @@ datafile.write(headers)
 for i in xrange(len(subject)):
     #print(subject[i])
     numeric_subject = int(filter(str.isdigit, subject[i]))
-    vals = str(numeric_subject)+ "," + str(runId[i]) + "," + str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "," + str(trial_onset[i]) + "," + str(choice_onset[i]) + "," + str(feedback_onset[i]) + "\n"
+    vals = str(numeric_subject)+ "," + str(run[i]) + "," + str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "," + str(trial_onset[i]) + "," + str(choice_onset[i]) + "," + str(feedback_onset[i]) + "\n"
     datafile.write(vals)
 datafile.close()
    
