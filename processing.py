@@ -8,12 +8,19 @@ import math
 import random
 
 all_files  = glob.glob("data/*.csv")
-df_list = []
+df_list, file_paths = [],[]
 
 for filepathname in sorted(all_files):
-    print filepathname
-    df_list.append(pd.read_csv(filepathname))
+    file_paths.append(filepathname)
 
+file_paths.sort()
+print(file_paths)
+
+for i in xrange(len(file_paths)):
+    df_list.append(pd.read_csv(file_paths[i]))
+    
+
+#print(df_list)
 full_df = pd.concat(df_list)
 
 #print(full_df)
