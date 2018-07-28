@@ -39,7 +39,8 @@ function EXPT = exploration_expt(local)
     %
     if local
         %exptdir = '/Users/momchil/Dropbox/research/context/'; % local group level on dropbox
-        exptdir = '/Volumes/fMRI/Exploration/'; % local group level on external drive
+       % exptdir = '/Volumes/fMRI/Exploration/'; % local group level on external drive
+        exptdir = '/Users/momchil/Dropbox/Research/exploration/';
     else
         exptdir = '/ncf/gershman/Lab/Exploration/'; % on CBS central server
     end
@@ -73,7 +74,7 @@ function EXPT = exploration_expt(local)
     % Where you want model output da:ta to live
     if local
         %EXPT.modeldir = [exptdir, 'neural'];
-        EXPT.modeldir = [exptdir, 'glm'];
+        EXPT.modeldir = [exptdir, 'glmOutput'];
     else
         EXPT.modeldir = [exptdir, 'glmOutput'];
     end
