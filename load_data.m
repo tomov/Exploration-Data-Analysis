@@ -18,7 +18,17 @@ function data = load_data
         
         [~,k] = max([data(s).mu1 data(s).mu2],[],2);
         data(s).acc = mean(data(s).choice==k);
+        data(s).timeout = isnan(data(s).choice);
     end
     
     acc = [data.acc];
     data(acc<0.55) = [];
+
+    % take care of timeouts
+    % TODO do it properly
+    %
+    for s = 1:length(S)
+        data(s).choice(data(s).timeout) = 1 + (rand(size(data(s).choice(data(s).timeout))) > 0.5); % random choices
+        data(s).RT(data(s).timeout) = 2; % = choiceDuration = timeout
+        data(s).choice_onset(data(s).timeout) = data(s).trial_onset(data(s).timeout) + data(s).RT(data(s).timeout);
+    end

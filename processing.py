@@ -87,11 +87,8 @@ for i in xrange(len(cond)):
         try:
 
             if(choice[i] == 'None'):
-                #new_choice.append(-1)
-                #print new_choice
-                #new_RTs.append(-1)
-                new_choice.append(1) # MOMCHIL TODO: what's this?
-                new_RTs.append(0.56)
+                new_choice.append(float('nan'))  # timeout
+                new_RTs.append(float('nan'))
             else:
                 new_choice.append(choice[i])
                 new_RTs.append(RTs[i])
