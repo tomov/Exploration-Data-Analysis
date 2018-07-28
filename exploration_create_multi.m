@@ -32,15 +32,15 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     conds = {'RS', 'SR', 'RR', 'SS'};
     
     [allSubjects, subjdirs, nRuns] = exploration_getSubjectsDirsAndRuns();
-    %assert(isequal(allSubjects, metadata.allSubjects));
+    %assert(isequal(allSubjects, metadata(subj).allSubjects));
         
     % pick the trials that correspond to that subject & run
-    % notice that we're not &-ing with data.which_rows -- we might want to
+    % notice that we're not &-ing with data(subj).which_rows -- we might want to
     % run the GLM even for subjects that are not good. In fact, we cannot
     % determine whether subjects are good or not before we have run the GLM
     % and inspected for stuff like rotation and such.
     %
-    which_trials = data.subject == subj & data.run == run;
+    which_trials = data(subj).run == run;
     assert(sum(which_trials) == 40);
     
     % ...never mind what the thing above said;
@@ -61,20 +61,20 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
             % 
             for cond = 1:4
                 multi.names{cond} = conds{cond};
-                multi.onsets{cond} = data.trial_onset(which_trials & data.cond == cond)';
+                multi.onsets{cond} = data(subj).trial_onset(which_trials & data(subj).cond == cond)';
                 multi.durations{cond} = zeros(size(multi.onsets{cond}));
             end
             
             % nuisance @ choice onset
             % 
             multi.names{5} = 'choice_onset';
-            multi.onsets{5} = data.choice_onset(which_trials)';
+            multi.onsets{5} = data(subj).choice_onset(which_trials)';
             multi.durations{5} = zeros(size(multi.onsets{5}));
 
             % nuisance @ feedback onset
             % 
             multi.names{6} = 'feedback_onset';
-            multi.onsets{6} = data.feedback_onset(which_trials)';
+            multi.onsets{6} = data(subj).feedback_onset(which_trials)';
             multi.durations{6} = zeros(size(multi.onsets{6}));
         
 

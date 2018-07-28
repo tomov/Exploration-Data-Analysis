@@ -34,6 +34,8 @@ blockId = sorteddata['blockId']
 trial = sorteddata['trialId']
 mu1 = sorteddata['mu1']
 mu2 = sorteddata['mu2']
+r1 = sorteddata['leftAnswer']
+r2 = sorteddata['rightAnswer']
 choice = sorteddata['responseKey.keys']
 reward = sorteddata['reward']
 RTs = sorteddata['responseKey.rt']
@@ -56,6 +58,8 @@ block = list(((runId - 1) * 4) + blockId)
 trial = list(trial[which_rows])
 mu1 =  list(mu1[which_rows])
 mu2 =  list(mu2[which_rows])
+r1 =  list(r1[which_rows])
+r2 =  list(r2[which_rows])
 choice =  list(choice[which_rows])
 reward =  list(reward[which_rows])
 RTs = list(RTs[which_rows])
@@ -118,13 +122,13 @@ new_RTs = [i * 1000 for i in new_RTs]
 
 
 datafile = open('data.csv','w') # we process all subjects each time
-headers = 'subject, run, block, trial, mu1, mu2, choice, reward, RT, cond, trial_onset, choice_onset, feedback_onset \n'
+headers = 'subject, run, block, trial, mu1, mu2, r1, r2, choice, reward, RT, cond, trial_onset, choice_onset, feedback_onset \n'
 datafile.write(headers)
 
 for i in xrange(len(subject)):
     #print(subject[i])
     numeric_subject = int(filter(str.isdigit, subject[i]))
-    vals = str(numeric_subject)+ "," + str(run[i]) + "," + str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "," + str(trial_onset[i]) + "," + str(choice_onset[i]) + "," + str(feedback_onset[i]) + "\n"
+    vals = str(numeric_subject)+ "," + str(run[i]) + "," + str(block[i]) + "," + str(trial[i]) + "," + str(mu1[i]) + "," + str(mu2[i]) + "," + str(r1[i]) + "," + str(r2[i]) + ","  + str(new_choice[i])+ ","+ str(reward[i])+ "," + str(new_RTs[i]) + "," + str(new_cond[i]) + "," + str(trial_onset[i]) + "," + str(choice_onset[i]) + "," + str(feedback_onset[i]) + "\n"
     datafile.write(vals)
 datafile.close()
    

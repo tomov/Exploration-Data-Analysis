@@ -7,7 +7,7 @@ function [ subjects, subjdirs, nRuns ] = context_getSubjectsDirsAndRuns()
 %[data, metadata] = load_data(fullfile('data', 'fmri.csv'), true, getGoodSubjects());
 
 % the participant id as entered in psychopy
-subjects = {'uep001'}; 
+subjects = {'uep001', 'uep002'}; 
         
 % should be identical to the list of subjects in the csv file
 % and in the same order
@@ -17,10 +17,10 @@ subjects = {'uep001'};
 %assert(mean(strcmp(subjects, unique(data.participant)')) == 1);
 
 % the names of the CORRESPONDING directories from CBS central
-subjdirs = {'180725_UEP_001'};
+subjdirs = {'180725_UEP_001','180727_UEP_002'};
 
 % assumes runs are always in order: 1,2,3,4,...
-nRuns = {8}; % runs per subject
+nRuns = {8,8}; % runs per subject
 
 
 
