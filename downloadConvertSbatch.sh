@@ -1,20 +1,43 @@
-#!/bin/bash
+# download fMRI data for a bunch of subjects using ArcGet and convert it to nice .nii format using mri_convert
+#
 
 module load mri_convert/2015_12_03-ncf
 
-experiment="Exploration"
+mkdir output
 
-subjects=('180725_UEP_001')
+experiment="Exploration" # must match directory name
 
-
+# list of subject ID's as registered on CBS, e.g.  subjects=('180725_UEP_001' '189725_UEP_002')
+subjects=('180725_UEP_001' '189725_UEP_002')
 
 #subjects=$(/ncf/gershman/Lab/${experiment}/subjects.txt)
 
-for subj in ${subjects[*]}; do
 
-echo $subj
-cd /ncf/gershman/Lab/${experiment}/subjects/
-mkdir /ncf/gershman/Lab/${experiment}/subjects/${subj}/
-sbatch -o /ncf/gershman/Lab/${experiment}/subjects/${subj}_%j.out -e /ncf/gershman/Lab/${experiment}/subjects/${subj}_%j.err /ncf/gershman/Lab/scripts/matlab/Exploration/downloadConvert.sh ${subj}
+echo ---------------- >> jobs.txt
+echo --- Running downloadConvertSBatch for subjects ${subjects} >> jobs.txt
+echo ---------------- >> jobs.txt
+
+for subj in ${subjects[*]}; do
+    outfileprefix="/ncf/gershman/Lab/scripts/matlab/${experiment}/output/downloadConvert_${subj}"
+    echo Subject ${subj}, file prefix = $outfileprefix
+
+    # send the job to NCF
+    #
+    cd /ncf/gershman/Lab/${experiment}/subjects/
+    mkdir /ncf/gershman/Lab/${experiment}/subjects/${subj}/
+    sbatch_output=`sbatch -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err /ncf/gershman/Lab/scripts/matlab/${experiment}/downloadConvert.sh ${subj}`
+    # for local testing
+    #sbatch_output=`echo Submitted batch job 88725418`
+    echo $sbatch_output
+
+    # Append job id to jobs.txt
+    #
+    sbatch_output_split=($sbatch_output)
+    job_id=${sbatch_output_split[3]}
+    echo downloadConvertSBatch.sh for subject ${subj}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
+
+    echo watch job status with: sacct -j ${job_id}
+    echo watch output with: tail -f ${outfileprefix}_${job_id}.out
+    echo watch error with: tail -f ${outfileprefix}_${job_id}.err
 done
 
