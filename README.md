@@ -26,7 +26,7 @@ Useful links:
     Make sure all files are there (compare with previous subjects).
 - Open MATLAB with a GUI and cd into scripts directory
     Log into one of the cluster terminals in Northwest (e.g. by the fMRI scanner),
-    or download X11 on your Mac, `ssh -X` into the cluster, and run `matlab` from there (super slow)
+    or download XQuartz on your Mac, `ssh -X` into the cluster, and run `matlab` from there (super slow)
 - Run `ccnl_plot_movement(exploration_expt(), XX)`, where XX is the subject index
     Make sure subject didn't move too much during runs
 - Run `ccnl_check_registration(exploration_expt(), XX)`, where XX is the subject index
