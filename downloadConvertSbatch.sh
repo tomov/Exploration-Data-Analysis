@@ -19,6 +19,7 @@ echo ---------------- >> jobs.txt
 
 for subj in ${subjects[*]}; do
     outfileprefix="/ncf/gershman/Lab/scripts/matlab/${experiment}/output/downloadConvert_${subj}"
+    echo ------------------------------------------------------------------
     echo Subject ${subj}, file prefix = $outfileprefix
 
     # send the job to NCF

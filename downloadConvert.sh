@@ -3,6 +3,7 @@
 #SBATCH --mem 8000 # memory
 #SBATCH -t 0-8:00 # time (D-HH:MM)
 
+module load mri_convert/2015_12_03-ncf
 
 # download all structural and functional scans in order in which they were taken
 #

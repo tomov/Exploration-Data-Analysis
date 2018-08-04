@@ -14,6 +14,7 @@ echo ---------------- >> jobs.txt
 
 for subj in ${subjects[*]}; do
     outfileprefix="output/ccnl_fmri_preproc_${subj}"
+    echo ---------------------------------------------------------------------------------
     echo Subject ${subj}, file prefix = $outfileprefix
 
     # send the job to NCF
