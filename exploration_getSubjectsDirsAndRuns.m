@@ -1,4 +1,4 @@
-function [ subjects, subjdirs, nRuns ] = context_getSubjectsDirsAndRuns()
+function [ subjects, subjdirs, logical_vals ] = context_getSubjectsDirsAndRuns()
 
 % Get the list of subjects, subject directories, and number of runs for the
 % fMRI GLM code
@@ -20,7 +20,11 @@ subjects = {'uep001', 'uep002'};
 subjdirs = {'180725_UEP_001','180727_UEP_002'};
 
 % assumes runs are always in order: 1,2,3,4,...
-nRuns = {8,8}; % runs per subject
+%nRuns = {8,8}; % runs per subject
+
+logical_vals = {logical([1 1 1 1 1 1 1 1]), logical([1 0 1 1 0 0 1 1])} ;
+
+
 
 
 
