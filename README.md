@@ -53,6 +53,14 @@ Useful links:
     * Change `for model in {...}` to use your GLM only
 9. Run `./ccnl_fmri_glm.sh`
 
+## To run a contrast
+
+1. Add your contrast to `run_ccnl_fmri_con.m`
+    * Copy-paste one of the calls to `ccnl_fmri_con` and modify accordingly
+    * Please keep all previous contrasts, just comment them out
+2. Copy `run_ccnl_fmri_con.m` to the cluster
+3. Run `./run_ccnl_fmri_con.sh`
+
 ## To adapt pipeline to a new experiment
 
 1. TODO
