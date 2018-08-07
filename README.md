@@ -12,6 +12,8 @@ Useful links:
 
 ## To preprocess a newly scanned subject
 
+0. Copy everything to the cluster and login
+   * See `scp_to_ncf.sh`, maybe edit it accordingly and run it `./scp_to_ncf.sh`
 1. Open `downloadConvertSBatch.sh` and edit `subjects` to include the **new subject only**.
 2. Open `downloadConvert.sh` and edit `fileNames` if necessary. Read comments for details
 3. Run `./downloadConvertSBatch.sh`
@@ -59,7 +61,11 @@ Useful links:
     * Copy-paste one of the calls to `ccnl_fmri_con` and modify accordingly
     * Please keep all previous contrasts, just comment them out
 2. Copy `run_ccnl_fmri_con.m` to the cluster
-3. Run `./run_ccnl_fmri_con.sh`
+3. Log into the cluster and run an interactive job, e.g. with `./srun.sh`
+4. Run MATLAB in the interactive job, e.g. with `./matlab.sh`
+5. Test the contrast on the cluster
+    * Call `run_ccnl_fmri_con` in MATLAB, make sure it starts doing stuff and Ctrl+C it
+3. Exit MATLAB and run `./run_ccnl_fmri_con.sh`
 
 ## To adapt pipeline to a new experiment
 
