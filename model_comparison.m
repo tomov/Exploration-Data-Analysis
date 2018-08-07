@@ -1,4 +1,4 @@
-function model_comparison(data)
+function [results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data)
     
     tbl = data2table(data,1);
     
