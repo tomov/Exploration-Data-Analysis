@@ -3,7 +3,7 @@
 
 mkdir output
 
-subjects=( 1 )  #  e.g. subjects=( 1 2 5 6 7 10 )
+subjects=( 8 9 10 11 12 13 14 15 16  )  #  e.g. subjects=( 1 2 5 6 7 10 )
 subj_arg="${subjects[@]}" # stringify it
 
 echo File prefix = $outfileprefix

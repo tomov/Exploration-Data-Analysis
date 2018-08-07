@@ -275,6 +275,39 @@ function results = plot_figures(fig,data,results)
             set(gca,'XTickLabel',{'Fast' 'Slow'},'FontSize',25,'XLim',[0.5 2.5]);
             ylabel('Slope','FontSize',25);
             set(gcf,'Position',[200 200 1000 400]);
+
+
+
+        case 'beta_to_w'
+
+            % group-level settings
+            p = 0.001;
+            alpha = 0.05;
+            Dis = 20;
+            Num = 1; % # peak voxels per cluster; default in bspmview is 3
+            direct = '+';
+            
+            EXPT = exploration_expt();
+            glmodel = 2;
+
+            RU = []; % (nSubjects x nClusters) peak betas
+            VTU = []; % (nSubjects x nClusters) peak betas
+            V = []; % (nSubjects x nClusters) peak betas
+            for s = 1:length(data)
+                % get betas for peak RU voxel from each cluster
+                [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = extract_clusters(EXPT, glmodel, 'RU', p, direct, alpha, Dis, Num);
+                RU = [RU; ccnl_get_beta(EXPT, glm, 'RU', mni, s)];
+
+                % get betas for peak V/TU voxel from each cluster
+                [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = extract_clusters(EXPT, glmodel, 'VTU', p, direct, alpha, Dis, Num);
+                VTU = [VTU; ccnl_get_beta(EXPT, glm, 'VTU', mni, s)];
+
+                % get betas for peak V voxel from each cluster
+                [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = extract_clusters(EXPT, glmodel, 'V', p, direct, alpha, Dis, Num);
+                V = [V; ccnl_get_beta(EXPT, glm, 'V', mni, s)];
+            end
+
+
             
     end
     
