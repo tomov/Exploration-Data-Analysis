@@ -1,4 +1,4 @@
-function [ subjects, subjdirs, logical_vals ] = exploration_getSubjectsDirsAndRuns()
+function [ subjects, subjdirs, logical_vals, goodSubjects ] = exploration_getSubjectsDirsAndRuns()
 
 % Get the list of subjects, subject directories, and number of runs for the
 % fMRI GLM code
@@ -35,4 +35,5 @@ logical_vals = {logical([1 1 1 1 1 1 1 1]), logical([1 1 1 1 1 1 1 1]), logical(
 
 
 
-
+% which subjects are good
+goodSubjects = 1:20;
