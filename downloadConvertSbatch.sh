@@ -14,12 +14,11 @@ subjects=('180725_UEP_001' '189725_UEP_002')
 
 
 echo ---------------- >> jobs.txt
-echo --- Running downloadConvertSBatch for subjects ${subjects} >> /ncf/gershman/Lab/scripts/matlab/${experiment}/jobs.txt
+echo --- Running downloadConvertSBatch for subjects ${subjects} >> jobs.txt
 echo ---------------- >> jobs.txt
 
 for subj in ${subjects[*]}; do
     outfileprefix="/ncf/gershman/Lab/scripts/matlab/${experiment}/output/downloadConvert_${subj}"
-    echo ------------------------------------------------------------------
     echo Subject ${subj}, file prefix = $outfileprefix
 
     # send the job to NCF
@@ -35,12 +34,10 @@ for subj in ${subjects[*]}; do
     #
     sbatch_output_split=($sbatch_output)
     job_id=${sbatch_output_split[3]}
-    echo downloadConvertSBatch.sh for subject ${subj}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> /ncf/gershman/Lab/scripts/matlab/${experiment}/jobs.txt
+    echo downloadConvertSBatch.sh for subject ${subj}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
 
     echo watch job status with: sacct -j ${job_id}
     echo watch output with: tail -f ${outfileprefix}_${job_id}.out
     echo watch error with: tail -f ${outfileprefix}_${job_id}.err
-
-    sleep 1
 done
 
