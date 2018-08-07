@@ -17,7 +17,7 @@ function exploration_create_multi_sanity(glmodels, subjs, runs)
 % set default parameters
 %
 if nargin < 3
-    runs = 1:8;
+    runs = 1:9;
 end
 
 if nargin < 2
@@ -28,6 +28,7 @@ for glmodel = glmodels
     for subj = subjs
         for run = runs
             multi = exploration_create_multi(glmodel, subj, run);
+         
         end
     end
 end

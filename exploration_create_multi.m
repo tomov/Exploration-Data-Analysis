@@ -31,7 +31,21 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     data = load_data;
     conds = {'RS', 'SR', 'RR', 'SS'};
 
-    [allSubjects, subjdirs, nRuns] = exploration_getSubjectsDirsAndRuns();
+    [allSubjects, subjdirs, logical_vals] = exploration_getSubjectsDirsAndRuns();
+    
+    new_vals{subj} = ~logical_vals{subj};
+    new_vals{subj} = cumsum(new_vals{subj});
+    
+    
+    %fprintf("%d",new_vals{subj});
+    %fprintf('run %d', run);
+     
+    run = run + new_vals{subj}(run); %change formula here
+  
+    fprintf('run %d \n', run);
+    
+    
+    
 
 
     load(fullfile('results_glme_fig3.mat'), 'results_V', 'results_VTU', 'results_VRU', 'results_VTURU');
@@ -63,8 +77,11 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     % determine whether subjects are good or not before we have run the GLM
     % and inspected for stuff like rotation and such.
     %
-    which_trials = data(subj).run == run;
-    assert(sum(which_trials) == 40);
+    which_trials = data(subj).run == run;  
+    %which_trials = run;
+    %assert(sum(which_trials) == 40);
+    
+    %fprintf('%d', which_trials);
     
     
 

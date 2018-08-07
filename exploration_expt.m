@@ -23,7 +23,7 @@ function EXPT = exploration_expt(local)
     %
     if nargin < 1
         [~, name] = system('hostname');
-        if ~isempty(strfind(name, 'omchil'))
+        if ~isempty(strfind(name, 'momchil'))
             % err on the side of falsely thinking it's NCF. Because locally
             % you will catch that mistake immediatley. On NCF, you will
             % catch it after you're already sent 100 jobs and they all
@@ -49,7 +49,7 @@ function EXPT = exploration_expt(local)
    % %
    % [data, metadata] = load_data(fullfile('data', 'fmri.csv'), true, getGoodSubjects());
    % 
-    [allSubjects, subjdirs, nRuns] = exploration_getSubjectsDirsAndRuns();
+    [allSubjects, subjdirs, logical_vals] = exploration_getSubjectsDirsAndRuns();
    % allSubjects
    % metadata.allSubjects
    % assert(isequal(allSubjects, metadata.allSubjects));
@@ -60,9 +60,14 @@ function EXPT = exploration_expt(local)
         
         EXPT.subject(subj).structural = 'struct.nii';
         
+        
         %assert(nRuns{subj} == length(unique(data.runId(strcmp(data.participant, allSubjects{subj})))));
-        for run = 1:nRuns{subj}
-            EXPT.subject(subj).functional{run} = ['run',sprintf('%03d',run),'.nii'];
+        
+        
+        for run = 1:(logical_vals{subj})
+            if(logical_vals{subj}(run) ~= 0)
+                EXPT.subject(subj).functional{run} = ['run',sprintf('%03d',run),'.nii'];
+            end 
         end
         disp(EXPT.subject(subj));
     end
