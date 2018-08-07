@@ -95,7 +95,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     % ...never mind what the thing above said;
     % we only support good subjects here now
     %
-    %assert(ismember(subj, getGoodSubjects()));
+    [~,~,~,goodSubjs] = exploration_getSubjectsDirsAndRuns();
+    assert(ismember(subj, goodSubjs));
     
     [results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data(subj));
 

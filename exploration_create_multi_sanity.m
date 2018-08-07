@@ -21,7 +21,7 @@ if nargin < 3
 end
 
 if nargin < 2
-    subjs = exploration_GoodSubjects();
+    [~,~,~,subjs] = exploration_getSubjectsDirsAndRuns();
 end
 
 for glmodel = glmodels
