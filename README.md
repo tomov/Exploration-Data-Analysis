@@ -35,7 +35,23 @@ Useful links:
 
 ## To create and run a new GLM
 
-1. TODO
+1. Add the GLM to `exploration_create_multi.m`
+2. Test the GLM locally
+    * Call `multi = exploration_create_multi(...)` in MATLAB
+    * Inspect `multi` and make sure all the names, onsets, and pmods make sense
+    * Batch test for all subjects and runs using `exploration_create_multi_sanity.m`
+3. Copy `exploration_create_multi.m` to the cluster
+    * See `scp_to_ncf.sh`
+4. Log into the cluster and run an interactive job, e.g. with `./srun.sh`
+5. Run MATLAB in the interactive job, e.g. with `./matlab.sh`
+6. Test the GLM on the cluster
+    * repeat same steps as testing locally
+7. Dry run the GLM in MATLAB by calling `ccnl_fmri_glm(...)` to make sure SPM actually likes it; then interrupt it with Ctrl+C once it looks like it's working
+    * Optionally use the `fake_glm=true` argument
+8. Exit MATLAB and edit `ccnl_fmri_glm.sh`
+    * Change `goodSubjects = (...)` to include all subjects
+    * Change `for model in {...}` to use your GLM only
+9. Run `./ccnl_fmri_glm.sh`
 
 ## To adapt pipeline to a new experiment
 
