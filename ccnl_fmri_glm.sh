@@ -5,7 +5,7 @@ mkdir output
 
 # this is crucial -- we can't simulate the subjects that don't have the full data; we don't want ccnl_fmri_glm to error out (note that when we were doing them in parallel before, it didn't matter if one subject failed b/c all other jobs would still continue)
 #
-goodSubjects=( 1 2 3 )  # same as getGoodSubjects(), e.g. goodSubjects = ( 1 2 3 5 7 10 )
+goodSubjects=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)  # same as getGoodSubjects(), e.g. goodSubjects = ( 1 2 3 5 7 10 )
 subj_arg="${goodSubjects[@]}" # stringify it
 
 echo ---------------- >> jobs.txt
@@ -19,7 +19,7 @@ do
 
     # send the job to NCF
     #
-    sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --mail-type=END --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(context_expt(), $model, [$subj_arg]);exit'"`
+    sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --mail-type=END --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(exploration_expt(), $model, [$subj_arg]);exit'"`
     # for local testing
     #sbatch_output=`echo Submitted batch job 88725418`
     echo $sbatch_output

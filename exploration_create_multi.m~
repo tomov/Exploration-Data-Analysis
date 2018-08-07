@@ -88,7 +88,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %which_trials = run;
     %assert(sum(which_trials) == 40);
     
-    fprintf('%d', which_trials);
+    %fprintf('%d', which_trials);
     
     
 
@@ -97,7 +97,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %
     %assert(ismember(subj, getGoodSubjects()));
     
-    %[results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data(subj));
+    [ results_glme_fig3, results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data);
 
 
 
@@ -134,12 +134,10 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         case 2
             
            latents = kalman_filter(data(subj));
-          
-           load new_data;
-   
-           Ws = fixedEffects(new_data{subj});
            
-          
+        
+     
+           Ws = fixedEffects(results_VTURU);
            
            QL = latents.m(:,1);
            QR = latents.m(:,2);
@@ -153,7 +151,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            
            
           for i=1:length(L)
-              if L(i) >= R(i)
+              if L(i) > R(i)
                   RU(i) = stdL(i) - stdR(i); 
                   V(i) = QL(i) - QR(i);
                   
@@ -212,9 +210,9 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{5} = zeros(size(multi.onsets{5}));
 
             
-%             
-%         RU, V, V/TU @ trial_onset 
-%         nuisance @ choice_onset and feedback_onset 
+            
+        % RU, V, V/TU @ trial_onset 
+        % nuisance @ choice_onset and feedback_onset 
         
           
                

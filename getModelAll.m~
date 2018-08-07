@@ -1,0 +1,16 @@
+
+
+
+
+function [results_VTURU] =  getModeAll(data, subj)
+    
+    formula = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+    results_VTURU(subj) = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace');
+    save results_VTURU(subj)
+end 
+
+    
+    
+for i = 1:20
+    results_VTURU(i) = ther_comparis(data,i);
+end 
