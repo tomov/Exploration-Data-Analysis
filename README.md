@@ -36,6 +36,21 @@ Useful links:
 9. Run `ccnl_check_registration(exploration_expt(), XX)`, where XX is the subject index
    * Click around (e.g. around ventricles), make sure average functional (top) is aligned with the structural (bottom)
 
+Common errors and mistakes
+   * ArcGet.py doesn't exist -> happens sometimes, idk why
+   * ArcGet.py can't access CBS Central -> read the CBS FAQ on ArcGet.py; you need to set it up first
+   * ArcGet.py can't find subject on CBS central -> make sure that the subject ID (e.g. `180807_UEP_025`) is exactly as it is on CBS Central
+       * check date
+       * check spaces and underscores
+       * make sure no commas in the `subjects` array in the script `downloadConvertSBatch.sh`
+   * ArcGet.py can't write to data directory
+       * make sure you have permissions or someone else didn't download that subject already
+       * make sure data directory exists
+       * make sure that the directories in the scripts are correct
+   * Runs (run###.nii) or structurals (struct.nii) missing or empty -> make sure the file order in `fileNames` in the script `downloadConvert.sh` is the same as the session order of the subject
+       * e.g. if another structural was acquired after run 4, it should be `fileNames=(struct_1 run001 run002 run004 run004 struct_2 run005 run006 run007 run008)`
+       * e.g. if run 6 was interrupted and restarted, it should be `fileNames=(struct run001 run002 run004 run004 run005 run006_bad run006 run007 run008)`
+
 ## To create and run a new GLM
 
 1. Add the GLM to `exploration_create_multi.m`
@@ -55,6 +70,7 @@ Useful links:
     * Change `goodSubjects = (...)` to include all subjects
     * Change `for model in {...}` to use your GLM only
 9. Run `./ccnl_fmri_glm.sh`
+
 
 ## To run a group-level contrast
 
