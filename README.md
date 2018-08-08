@@ -9,6 +9,7 @@ Data are in `/ncf/gershman/Lab/Exploration/`.
 Useful links:
 - [CBS cluster FAQ](http://cbs.fas.harvard.edu/science/core-facilities/neuroimaging/information-investigators/faq) -- how to use the cluster, send jobs, ArcGet.py, slurm, sacct, etc
 - [CBS central login](http://cbscentral.rc.fas.harvard.edu) -- where the fMRI data live
+- [ccnl_fmri wiki](https://github.com/sjgershm/ccnl-fmri/wiki) -- how to use Sam's fMRI pipeline
 
 ## To preprocess a newly scanned subject
 
@@ -55,7 +56,7 @@ Useful links:
     * Change `for model in {...}` to use your GLM only
 9. Run `./ccnl_fmri_glm.sh`
 
-## To run a contrast
+## To run a group-level contrast
 
 1. Add your contrast to `run_ccnl_fmri_con.m`
     * Copy-paste one of the calls to `ccnl_fmri_con` and modify accordingly
@@ -66,6 +67,13 @@ Useful links:
 5. Test the contrast on the cluster
     * Call `run_ccnl_fmri_con` in MATLAB, make sure it starts doing stuff and Ctrl+C it
 3. Exit MATLAB and run `./run_ccnl_fmri_con.sh`
+
+## To visualize the group-level contrast
+
+1. Run MATLAB with a GUI and cd into scripts directory
+    * look for X11 above
+2. Run `ccnl_view` with the corresponding GLM and contrast
+    * e.g. `ccnl_view(exploration_expt(), 1, 'RR - SS')`
 
 ## To adapt pipeline to a new experiment
 
