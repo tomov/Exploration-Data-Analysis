@@ -23,7 +23,7 @@ function EXPT = exploration_expt(local)
     %
     if nargin < 1
         [~, name] = system('hostname');
-        if ~isempty(strfind(name, 'momchil'))
+        if ~isempty(strfind(name, 'omchil'))
             % err on the side of falsely thinking it's NCF. Because locally
             % you will catch that mistake immediatley. On NCF, you will
             % catch it after you're already sent 100 jobs and they all
