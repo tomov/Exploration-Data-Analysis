@@ -19,7 +19,7 @@ do
 
     # send the job to NCF
     #
-    sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --mail-type=END --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(exploration_expt(), $model, [$subj_arg]);exit'"`
+    sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(exploration_expt(), $model, [$subj_arg]);exit'"`
     # for local testing
     #sbatch_output=`echo Submitted batch job 88725418`
     echo $sbatch_output
