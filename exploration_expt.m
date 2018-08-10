@@ -49,7 +49,7 @@ function EXPT = exploration_expt(local)
    % %
    % [data, metadata] = load_data(fullfile('data', 'fmri.csv'), true, getGoodSubjects());
    % 
-    [allSubjects, subjdirs, logical_vals] = exploration_getSubjectsDirsAndRuns();
+    [allSubjects, subjdirs, goodRuns] = exploration_getSubjectsDirsAndRuns();
    % allSubjects
    % metadata.allSubjects
    % assert(isequal(allSubjects, metadata.allSubjects));
@@ -63,10 +63,12 @@ function EXPT = exploration_expt(local)
         
         %assert(nRuns{subj} == length(unique(data.runId(strcmp(data.participant, allSubjects{subj})))));
         
-        
-        for run = 1:length(logical_vals{subj})
-            if(logical_vals{subj}(run) ~= 0)
-                EXPT.subject(subj).functional{run} = ['run',sprintf('%03d',run),'.nii'];
+       
+        i = 1;
+        for run = 1:length(goodRuns{subj})
+            if(goodRuns{subj}(run))
+                EXPT.subject(subj).functional{i} = ['run',sprintf('%03d',run),'.nii'];
+                i = i + 1;
             end 
         end
         disp(EXPT.subject(subj));

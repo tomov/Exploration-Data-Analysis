@@ -34,12 +34,12 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     
     
 
-    [allSubjects, subjdirs, logical_vals, goodSubjs] = exploration_getSubjectsDirsAndRuns();
+    [allSubjects, subjdirs, goodRuns, goodSubjs] = exploration_getSubjectsDirsAndRuns();
     
     
     
     
-    new_vals{subj} = ~logical_vals{subj};
+    new_vals{subj} = ~goodRuns{subj};
     new_vals{subj} = cumsum(new_vals{subj});
     
     
