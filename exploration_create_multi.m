@@ -36,26 +36,12 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
     [allSubjects, subjdirs, goodRuns, goodSubjs] = exploration_getSubjectsDirsAndRuns();
     
-    
-    
-    
-    new_vals{subj} = ~goodRuns{subj};
-    new_vals{subj} = cumsum(new_vals{subj});
-    
-    
-    fprintf("%d",new_vals{subj});
-    
-     
-    run = run + new_vals{subj}(run); %change formula here
-        
   
+    % skip bad runs
+    runs = find(goodRuns{subj});
+    run = runs(run);
     fprintf('run %d \n', run);
     
-    
-    
-
-
-    load(fullfile('results_glme_fig3.mat'), 'results_V', 'results_VTU', 'results_VRU', 'results_VTURU');
 
     % distribution = results_V.Distribution;
     % dispersion = results_V.Dispersion;
@@ -73,37 +59,15 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     
 
 
-
-
-
-    %assert(isequal(allSubjects, metadata(subj).allSubjects));
-
-    % pick the trials that correspond to that subject & run
-    % notice that we're not &-ing with data(subj).which_rows -- we might want to
-    % run the GLM even for subjects that are not good. In fact, we cannot
-    % determine whether subjects are good or not before we have run the GLM
-    % and inspected for stuff like rotation and such.
-    %
     which_trials = data(subj).run == run;  
-    %which_trials = run;
-    %assert(sum(which_trials) == 40);
-    
-    fprintf('%d', which_trials);
-    
-    
+   
+    fprintf('which_trials = %s\n', sprintf('%d', which_trials));
 
-    % ...never mind what the thing above said;
-    % we only support good subjects here now
-    %
-    assert(ismember(subj, goodSubjs));
-    
+
     %[results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data(subj));
 
 
-
-
-
-    % Parametric modulators
+    % GLMsP
     %
     switch glmodel
 
@@ -130,29 +94,27 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
             multi.names{6} = 'feedback_onset';
             multi.onsets{6} = data(subj).feedback_onset(which_trials)';
             multi.durations{6} = zeros(size(multi.onsets{6}));
-          
+         
+
         case 2
             
            latents = kalman_filter(data(subj));
           
-           load new_data;
+           load behavioral_weights.mat;
    
-           Ws = fixedEffects(new_data{subj});
-           
-          
+           Ws = fixedEffects(results_VTURU{subj});
            
            QL = latents.m(:,1);
            QR = latents.m(:,2);
            stdL = latents.s(:,1);
            stdR = latents.s(:,2);
            
-           TU = sqrt(stdL + stdR);
+           TU = sqrt(stdL.^2 + stdR.^2);
            
            L = (Ws(1)*QL) + (Ws(2)*stdL) + ((QL./TU)*Ws(3));  
-           R = (Ws(1)*QR) + (Ws(2)*stdL) + ((QR./TU)*Ws(3));
+           R = (Ws(1)*QR) + (Ws(2)*stdR) + ((QR./TU)*Ws(3));
            
-           
-          for i=1:length(L)
+           for i=1:length(L)
               if L(i) >= R(i)
                   RU(i) = stdL(i) - stdR(i); 
                   V(i) = QL(i) - QR(i);
@@ -161,10 +123,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                   RU(i) = stdR(i) - stdL(i);
                   V(i) = QR(i) - QL(i);
               end 
-          end
+           end
           
-           
-   
            
            %getMax = max(latents.s(:,1),latents.s(:,2));
            %getMin = max(latents.s(:,1),latents.s(:,2));
@@ -172,7 +132,9 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            
            %RU = sqrt(latents.s(:,1)) - sqrt(latents.s(:,2));
            %V = latents.m(:,1) - latents.m(:,2);
-           VTU = V./TU;
+           VTU = V./TU';
+
+           save shit.mat;
 
 
            multi.names{1} = 'trial_onset';
@@ -204,12 +166,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{3} = zeros(size(multi.onsets{3}));
 
            multi.names{4} = 'trial_onset_L';
-           multi.onsets{4} = data(subj).choice_onset(which_trials & data(subj).choice == 1);
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{4} = zeros(size(multi.onsets{4}));
-
-           multi.names{5} = 'trial_onset_R';
-           multi.onsets{5} = data(subj).choice_onset(which_trials & data(subj).choice == 2);
-           multi.durations{5} = zeros(size(multi.onsets{5}));
 
             
 %             

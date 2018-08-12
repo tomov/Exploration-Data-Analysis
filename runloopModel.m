@@ -1,5 +1,5 @@
-for i = 1:20
-    new_data{i} = getModelAll(data,i);
+for i = 1:31
+    results_VTURU{i} = getModelAll(data,i);
 end 
 
-save new_data 
+save('behavioral_weights.mat', 'results_VTURU');

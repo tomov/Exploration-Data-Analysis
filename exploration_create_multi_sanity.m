@@ -1,4 +1,4 @@
-function exploration_create_multi_sanity(glmodels, subjs, runs)
+function exploration_create_multi_sanity(EXPT, glmodels, subjs, runs)
 
 % Sanity test context_create_multi.m before shipping to NCF by running
 % through the GLMs and generating multi structures with differnet subjects
@@ -16,18 +16,23 @@ function exploration_create_multi_sanity(glmodels, subjs, runs)
 
 % set default parameters
 %
-if nargin < 3
-    runs = 1:8;
+if nargin < 4 
+    all_runs = true;
+else
+    all_runs = false;
 end
 
-if nargin < 2
-    [~,~,~,subjs] = exploration_getSubjectsDirsAndRuns();
+if nargin < 3
+    subjs = 1:length(EXPT.subject);
 end
 
 for glmodel = glmodels
     for subj = subjs
+        if all_runs
+            runs = 1:length(EXPT.subject(subj).functional);
+        end
         for run = runs
-            multi = exploration_create_multi(glmodel, subj, run);
+            multi = EXPT.create_multi(glmodel, subj, run);
         end
     end
 end

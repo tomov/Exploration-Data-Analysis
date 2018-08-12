@@ -30,7 +30,7 @@ Useful links:
    * Make sure all files are in the data directory (compare with previous subjects).
 7. Open MATLAB with a GUI and cd into scripts directory
    * Log into one of the cluster terminals in Northwest (e.g. by the fMRI scanner),
-   * or download X11 on your Mac, `ssh -X` into the cluster on one of the nvdi nodes, e.g. `ssh -X mtomov13@ncfvdi.rc.fas.harvard.edu`, and run `matlab` on the command line. You should see the MATLAB splash screen
+   * or download [XQuartz](https://www.xquartz.org/) on your Mac, `ssh -X` into the cluster on one of the nvdi nodes, e.g. `ssh -X mtomov13@ncfvdi.rc.fas.harvard.edu`, and run `matlab` on the command line. You should see the MATLAB splash screen
 8. Run `ccnl_plot_movement(exploration_expt(), XX)`, where XX is the subject index (e.g. 1)
    * Make sure subject didn't move too much during runs
 9. Run `ccnl_check_registration(exploration_expt(), XX)`, where XX is the subject index
