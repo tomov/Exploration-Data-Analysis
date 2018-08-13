@@ -47,7 +47,7 @@ goodRuns = {logical([1 1 1 1 1 1 1 1]), logical([1 1 1 1 1 1 1 1]), logical([0 1
 
 
 % which subjects are good
-goodSubjects = 1:2;
+goodSubjects = 1:31;
  
 assert(numel(subjects) == numel(subjdirs));
 assert(numel(subjects) == numel(goodRuns));

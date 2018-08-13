@@ -33,4 +33,6 @@ do
     echo watch job status with: sacct -j ${job_id}
     echo watch output with: tail -f ${outfileprefix}_${job_id}.out
     echo watch error with: tail -f ${outfileprefix}_${job_id}.err
+
+    sleep 1
 done
