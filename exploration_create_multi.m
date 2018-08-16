@@ -420,69 +420,45 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them  
 
-           multi.pmod(1).name{1} = 'RU';
-           multi.pmod(1).param{1} = RU';
-           multi.pmod(1).poly{1} = 1;    
+           multi.pmod(1).name{1} = 'Q1';
+           multi.pmod(1).param{1} = Q1';
+           multi.pmod(1).poly{1} = 1; 
 
-           multi.pmod(1).name{2} = 'TU';
-           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).name{2} = 'Q2';
+           multi.pmod(1).param{2} = Q2';
            multi.pmod(1).poly{2} = 1; 
 
-           multi.pmod(1).name{3} = 'V';
-           multi.pmod(1).param{3} = V';
+           multi.pmod(1).name{3} = 'std1';
+           multi.pmod(1).param{3} = std1';
            multi.pmod(1).poly{3} = 1; 
 
-           multi.pmod(1).name{4} = 'VTU';
-           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).name{4} = 'std2';
+           multi.pmod(1).param{4} = std2';
            multi.pmod(1).poly{4} = 1; 
 
-           multi.pmod(1).name{5} = 'DV';
-           multi.pmod(1).param{5} = DV';
+           multi.pmod(1).name{5} = 'Q1std1';
+           multi.pmod(1).param{5} = w(1) * Q1' + w(2) * std1';
            multi.pmod(1).poly{5} = 1; 
 
-           multi.pmod(1).name{6} = 'Q1';
-           multi.pmod(1).param{6} = Q1';
+           multi.pmod(1).name{6} = 'Q2std2';
+           multi.pmod(1).param{6} = w(1) * Q2' + w(2) * std2';
            multi.pmod(1).poly{6} = 1; 
 
-           multi.pmod(1).name{7} = 'Q2';
-           multi.pmod(1).param{7} = Q2';
+           multi.pmod(1).name{7} = 'Q1TU';
+           multi.pmod(1).param{7} = Q1' ./ TU';
            multi.pmod(1).poly{7} = 1; 
 
-           multi.pmod(1).name{8} = 'std1';
-           multi.pmod(1).param{8} = std1';
+           multi.pmod(1).name{8} = 'Q2TU';
+           multi.pmod(1).param{8} = Q2' ./ TU';
            multi.pmod(1).poly{8} = 1; 
 
-           multi.pmod(1).name{9} = 'std2';
-           multi.pmod(1).param{9} = std2';
+           multi.pmod(1).name{9} = 'DQ1';
+           multi.pmod(1).param{9} = DQ1';
            multi.pmod(1).poly{9} = 1; 
 
-           multi.pmod(1).name{10} = 'Q1std1';
-           multi.pmod(1).param{10} = w(1) * Q1' + w(2) * std1';
+           multi.pmod(1).name{10} = 'DQ2';
+           multi.pmod(1).param{10} = DQ2';
            multi.pmod(1).poly{10} = 1; 
-
-           multi.pmod(1).name{11} = 'Q2std2';
-           multi.pmod(1).param{11} = w(1) * Q2' + w(2) * std2';
-           multi.pmod(1).poly{11} = 1; 
-
-           multi.pmod(1).name{12} = 'Q1TU';
-           multi.pmod(1).param{12} = Q1' ./ TU';
-           multi.pmod(1).poly{12} = 1; 
-
-           multi.pmod(1).name{13} = 'Q2TU';
-           multi.pmod(1).param{13} = Q2' ./ TU';
-           multi.pmod(1).poly{13} = 1; 
-
-           multi.pmod(1).name{14} = 'DQ1';
-           multi.pmod(1).param{14} = DQ1';
-           multi.pmod(1).poly{14} = 1; 
-
-           multi.pmod(1).name{15} = 'DQ2';
-           multi.pmod(1).param{15} = DQ2';
-           multi.pmod(1).poly{15} = 1; 
-
-           multi.pmod(1).name{16} = '1TU';
-           multi.pmod(1).param{16} = 1./TU';
-           multi.pmod(1).poly{16} = 1; 
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);

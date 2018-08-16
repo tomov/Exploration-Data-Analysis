@@ -5,7 +5,7 @@ tbl = data2table(data);
 
 
 formula = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
-glme = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace')
+%glme = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace')
 
 
 [fw, fnames] = fixedEffects(glme);
@@ -31,3 +31,13 @@ pred = normcdf(DV);
 % compute prediction the "right" way, make sure it's the same
 y = predict(glme, tbl_s);
 assert(immse(y, pred) < 1e-10);
+
+% fit subject only
+glme_s = fitglme(tbl_s,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace')
+
+[fw_s, fnames_s] = fixedEffects(glme_s);
+
+DV_f = fw_s(1) * RU + fw_s(2) * VTU + fw_s(3) * V;
+pred_f = normcdf(DV_f);
+
+assert(immse(y, pred_f) < 1e-10); % ! not equal !
