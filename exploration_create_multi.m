@@ -642,6 +642,9 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset 
         %
         case 16
+           which_trials = which_trials & ~data(subj).timeout; % exclude timeouts
+           fprintf('which_trials = %s\n', sprintf('%d', which_trials));
+
            [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'chosen');
 
            multi.names{1} = 'trial_onset';
