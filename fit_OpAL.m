@@ -30,12 +30,12 @@ param(5).ub = 50;
 param(6).name = 'b';
 param(6).logpdf = @(x) sum(log(gampdf(x,1,5)));
 param(6).lb = 0;
-param(6).ub = 50;
+param(6).ub = 50; 
 
 for s = 1:length(data)
     data(s).N = sum(~data(s).timeout); % we ignore timeouts when computing loglik
 end
 
-results = mfit_optimize(@loglik_OpAL, param, data, nstarts);
+results = mfit_optimize_hierarchical(@loglik_OpAL, param, data, nstarts);
 
 save(outfile, 'results', 'data', 'param', 'nstarts');

@@ -36,6 +36,6 @@ for s = 1:length(data)
     data(s).N = sum(~data(s).timeout); % we ignore timeouts when computing loglik
 end
 
-results = mfit_optimize(@loglik_AU, param, data, nstarts);
+results = mfit_optimize_hierarchical(@loglik_AU, param, data, nstarts);
 
 save(outfile, 'results', 'data', 'param', 'nstarts');
