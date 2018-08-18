@@ -80,4 +80,4 @@ else
     results = mfit_optimize(@loglik_AU, param, data, nstarts);
 end
 
-save(outfile, 'results', 'data', 'param', 'nstarts');
+save(outfile, 'results', 'data', 'param', 'nstarts', 'hierarchical', 'fixedEffects');
