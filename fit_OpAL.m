@@ -1,4 +1,8 @@
-function [results] = fit_OpAL(data, nstarts, outfile)
+function [results] = fit_OpAL(data, nstarts, outfile, hierarchical)
+
+if nargin < 4
+    hierarchical = 0;
+end
 
 % create parameter structure using weakly informative priors
 
@@ -36,6 +40,10 @@ for s = 1:length(data)
     data(s).N = sum(~data(s).timeout); % we ignore timeouts when computing loglik
 end
 
-results = mfit_optimize_hierarchical(@loglik_OpAL, param, data, nstarts);
+if hierarchical
+    results = mfit_optimize_hierarchical(@loglik_OpAL, param, data, nstarts);
+else
+    results = mfit_optimize(@loglik_OpAL, param, data, nstarts);
+end
 
 save(outfile, 'results', 'data', 'param', 'nstarts');
