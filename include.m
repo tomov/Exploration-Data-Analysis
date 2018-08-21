@@ -2,6 +2,7 @@
 %
 
 addpath('/Applications/spm12/'); % SPM itself
+addpath('/Applications/spm12/config/'); % SPM itself
 addpath('/Users/momchil/Dropbox/Research/libs/ccnl-fmri/') % sam's ccnl fmri wrappers for SPM
 addpath('/Users/momchil/Dropbox/Research/libs/mfit/'); % sam's mfit library; uses fconmin
 addpath('/Users/momchil/Dropbox/Research/libs/bspmview/'); % for viewing fMRI data

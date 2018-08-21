@@ -478,7 +478,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
         
                
-        % #Sam
+        % #Sam ; IGNORE -- identical to glm 6
         % glm 6 but with |abs|
         % decision value @ trial_onset 
         % left choice @ trial_onset
@@ -672,6 +672,94 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.names{4} = 'trial_onset_L';
            multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+        % #Sam 
+        % TU, split DV and RU @ trial_onset 
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        %
+        case 17
+           which_trials = which_trials & ~data(subj).timeout; % exclude timeouts
+           fprintf('which_trials = %s\n', sprintf('%d', which_trials));
+
+           [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'chosen');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'std1';
+           multi.pmod(1).param{1} = std1';
+           multi.pmod(1).poly{1} = 1; 
+
+           multi.pmod(1).name{2} = 'std2';
+           multi.pmod(1).param{2} = std2';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'DQ1';
+           multi.pmod(1).param{3} = DQ1';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'DQ2';
+           multi.pmod(1).param{4} = DQ2';
+           multi.pmod(1).poly{4} = 1; 
+
+           multi.pmod(1).name{5} = 'TU';
+           multi.pmod(1).param{5} = TU';
+           multi.pmod(1).poly{5} = 1; 
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+ 
+        % glm 15 but left - right
+        % Q1+std1, Q2+std2 @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 18
+           [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'left');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'Q1std1';
+           multi.pmod(1).param{1} = w(1) * Q1' + w(2) * std1';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'Q2std2';
+           multi.pmod(1).param{2} = w(1) * Q2' + w(2) * std2';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
 
 
 
