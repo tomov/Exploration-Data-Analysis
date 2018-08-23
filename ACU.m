@@ -1,8 +1,8 @@
-function latents = OpAL(data, x)
+function latents = ACU(data, x)
     
-    % Opponent Actor Learning model (Collins & Frank 2014)
+    % Actor-critic with uncertainty (ACU) model
     %
-    % USAGE: latents = OpAL(data, x)
+    % USAGE: latents = ACU(data, x)
     %
     % INPUTS:
     %   data - single subject data
@@ -15,6 +15,7 @@ function latents = OpAL(data, x)
         N_0S = 0.1;
         V_0 = 0;
         alpha = 0.1;
+        beta = 0.1;
         a = 2;
         b = 2;
     else
@@ -24,8 +25,9 @@ function latents = OpAL(data, x)
         N_0S = x(4);
         V_0 = x(5);
         alpha = x(6);
-        a = x(7);
-        b = x(8);
+        beta = x(7);
+        a = x(8);
+        b = x(9);
     end
 
     N = length(data.block);
@@ -64,8 +66,20 @@ function latents = OpAL(data, x)
         
         % update
         V = V + alpha * (r - V);
-        G(c) = G(c) + alpha * G(c) * (r - V);
-        N(c) = N(c) - alpha * N(c) * (r - V);
+        G(c) = G(c) + alpha * rect_pos(r - V) - beta * G(c);
+        N(c) = N(c) + alpha * rect_neg(r - V) - beta * N(c);
     end
 end
 
+
+function x = rect_pos(x)
+    if x <= 0
+        x = 0;
+    end
+end
+
+function x = rect_neg(x)
+    if x >= 0
+        x = 0;
+    end
+end

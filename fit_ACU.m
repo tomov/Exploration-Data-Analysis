@@ -1,4 +1,4 @@
-function [results] = fit_AU(data, nstarts, outfile, hierarchical, fixedEffects)
+function [results] = fit_ACU(data, nstarts, outfile, hierarchical, fixedEffects)
 
 if nargin < 4
     hierarchical = 0;
@@ -11,51 +11,57 @@ end
 
 hyparam(1).name = 'G_0R hyperparameters';
 hyparam(1).lb = [0 0];
-hyparam(1).ub = [100 10];
-hyparam(1).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(1).rnd = @() [rand * 100 rand * 10];
+hyparam(1).ub = [10 10];
+hyparam(1).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(1).rnd = @() [rand * 10 rand * 10];
 
 hyparam(2).name = 'N_0R hyperparameters';
 hyparam(2).lb = [0 0];
-hyparam(2).ub = [100 10];
-hyparam(2).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(2).rnd = @() [rand * 100 rand * 10];
+hyparam(2).ub = [10 10];
+hyparam(2).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(2).rnd = @() [rand * 10 rand * 10];
 
 hyparam(3).name = 'G_0S hyperparameters';
 hyparam(3).lb = [0 0];
-hyparam(3).ub = [100 10];
-hyparam(3).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(3).rnd = @() [rand * 100 rand * 10];
+hyparam(3).ub = [10 10];
+hyparam(3).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(3).rnd = @() [rand * 10 rand * 10];
 
 hyparam(4).name = 'N_0S hyperparameters';
 hyparam(4).lb = [0 0];
-hyparam(4).ub = [100 10];
-hyparam(4).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(4).rnd = @() [rand * 100 rand * 10];
+hyparam(4).ub = [10 10];
+hyparam(4).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(4).rnd = @() [rand * 10 rand * 10];
 
-hyparam(5).name = 'alpha hyperparameters';
-hyparam(5).lb = [1 1];
+hyparam(5).name = 'V_0 hyperparameters';
+hyparam(5).lb = [0 0];
 hyparam(5).ub = [10 10];
 hyparam(5).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
 hyparam(5).rnd = @() [rand * 10 rand * 10];
 
-hyparam(6).name = 'beta hyperparameters';
+hyparam(6).name = 'alpha hyperparameters';
 hyparam(6).lb = [1 1];
 hyparam(6).ub = [10 10];
 hyparam(6).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
 hyparam(6).rnd = @() [rand * 10 rand * 10];
 
-hyparam(7).name = 'a hyperparameters';
-hyparam(7).lb = [0 0];
-hyparam(7).ub = [100 10];
-hyparam(7).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(7).rnd = @() [rand * 100 rand * 10];
+hyparam(7).name = 'beta hyperparameters';
+hyparam(7).lb = [1 1];
+hyparam(7).ub = [10 10];
+hyparam(7).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(7).rnd = @() [rand * 10 rand * 10];
 
-hyparam(8).name = 'b hyperparameters';
+hyparam(8).name = 'a hyperparameters';
 hyparam(8).lb = [0 0];
-hyparam(8).ub = [100 10];
-hyparam(8).logpdf = @(x) log(unifpdf(x(1), 0, 100)) + log(unifpdf(x(2), 0, 10)); 
-hyparam(8).rnd = @() [rand * 100 rand * 10];
+hyparam(8).ub = [10 10];
+hyparam(8).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(8).rnd = @() [rand * 10 rand * 10];
+
+hyparam(9).name = 'b hyperparameters';
+hyparam(9).lb = [0 0];
+hyparam(9).ub = [10 10];
+hyparam(9).logpdf = @(x) log(unifpdf(x(1), 0, 10)) + log(unifpdf(x(2), 0, 10)); 
+hyparam(9).rnd = @() [rand * 10 rand * 10];
 
 % create parameter structure using weakly informative priors
 
@@ -87,33 +93,40 @@ param(4).logpdf = @(x) sum(log(gampdf(x,1,5)));
 param(4).lb = 0;  
 param(4).ub = 50;
 
-param(5).name = 'alpha';
-param(5).hlogpdf = @(x,h) sum(log(betapdf(x,h(1),h(2))));
-param(5).hrnd = @(h) betarnd(h(1),h(2));
-param(5).logpdf = @(x) sum(log(betapdf(x,1.2,1.2)));
-param(5).lb = 0;
-param(5).ub = 1;
+param(5).name = 'V_0';
+param(5).hlogpdf = @(x,h) sum(log(gampdf(x,h(1),h(2))));
+param(5).hrnd = @(h) gamrnd(h(1),h(2));
+param(5).logpdf = @(x) sum(log(gampdf(x,1,5))); 
+param(5).lb = 0;  
+param(5).ub = 50;
 
-param(6).name = 'beta';
+param(6).name = 'alpha';
 param(6).hlogpdf = @(x,h) sum(log(betapdf(x,h(1),h(2))));
 param(6).hrnd = @(h) betarnd(h(1),h(2));
 param(6).logpdf = @(x) sum(log(betapdf(x,1.2,1.2)));
 param(6).lb = 0;
 param(6).ub = 1;
 
-param(7).name = 'a';
-param(7).hlogpdf = @(x,h) sum(log(gampdf(x,h(1),h(2))));
-param(7).hrnd = @(h) gamrnd(h(1),h(2));
-param(7).logpdf = @(x) sum(log(gampdf(x,1,5)));
+param(7).name = 'beta';
+param(7).hlogpdf = @(x,h) sum(log(betapdf(x,h(1),h(2))));
+param(7).hrnd = @(h) betarnd(h(1),h(2));
+param(7).logpdf = @(x) sum(log(betapdf(x,1.2,1.2)));
 param(7).lb = 0;
-param(7).ub = 50;
+param(7).ub = 1;
 
-param(8).name = 'b';
+param(8).name = 'a';
 param(8).hlogpdf = @(x,h) sum(log(gampdf(x,h(1),h(2))));
 param(8).hrnd = @(h) gamrnd(h(1),h(2));
 param(8).logpdf = @(x) sum(log(gampdf(x,1,5)));
 param(8).lb = 0;
 param(8).ub = 50;
+
+param(9).name = 'b';
+param(9).hlogpdf = @(x,h) sum(log(gampdf(x,h(1),h(2))));
+param(9).hrnd = @(h) gamrnd(h(1),h(2));
+param(9).logpdf = @(x) sum(log(gampdf(x,1,5)));
+param(9).lb = 0;
+param(9).ub = 50;
 
 for s = 1:length(data)
     data(s).N = sum(~data(s).timeout); % we ignore timeouts when computing loglik
@@ -142,11 +155,11 @@ end
 
 switch hierarchical
     case 2
-        results = hfit_optimize(@loglik_AU, hyparam, param, data, nstarts);
+        results = hfit_optimize(@loglik_ACU, hyparam, param, data, nstarts);
     case 1
-        results = mfit_optimize_hierarchical(@loglik_AU, param, data, nstarts);
+        results = mfit_optimize_hierarchical(@loglik_ACU, param, data, nstarts);
     otherwise
-        results = mfit_optimize(@loglik_AU, param, data, nstarts);
+        results = mfit_optimize(@loglik_ACU, param, data, nstarts);
 end
 
 save(outfile, 'results', 'data', 'param', 'nstarts', 'hierarchical', 'fixedEffects');

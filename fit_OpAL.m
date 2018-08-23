@@ -75,10 +75,13 @@ if fixedEffects
 end
 
 
-if hierarchical
-    results = mfit_optimize_hierarchical(@loglik_OpAL, param, data, nstarts);
-else
-    results = mfit_optimize(@loglik_OpAL, param, data, nstarts);
+switch hierarchical
+    case 2
+        results = hfit_optimize(@loglik_OpAL, param, data, nstarts);
+    case 1
+        results = mfit_optimize_hierarchical(@loglik_OpAL, param, data, nstarts);
+    otherwise
+        results = mfit_optimize(@loglik_OpAL, param, data, nstarts);
 end
 
 save(outfile, 'results', 'data', 'param', 'nstarts', 'hierarchical', 'fixedEffects');
