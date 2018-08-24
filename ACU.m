@@ -32,6 +32,9 @@ function latents = ACU(data, x)
 
     N = length(data.block);
     
+    latents.a = a;
+    latents.b = b;
+    
     for n = 1:N
         
         % initialization at the start of each block
@@ -73,13 +76,9 @@ end
 
 
 function x = rect_pos(x)
-    if x <= 0
-        x = 0;
-    end
+    x = max(x,0);
 end
 
 function x = rect_neg(x)
-    if x >= 0
-        x = 0;
-    end
+    x = max(-x,0);
 end

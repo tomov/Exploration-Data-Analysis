@@ -30,6 +30,9 @@ function latents = OpAL(data, x)
 
     N = length(data.block);
     
+    latents.a = a;
+    latents.b = b;
+    
     for n = 1:N
         
         % initialization at the start of each block
