@@ -1,10 +1,9 @@
-
 function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
     % Create multi structure, helper function for creating EXPT in
-    % imageryExpt.m
+    % exploration_expt.m
     %
-    % USAGE: multi = imagery_create_multi(model,subj,run)
+    % USAGE: multi = exploration_create_multi(model,subj,run)
     %
     % INPUTS:
     %   glmodel - positive integer indicating general linear model
@@ -60,9 +59,6 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     which_trials = data(subj).run == run;  
    
     fprintf('which_trials = %s\n', sprintf('%d', which_trials));
-
-    [V, RU, ~, VTU] = get_latents(data, subj, which_trials, 'left');
-
 
 
     %[results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data(subj));
@@ -858,7 +854,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1002
-           load('trash/params_ACU_25nstarts_fixed.mat', 'results'); % only load results!
+           load('params_ACU_25nstarts_fixed.mat', 'results'); % only load results!
 
            latents = ACU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -929,6 +925,256 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.names{4} = 'trial_onset_L';
            multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
+        % ---------------------- mixed effects ---------------------------
+
+
+        % #john
+        % AU, mixed effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1004
+           load('params_AU_25nstarts_mixed.mat', 'results'); % only load results!
+
+           latents = AU(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+        % #john
+        % ACU, mixed effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1005
+           load('params_ACU_25nstarts_mixed.mat', 'results'); % only load results!
+
+           latents = ACU(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+        % #john
+        % OpAL, mixed effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1006
+           load('params_OpAL_25nstarts_mixed.mat', 'results'); % only load results!
+
+           latents = OpAL(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
+
+        % ---------------------- random effects ---------------------------
+
+
+        % #john
+        % AU, random effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1007
+           load('params_AU_25nstarts_random.mat', 'results'); % only load results!
+
+           latents = AU(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+        % #john
+        % ACU, random effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1008
+           load('params_ACU_25nstarts_random.mat', 'results'); % only load results!
+
+           latents = ACU(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+        % #john
+        % OpAL, random effects
+        % G_tot, N_tot @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 1009
+           load('params_OpAL_25nstarts_random.mat', 'results'); % only load results!
+
+           latents = OpAL(data(subj), results.x);
+           G = sum(latents.G(which_trials,:), 2);
+           N = sum(latents.N(which_trials,:), 2);
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'G';
+           multi.pmod(1).param{1} = G';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'N';
+           multi.pmod(1).param{2} = N';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
 
 
 
