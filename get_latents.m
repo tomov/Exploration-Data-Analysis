@@ -33,7 +33,7 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
     TU = sqrt(stdL.^2 + stdR.^2);
     DV = w1 * V + w2 * RU + w3 * V./TU;
     pred = normcdf(DV); % manual prediction
-    tbl = data2table(data);
+    tbl = data2table(data,0,0); % don't exclude timeouts here b/c we're predicting
     tbl = tbl(table2array(tbl(:,'S')) == subj, :);
     y = predict(results_VTURU, tbl);
     y = y(which_trials); % glm prediction

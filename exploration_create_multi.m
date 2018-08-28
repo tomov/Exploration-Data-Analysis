@@ -84,7 +84,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
             % nuisance @ choice onset
             %
             multi.names{5} = 'choice_onset';
-            multi.onsets{5} = data(subj).choice_onset(which_trials)';
+            multi.onsets{5} = data(subj).choice_onset(which_trials & ~data(subj).timeout)';
             multi.durations{5} = zeros(size(multi.onsets{5}));
 
             % nuisance @ feedback onset
@@ -113,7 +113,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
             % nuisance @ choice onset
             %
             multi.names{5} = 'choice_onset';
-            multi.onsets{5} = data(subj).choice_onset(which_trials)';
+            multi.onsets{5} = data(subj).choice_onset(which_trials & ~data(subj).timeout)';
             multi.durations{5} = zeros(size(multi.onsets{5}));
 
             % nuisance @ feedback onset
@@ -142,7 +142,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
             % nuisance @ choice onset
             %
             multi.names{5} = 'choice_onset';
-            multi.onsets{5} = data(subj).choice_onset(which_trials)';
+            multi.onsets{5} = data(subj).choice_onset(which_trials & ~data(subj).timeout)';
             multi.durations{5} = zeros(size(multi.onsets{5}));
 
             % nuisance @ feedback onset
@@ -179,7 +179,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -222,7 +222,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{4} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -253,7 +253,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{1} = 1;    
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -296,7 +296,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -343,7 +343,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{4} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -378,7 +378,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{1} = 1;    
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -418,7 +418,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -462,7 +462,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{4} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -494,7 +494,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{1} = 1;    
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -537,7 +537,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{3} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -584,7 +584,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{5} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -619,7 +619,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -658,7 +658,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -708,7 +708,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{5} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -743,7 +743,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -782,7 +782,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{3} = 1; 
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -835,7 +835,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -875,7 +875,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -915,7 +915,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -959,7 +959,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -999,7 +999,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -1039,7 +1039,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -1084,7 +1084,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -1124,7 +1124,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';
@@ -1164,7 +1164,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
-           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout);
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
            multi.names{3} = 'feedback_onset';

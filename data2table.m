@@ -16,13 +16,6 @@ function tbl = data2table(data,standardize,no_timeouts)
                 end
             end
         end
-    else
-        % assign random choices
-        for s = 1:length(data)
-            data(s).choice(data(s).timeout) = 1 + (rand(size(data(s).choice(data(s).timeout))) > 0.5); % random choices;
-            data(s).RT(data(s).timeout) = 2; % = choiceDuration = timeout
-            data(s).choice_onset(data(s).timeout) = data(s).trial_onset(data(s).timeout) + data(s).RT(data(s).timeout);
-        end
     end
     
     RS = []; SS = []; C = []; V = []; S = []; RU = []; TU = []; rt = []; risky = []; cond = [];

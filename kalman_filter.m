@@ -25,10 +25,12 @@ function latents = kalman_filter(data)
         latents.m(n,:) = m;
         latents.s(n,:) = s;
         
-        % update
-        k = s(c)/(s(c)+Q(n,c));    % Kalman gain
-        err = r - m(c);            % prediction error
-        m(c) = m(c) + k*err;       % posterior mean
-        s(c) = s(c) - k*s(c);      % posterior variance
+        % update, if choice was made
+        if ~data.timeout(n)
+            k = s(c)/(s(c)+Q(n,c));    % Kalman gain
+            err = r - m(c);            % prediction error
+            m(c) = m(c) + k*err;       % posterior mean
+            s(c) = s(c) - k*s(c);      % posterior variance
+        end
         
     end

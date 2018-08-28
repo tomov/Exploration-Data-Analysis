@@ -1,6 +1,6 @@
 function [results_V, results_VTU, results_VRU, results_VTURU ] = model_comparison(data)
     
-    tbl = data2table(data,0,1);
+    tbl = data2table(data,0,1); % don't standardize, exclude timeouts
     
     formula = 'C ~ -1 + V + (-1 + V|S)';
     results_V = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal')
