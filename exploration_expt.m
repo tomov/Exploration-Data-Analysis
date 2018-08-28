@@ -76,15 +76,16 @@ function EXPT = exploration_expt(local)
     
     % TR repetition time
     EXPT.TR = 2; %seconds
+
     % Function handle to create subject multi structure
     EXPT.create_multi = @exploration_create_multi;
+    % Function handle to create subject RSA structure
+    EXPT.create_rsa = @exploration_create_rsa;
+
     % Where you want model output da:ta to live
-    if local
-        %EXPT.modeldir = [exptdir, 'neural'];
-        EXPT.modeldir = [exptdir, 'glmOutput'];
-    else
-        EXPT.modeldir = [exptdir, 'glmOutput'];
-    end
+    EXPT.modeldir = [exptdir, 'glmOutput'];
+    % Where the RSA output lives
+    EXPT.rsadir = [exptdir, 'rsaOutput'];
     
     % Where the data live, but not sure which data
     EXPT.datadir = [exptdir, 'testOutput'];
