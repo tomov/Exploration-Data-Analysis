@@ -9,6 +9,7 @@
 function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, how)
     latents = kalman_filter(data(subj));
    
+    %load results_glme_fig3_nozscore_withtimeouts.mat; <--- the old one :( wrong
     load results_glme_fig3_nozscore.mat;
  
     [w_f, names_f] = fixedEffects(results_VTURU);

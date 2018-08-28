@@ -1,6 +1,29 @@
-function tbl = data2table(data,standardize)
+function tbl = data2table(data,standardize,no_timeouts)
     
     if nargin < 2; standardize = 0; end
+    if nargin < 3; no_timeouts = 1; end
+
+    % take care of timeouts
+    %
+    if no_timeouts
+        % get rid of them
+        F = fieldnames(data);
+        for s = 1:length(data)
+            which_trials = ~data(s).timeout;
+            for i = 1:length(F)
+                if size(data(s).(F{i}), 1) == length(which_trials)
+                    data(s).(F{i}) = data(s).(F{i})(which_trials,:);
+                end
+            end
+        end
+    else
+        % assign random choices
+        for s = 1:length(data)
+            data(s).choice(data(s).timeout) = 1 + (rand(size(data(s).choice(data(s).timeout))) > 0.5); % random choices;
+            data(s).RT(data(s).timeout) = 2; % = choiceDuration = timeout
+            data(s).choice_onset(data(s).timeout) = data(s).trial_onset(data(s).timeout) + data(s).RT(data(s).timeout);
+        end
+    end
     
     RS = []; SS = []; C = []; V = []; S = []; RU = []; TU = []; rt = []; risky = []; cond = [];
     for s = 1:length(data)

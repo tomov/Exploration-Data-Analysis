@@ -23,12 +23,3 @@ function data = load_data
     
     acc = [data.acc];
     data(acc<0.55) = [];
-
-    % take care of timeouts
-    % TODO do it properly
-    %
-    for s = 1:length(S)
-        data(s).choice(data(s).timeout) = 1 + (rand(size(data(s).choice(data(s).timeout))) > 0.5); % random choices
-        data(s).RT(data(s).timeout) = 2; % = choiceDuration = timeout
-        data(s).choice_onset(data(s).timeout) = data(s).trial_onset(data(s).timeout) + data(s).RT(data(s).timeout);
-    end

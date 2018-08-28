@@ -20,7 +20,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %        .pmod(i).param
     %        .pmod(i).poly
     %
-    % Cody Kommers, July 2016
+    % Momchil Tomov, July 2018
 
     if nargin < 4 || isempty(save_output)
         save_output = false;
