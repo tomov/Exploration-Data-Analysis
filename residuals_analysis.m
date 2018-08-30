@@ -9,8 +9,6 @@ Num = 1; % # peak voxels per cluster; default in bspmview is 3
 direct = '+';
 
 EXPT = exploration_expt();
-glmodel = 10;
-regressor = 'TU';
 
 data = load_data;
 
