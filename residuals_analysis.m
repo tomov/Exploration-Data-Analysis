@@ -1,4 +1,4 @@
-%function [ps, results, data] = residuals_analysis()
+function [ps, results, data, region, mni, cor] = residuals_analysis(glmodel, regressor, contrast)
 
 
 % group-level settings
@@ -10,11 +10,20 @@ direct = '+';
 
 EXPT = exploration_expt();
 glmodel = 10;
+regressor = 'TU';
 
 data = load_data;
 
-% TODO for TU, it's TU - trial
-[V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, 'RU', p, direct, alpha, Dis, Num);
+switch regressor
+    case 'RU'
+        formula = 'C ~ -1 + V + RU + VTU + resRU + (-1 + V + RU + VTU + resRU|S)';
+    case 'TU'
+        formula = 'C ~ -1 + V + RU + VTU + VresTU + (-1 + V + RU + VTU + VresTU|S)';
+    otherwise
+        assert(false);
+end
+
+[V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
 
 % find peak of HRF
 hrf = spm_hrf(0.001);
@@ -35,20 +44,18 @@ for s = 1:length(data)
     data(s).trial_onset_res_idx = res_idx;
 end
 
-% TODO for TU it's VresTU
-formula = 'C ~ -1 + V + RU + VTU + resRU + (-1 + V + RU + VTU + resRU|S)';
-
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
 % extract residuals for each cluster
 %
-ps = [];
+V_all = [];
 for s = 1:length(data) 
 
     res = ccnl_get_residuals(EXPT, glmodel, cor, s);
 
-    data(s).resRU = nan(length(data(s).run), length(region));
-    [~, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
+    data(s).res = nan(length(data(s).run), length(region));
+    [V, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
+    V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(region)
 
@@ -63,29 +70,42 @@ for s = 1:length(data)
         % not all runs were used in the GLMs
         which_trials = ismember(data(s).run, find(goodRuns{s}));
         which_res = data(s).trial_onset_res_idx(which_trials);
-        data(s).resRU(which_trials,c) = squeeze(res(which_res,c,1));
+        data(s).res(which_trials,c) = squeeze(res(which_res,c,1));
 
         % adjust for fact that the regressor was |RU|
-        data(s).resRU(:,c) = data(s).resRU(:,c) .* (RU >= 0) + (-data(s).resRU(:,c)) .* (RU < 0);
+        data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
     end
 end
+
+% in case the shit below fails
+save(['results_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);
 
 % fit behavioral GLM with residuals
 %
+ps = [];
 for c = 1:numel(region)
-    resRU = [];
+    res = [];
     for s = 1:length(data)
-        resRU = [resRU; data(s).resRU(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
+        res = [res; data(s).res(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
     end
 
     tbl = data2table(data,0,1); % exclude timeouts for fitting
-    % TODO for TU, it's VresTU = table2array(tbl('V')) ./ resTU
-    tbl = [tbl table(resRU)];
+    switch regressor
+        case 'RU'
+            resRU = res;
+            tbl = [tbl table(resRU)];
+        case 'TU'
+            VresTU = V_all ./ res;
+            tbl = [tbl table(VresTU)];
+        otherwise
+            assert(false);
+    end
 
-    results(c) = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal');
-    [w, names, stats] = fixedEffects(results);
-    assert(strcmp(names{4}, 'resRU'));
+
+    results{c} = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal');
+    [w, names, stats] = fixedEffects(results{c});
     ps(c) = stats(4).pValue;
 end
 
-save('results_analysis.mat', 'ps', 'results', 'data');
+
+save(['results_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);
