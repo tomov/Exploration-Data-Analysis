@@ -47,6 +47,8 @@ function rsa = exploration_create_rsa(rsa_idx, subj, run)
         case 1
             rsa.event = 'trial_onset';
             rsa.betas_glmodel = 144;
+
+            rsa.regressors = {'trial_onset_subj_1_run_1', ... etc.. };
             rsa.radius = 2.6666;
 
             rsa.model(1).name = 'condition';
