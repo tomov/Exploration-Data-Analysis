@@ -76,7 +76,7 @@ for s = 1:length(data)
 end
 
 % in case the shit below fails
-save(['results_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);
+save(['residuals_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);
 
 % fit behavioral GLM with residuals
 %
@@ -106,4 +106,4 @@ for c = 1:numel(region)
 end
 
 
-save(['results_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);
+save(['residuals_analysis_', regressor, '_glm', num2str(glmodel), '.mat']);

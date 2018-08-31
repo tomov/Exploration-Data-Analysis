@@ -67,10 +67,12 @@ function latents = ACU(data, x)
         latents.V(n,:) = V;
         latents.loglik(n,:) = loglik;
         
-        % update
-        V = V + alpha * (r - V);
-        G(c) = G(c) + alpha * rect_pos(r - V) - beta * G(c);
-        N(c) = N(c) + alpha * rect_neg(r - V) - beta * N(c);
+        % update, if choice was made
+        if ~data.timeout(n)
+            V = V + alpha * (r - V);
+            G(c) = G(c) + alpha * rect_pos(r - V) - beta * G(c);
+            N(c) = N(c) + alpha * rect_neg(r - V) - beta * N(c);
+        end
     end
 end
 

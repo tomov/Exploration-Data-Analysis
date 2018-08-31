@@ -65,10 +65,12 @@ function latents = OpAL(data, x)
         latents.V(n,:) = V;
         latents.loglik(n,:) = loglik;
         
-        % update
-        V = V + alpha * (r - V);
-        G(c) = G(c) + alpha * G(c) * (r - V);
-        N(c) = N(c) - alpha * N(c) * (r - V);
+        % update, if choice was made
+        if ~data.timeout(n)
+            V = V + alpha * (r - V);
+            G(c) = G(c) + alpha * G(c) * (r - V);
+            N(c) = N(c) - alpha * N(c) * (r - V);
+        end
     end
 end
 

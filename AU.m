@@ -63,10 +63,12 @@ function latents = AU(data, x)
         latents.N(n,:) = N;
         latents.loglik(n,:) = loglik;
         
-        % update
-        Q = G(c) - N(c);
-        G(c) = G(c) + alpha * rect_pos(r - Q) - beta * G(c);
-        N(c) = N(c) + alpha * rect_neg(r - Q) - beta * N(c);
+        % update, if choice was made
+        if ~data.timeout(n)
+            Q = G(c) - N(c);
+            G(c) = G(c) + alpha * rect_pos(r - Q) - beta * G(c);
+            N(c) = N(c) + alpha * rect_neg(r - Q) - beta * N(c);
+        end
     end
 end
 
