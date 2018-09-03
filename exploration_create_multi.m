@@ -855,7 +855,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1001
-           load('params_AU_25nstarts_fixed.mat', 'results'); % only load results!
+           load('fit_AU_25nstarts_fixed.mat', 'results'); % only load results!
 
            latents = AU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -895,7 +895,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1002
-           load('params_ACU_25nstarts_fixed.mat', 'results'); % only load results!
+           load('fit_ACU_25nstarts_fixed.mat', 'results'); % only load results!
 
            latents = ACU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -935,7 +935,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1003
-           load('params_OpAL_25nstarts_fixed.mat', 'results'); % only load results!
+           load('fit_OpAL_25nstarts_fixed.mat', 'results'); % only load results!
 
            latents = OpAL(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -979,7 +979,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1004
-           load('params_AU_25nstarts_mixed.mat', 'results'); % only load results!
+           load('fit_AU_25nstarts_mixed.mat', 'results'); % only load results!
 
            latents = AU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -1019,7 +1019,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1005
-           load('params_ACU_25nstarts_mixed.mat', 'results'); % only load results!
+           load('fit_ACU_25nstarts_mixed.mat', 'results'); % only load results!
 
            latents = ACU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -1059,7 +1059,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1006
-           load('params_OpAL_25nstarts_mixed.mat', 'results'); % only load results!
+           load('fit_OpAL_25nstarts_mixed.mat', 'results'); % only load results!
 
            latents = OpAL(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -1104,7 +1104,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1007
-           load('params_AU_25nstarts_random.mat', 'results'); % only load results!
+           load('fit_AU_25nstarts_random.mat', 'results'); % only load results!
 
            latents = AU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -1144,7 +1144,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1008
-           load('params_ACU_25nstarts_random.mat', 'results'); % only load results!
+           load('fit_ACU_25nstarts_random.mat', 'results'); % only load results!
 
            latents = ACU(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
@@ -1184,7 +1184,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % nuisance @ choice_onset and feedback_onset
         %
         case 1009
-           load('params_OpAL_25nstarts_random.mat', 'results'); % only load results!
+           load('fit_OpAL_25nstarts_random.mat', 'results'); % only load results!
 
            latents = OpAL(data(subj), results.x);
            G = sum(latents.G(which_trials,:), 2);
