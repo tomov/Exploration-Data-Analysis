@@ -30,7 +30,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
     data = load_data;
 
-    % handle timeouts
+    % handle timeouts -- anecdotally, people pressed even if there was a timeout (just too late) -> count press at timeout
     for s = 1:length(data)
         data(s).RT(data(s).timeout) = 2; % = choiceDuration = timeout
         data(s).choice_onset(data(s).timeout) = data(s).trial_onset(data(s).timeout) + data(s).RT(data(s).timeout);
@@ -835,6 +835,81 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
+        % #Sam
+        % glm 19 without timeouts
+        % |RU|, TU, trial pmod @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        %
+        case 21
+           [~, RU, TU, ~] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials & ~data(subj).timeout); % exclude timeouts
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'trial';
+           multi.pmod(1).param{3} = data(subj).trial(which_trials & ~data(subj).timeout)';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           if sum(which_trials & data(subj).timeout) > 0
+               multi.names{5} = 'trial_onset_timeouts';
+               multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).timeout); % timeouts only
+               multi.durations{5} = zeros(size(multi.onsets{5}));
+           end
+
+
+        % glm 18 but without trial_onset_L
+        % Q1+std1, Q2+std2 @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset
+        %
+        case 22
+           [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'left');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them
+
+           multi.pmod(1).name{1} = 'Q1std1';
+           multi.pmod(1).param{1} = w(1) * Q1' + w(2) * std1';
+           multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'Q2std2';
+           multi.pmod(1).param{2} = w(1) * Q2' + w(2) * std2';
+           multi.pmod(1).poly{2} = 1;
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
 
 
 

@@ -1,12 +1,22 @@
 % helper f'n wrapper around kalman_filter
 %
+% USAGE:
+%     [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, how, [fixed])
+%
+% EXAMPLE:
+%     get_latents(data, 31, data(31).run == 4 & ~data(31).timeout, 'left')
+%
 % how = how to pick option 1 so as to disambiguate option 1 vs. option 2 and determine the sign of RU, V, etc.
 %     how = left -> 1 = left, 2 = right
 %     how = max -> 1 = max, 2 = min
 %     how = chosen -> 1 = chosen, 2 = unchosen
 %     how = abs -> return abs value; option varies depending on quantity
 %
-function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, how)
+function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, how, fixed)
+    if ~exist('fixed', 'var')
+        fixed = false; % do random effects by default
+    end
+
     latents = kalman_filter(data(subj));
    
     %load results_glme_fig3_nozscore_withtimeouts.mat;  % <--- the old one :( wrong
@@ -15,7 +25,11 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
     [w_f, names_f] = fixedEffects(results_VTURU);
     [w_r, names_r] = randomEffects(results_VTURU);
 
-    w = w_f + w_r((subj - 1) * 3 + 1 : subj * 3);
+    if fixed 
+        w = w_f;
+    else
+        w = w_f + w_r((subj - 1) * 3 + 1 : subj * 3);
+    end
 
     w1 = w(3);
     w2 = w(1);
@@ -28,16 +42,18 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
     stdR = sqrt(latents.s(which_trials,2));
 
     % sanity check
-    V = QL - QR;
-    RU = stdL - stdR;
-    TU = sqrt(stdL.^2 + stdR.^2);
-    DV = w1 * V + w2 * RU + w3 * V./TU;
-    pred = normcdf(DV); % manual prediction
-    tbl = data2table(data,0,0); % don't exclude timeouts here b/c we're predicting
-    tbl = tbl(table2array(tbl(:,'S')) == subj, :);
-    y = predict(results_VTURU, tbl);
-    y = y(which_trials); % glm prediction
-    assert(immse(y, pred) < 1e-10, 'GLM prediction different from computed prediction');
+    if ~fixed
+        V = QL - QR;
+        RU = stdL - stdR;
+        TU = sqrt(stdL.^2 + stdR.^2);
+        DV = w1 * V + w2 * RU + w3 * V./TU;
+        pred = normcdf(DV); % manual prediction
+        tbl = data2table(data,0,0); % don't exclude timeouts here b/c we're predicting
+        tbl = tbl(table2array(tbl(:,'S')) == subj, :);
+        y = predict(results_VTURU, tbl);
+        y = y(which_trials); % glm prediction
+        assert(immse(y, pred) < 1e-10, 'GLM prediction different from computed prediction');
+    end
 
     
     TU = sqrt(stdL.^2 + stdR.^2);
@@ -53,7 +69,9 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
     
     DQL = (w1*QL) + (w2*stdL) + ((QL./TU)*w3);  
     DQR = (w1*QR) + (w2*stdR) + ((QR./TU)*w3);
-    assert(immse(y, normcdf(DQL - DQR)) < 1e-10, 'GLM prediction different from computed prediction');
+    if ~fixed
+        assert(immse(y, normcdf(DQL - DQR)) < 1e-10, 'GLM prediction different from computed prediction');
+    end
 
     switch how
 
