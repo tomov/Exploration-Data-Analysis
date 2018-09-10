@@ -12,8 +12,12 @@ echo ---------------- >> jobs.txt
 echo --- Running ccnl_fmri_glm for subjects ${subj_arg} >> jobs.txt
 echo ---------------- >> jobs.txt
 
+
 for model in {1..1}
 do
+    shuffledSubjects=( $(printf '%s\n' "${goodSubjects[@]}" | shuf ) )   # shuffle subjects so parallel GLM's don't use the same hard disk
+    subj_arg="${shuffledSubjects[@]}" # stringify it
+
     outfileprefix="output/ccnl_fmri_glm_${model}_goodSubjects"
     echo File prefix = $outfileprefix
 
