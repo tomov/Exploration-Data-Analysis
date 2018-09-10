@@ -17,14 +17,17 @@ for roi_idx = 1:length(rois)
         runs = find(goodRuns{s});
         b = nan(length(data(s).trial), cnt);
 
-        for r = 1:length(EXPT.subjects(s).functional)
+        disp(s);
+
+        for r = 1:length(EXPT.subject(s).functional)
             r = runs(r);
             which = data(s).run == r;
             block = data(s).block(which);
             trial = data(s).trial(which);
             for i = 1:length(block)
                 name = [event, '_run_', num2str(r), '_block_', num2str(block(i)), '_trial_', num2str(trial(i))];
-                betas = ccnl_get_beta_nosmooth(EXPT, rsa_glm, name, mask);
+                disp(name);
+                betas = ccnl_get_beta_nosmooth(EXPT, rsa_glm, name, mask, s);
                 b(data(s).run == r & data(s).block == block(i) & data(s).trial == trial(i), :) = betas;
             end
         end
