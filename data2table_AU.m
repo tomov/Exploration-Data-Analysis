@@ -1,4 +1,4 @@
-function tbl = data2table_AU(roi, data, results)
+function [tbl, lats] = data2table_AU(roi, data, results)
 
 G = []; N = []; S = []; NL = []; NR = []; GL = []; GR = []; tot = [];
 
@@ -8,6 +8,7 @@ for s = 1:length(data)
     else
         latents = AU(data(s), results.x(s,:));
     end
+    lats(s) = latents;
 
     % TODO figure out if we're excluding timeouts
     GL = [GL; latents.G(:, 1)];
