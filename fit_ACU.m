@@ -150,7 +150,6 @@ if fixedEffects
         new_data.N = new_data.N + data(s).N;
     end
     data = new_data;
-    save('shit.mat');
 end
 
 switch hierarchical

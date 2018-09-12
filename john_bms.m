@@ -1,3 +1,6 @@
+% behavioral BMS for AU, ACU, OpAL
+%
+
 clear res;
 
 load fit_AU_25nstarts_fixed.mat

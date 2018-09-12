@@ -1,9 +1,9 @@
-% see if residuals for peak RU / TU voxels contribute to choice prediction beyond model estimates
+% sanity check for residuals_analysis.m -- use activations instead of residuals, and omit RU / TU -> coefficients should definitely be significant then (by definition...)
 %
 
-function [ps, results, data, region, mni, cor] = residuals_analysis(glmodel, regressor, contrast, load_first_half)
+function [ps, results, data, region, mni, cor] = activations_analysis(glmodel, regressor, contrast, load_first_half)
 
-outfile = ['residuals_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
+outfile = ['activations_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
 
 outfile
 
@@ -13,7 +13,7 @@ end
 
 
 if load_first_half
-    % optionally load pre-computed residuals (b/c the 2nd half doesn't work on the stupid cluster...)
+    % optionally load pre-computed activations (b/c the 2nd half doesn't work on the stupid cluster...)
     load(outfile);
 else
 
@@ -30,9 +30,9 @@ else
 
     switch regressor
         case 'RU'
-            formula = 'C ~ -1 + V + RU + VTU + resRU + (-1 + V + RU + VTU + resRU|S)';
+            formula = 'C ~ -1 + V + VTU + actRU + (-1 + V + RU + VTU + actRU|S)'; %  omit RU
         case 'TU'
-            formula = 'C ~ -1 + V + RU + VTU + VresTU + (-1 + V + RU + VTU + VresTU|S)';
+            formula = 'C ~ -1 + V + RU + VactTU + (-1 + V + RU + VTU + VactTU|S)'; %  omit VTU
         otherwise
             assert(false);
     end
@@ -52,29 +52,29 @@ else
 
     % find closest TR to each trial onset (adjusted for HRF f'n)
     for s = 1:length(data)
-        res_idx = [];
+        act_idx = [];
         runs = find(goodRuns{s});
         data(s).exclude = ~ismember(data(s).run, runs); % exclude bad runs
         for i = 1:length(data(s).trial_onset)
             [~, idx] = min(abs(trs - (data(s).trial_onset(i) + hrf_offset)));
             if data(s).exclude(i)
-                res_idx = [res_idx; NaN];
+                act_idx = [act_idx; NaN];
             else
                 r = find(data(s).run(i) == runs);
-                res_idx = [res_idx; idx + nTRs * (r - 1)];
+                act_idx = [act_idx; idx + nTRs * (r - 1)];
             end
         end
-        data(s).trial_onset_res_idx = res_idx;
+        data(s).trial_onset_act_idx = act_idx;
     end
 
-    % extract residuals for each cluster
+    % extract activations for each cluster
     %
     V_all = [];
     for s = 1:length(data) 
 
-        res = ccnl_get_residuals(EXPT, glmodel, cor, s);
+        act = ccnl_get_activations(EXPT, glmodel, cor, s);
 
-        data(s).res = nan(length(data(s).run), length(region));
+        data(s).act = nan(length(data(s).run), length(region));
         [V, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
         V_all = [V_all; V(~data(s).timeout)];
 
@@ -85,15 +85,15 @@ else
             % r = 10 / 1.5;
             % [~, voxels] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r);
             % pass voxels instead of cor(c,:)
-            % then res = mean(res,2)
-            %res = ccnl_get_residuals(EXPT, glmodel, cor(c,:), s);
+            % then act = mean(act,2)
+            %act = ccnl_get_activations(EXPT, glmodel, cor(c,:), s);
 
             % not all runs were used in the GLMs
-            which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
-            data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));
+            which_act = data(s).trial_onset_act_idx(~data(s).exclude); % trial onset activations
+            data(s).act(~data(s).exclude,c) = squeeze(act(which_act,c,1));
 
-            % adjust for fact that the regressor was |RU|
-            data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+            % adjust for fact that the regactsor was |RU|
+            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
         end
     end
 
@@ -101,27 +101,27 @@ else
     save(outfile);
 end
 
-% fit behavioral GLM with residuals
+% fit behavioral GLM with activations
 %
 ps = [];
 for c = 1:numel(region)
-    res = [];
+    act = [];
     exclude = logical([]);
     for s = 1:length(data)
-        res = [res; data(s).res(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
-        exclude = [exclude; data(s).exclude(~data(s).timeout)]; % bad runs are also out (their residuals are NaNs)
+        act = [act; data(s).act(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
+        exclude = [exclude; data(s).exclude(~data(s).timeout)]; % bad runs are also out (their activations are NaNs)
     end
-    assert(all(isnan(res(exclude))));
-    assert(all(~isnan(res(~exclude))));
+    assert(all(isnan(act(exclude))));
+    assert(all(~isnan(act(~exclude))));
 
     tbl = data2table(data,0,1); % exclude timeouts for fitting
     switch regressor
         case 'RU'
-            resRU = res;
-            tbl = [tbl table(resRU)];
+            actRU = act;
+            tbl = [tbl table(actRU)];
         case 'TU'
-            VresTU = V_all ./ res;
-            tbl = [tbl table(VresTU)];
+            VactTU = V_all ./ act;
+            tbl = [tbl table(VactTU)];
         otherwise
             assert(false);
     end
@@ -136,6 +136,6 @@ end
 save(outfile);
 
 
-p_uncorr = ps(:,4);
+p_uncorr = ps(:,3);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 table(region, extent, stat, mni, p_uncorr, p_corr)
