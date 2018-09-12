@@ -22,10 +22,6 @@ for i = 1:length(fitfiles)
     [tbl, lats] = data2table_fns{i}(roi, data, results);
 
     ps = []; % for G and N weights
-    ras = []; % for correlation btwn G weights and a
-    rbs = []; % for correlation btwn N weights and b
-    pas = []; % for correlation btwn G weights and a
-    pbs = []; % for correlation btwn N weights and b
     for roi_idx = 1:length(roi)
         region = roi(roi_idx).name;
         formula = [region, ' ~ -1 + G + N'];
