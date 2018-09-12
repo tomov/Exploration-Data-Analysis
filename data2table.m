@@ -45,4 +45,4 @@ function tbl = data2table(data,standardize,no_timeouts)
         RU = zscore(RU);
     end
     
-    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,rt,risky,cond);
+    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond);

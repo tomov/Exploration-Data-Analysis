@@ -1,15 +1,45 @@
 % correlate BG activity with model G and N
 %
 
+
 %load('john_roi.mat', 'roi');
 data = load_data;
-load('fit_AU_25nstarts_fixed.mat', 'results');
 
-tbl = data2table_AU(roi, data, results);
+fitfiles = {'fit_AU_25nstarts_fixed.mat', 'fit_ACU_25nstarts_fixed.mat', 'fit_OpAL_25nstarts_fixed.mat', ...
+        'fit_AU_25nstarts_mixed.mat', 'fit_ACU_25nstarts_mixed.mat', 'fit_OpAL_25nstarts_mixed.mat', ...
+        'fit_AU_25nstarts_random.mat', 'fit_ACU_25nstarts_random.mat', 'fit_OpAL_25nstarts_random.mat'};
+data2table_fns = {@data2table_AU, @data2table_ACU, @data2table_OpAL, ...
+                @data2table_AU, @data2table_ACU, @data2table_OpAL, ...
+                @data2table_AU, @data2table_ACU, @data2table_OpAL};
 
-for roi_idx = 1:length(roi)
-    formula = [roi(roi_idx).name, ' ~ 1 + G + N + (1 + G + N | S)'];
+n = length(fitfiles) * length(roi);
 
-    % fitglme ignores NaN (e.g. non-existant betas for bad runs) by default
-    roi(roi_idx).res = fitglme(tbl,formula,'Distribution','Normal','Link','Identity','FitMethod','Laplace', 'CovariancePattern','diagonal');
+for i = 1:length(fitfiles)
+    fitfile = fitfiles{i};
+
+    load(fitfile, 'results');
+
+    tbl = data2table_fns{i}(roi, data, results);
+
+    ps = [];
+    for roi_idx = 1:length(roi)
+        region = roi(roi_idx).name;
+        formula = [region, ' ~ -1 + G + N'];
+
+        exclude = isnan(table2array(tbl(:,region)));
+
+        % fitglme ignores NaN (e.g. non-existant betas for bad runs) by default
+        %roi(roi_idx).res = fitglme(tbl,formula,'Distribution','Normal','Link','Identity','FitMethod','Laplace', 'CovariancePattern','diagonal','Exclude',exclude);
+        roi(roi_idx).res = fitlme(tbl,formula,'Exclude',exclude);
+        [w, names, stats] = fixedEffects(roi(roi_idx).res);
+
+        ps(roi_idx,:) = stats.pValue';
+    end
+
+    ps_corr = 1 - (1 - ps) .^ n;
+
+    disp(fitfile);
+    tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr'});
+    %tbl = table({roi.name}', ps(:,1), ps(:,2), ps(:,3), ps_corr(:,1), ps_corr(:,2), ps_corr(:,3), 'VariableNames', {'ROI', 'intercept_uncorr', 'G_uncorr', 'N_uncorr', 'intercept_corr', 'G_corr', 'N_corr'});
+    disp(tbl);
 end

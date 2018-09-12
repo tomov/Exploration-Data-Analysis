@@ -30,9 +30,9 @@ else
 
     switch regressor
         case 'RU'
-            formula = 'C ~ -1 + V + RU + VTU + resRU + (-1 + V + RU + VTU + resRU|S)';
+            formula = 'C ~ -1 + V + RU + VTU + resRU';
         case 'TU'
-            formula = 'C ~ -1 + V + RU + VTU + VresTU + (-1 + V + RU + VTU + VresTU|S)';
+            formula = 'C ~ -1 + V + RU + VTU + VresTU';
         otherwise
             assert(false);
     end
@@ -130,6 +130,20 @@ for c = 1:numel(region)
     [w, names, stats] = fixedEffects(results{c});
     ps(c,:) = stats.pValue';
     stats.pValue
+
+    % sanity check -- residuals should NOT correlate with regressor
+    switch regressor
+        case 'RU'
+            RU = table2array(tbl(:,'RU'));
+            [r,p] = corr(RU(~exclude), res(~exclude));
+        case 'TU'
+            TU = table2array(tbl(:,'TU'));
+            [r,p] = corr(TU(~exclude), res(~exclude));
+        otherwise
+            assert(false);
+    end
+    pears_rs(c,:) = r;
+    pears_ps(c,:) = p;
 end
 
 
@@ -138,4 +152,4 @@ save(outfile);
 
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-table(region, extent, stat, mni, p_uncorr, p_corr)
+table(region, extent, stat, mni, p_uncorr, p_corr, pears_rs, pears_ps)

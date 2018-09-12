@@ -30,9 +30,9 @@ else
 
     switch regressor
         case 'RU'
-            formula = 'C ~ -1 + V + VTU + actRU + (-1 + V + RU + VTU + actRU|S)'; %  omit RU
+            formula = 'C ~ -1 + V + VTU + actRU'; %  omit RU
         case 'TU'
-            formula = 'C ~ -1 + V + RU + VactTU + (-1 + V + RU + VTU + VactTU|S)'; %  omit VTU
+            formula = 'C ~ -1 + V + RU + VactTU'; %  omit VTU
         otherwise
             assert(false);
     end
@@ -104,6 +104,8 @@ end
 % fit behavioral GLM with activations
 %
 ps = [];
+pears_rs = [];
+pears_ps = [];
 for c = 1:numel(region)
     act = [];
     exclude = logical([]);
@@ -130,6 +132,20 @@ for c = 1:numel(region)
     [w, names, stats] = fixedEffects(results{c});
     ps(c,:) = stats.pValue';
     stats.pValue
+
+    % sanity check -- activation should correlate with regressor
+    switch regressor
+        case 'RU'
+            RU = table2array(tbl(:,'RU'));
+            [r,p] = corr(RU(~exclude), act(~exclude));
+        case 'TU'
+            TU = table2array(tbl(:,'TU'));
+            [r,p] = corr(TU(~exclude), act(~exclude));
+        otherwise
+            assert(false);
+    end
+    pears_rs(c,:) = r;
+    pears_ps(c,:) = p;
 end
 
 
@@ -138,4 +154,4 @@ save(outfile);
 
 p_uncorr = ps(:,3);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-table(region, extent, stat, mni, p_uncorr, p_corr)
+table(region, extent, stat, mni, p_uncorr, p_corr, pears_rs, pears_ps)
