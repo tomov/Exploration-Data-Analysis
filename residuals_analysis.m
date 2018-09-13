@@ -1,15 +1,18 @@
 % see if residuals for peak RU / TU voxels contribute to choice prediction beyond model estimates
 %
 
-function [ps, results, data, region, mni, cor] = residuals_analysis(glmodel, regressor, contrast, load_first_half)
-
-outfile = ['residuals_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
-
-outfile
+function [ps, results, data, region, mni, cor] = residuals_analysis(glmodel, regressor, contrast, what, load_first_half)
 
 if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
+if ~exist('what', 'var')
+    what = 'voxel';
+end
+
+outfile = ['residuals_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', what, '.mat'];
+outfile
+
 
 
 if load_first_half
@@ -72,22 +75,27 @@ else
     V_all = [];
     for s = 1:length(data) 
 
-        res = ccnl_get_residuals(EXPT, glmodel, cor, s);
+        switch what
+            case 'voxel'
+                res = ccnl_get_residuals(EXPT, glmodel, cor, s);
+
+            case 'sphere'
+                r = 10 / 1.5; % 10 mm radius
+                clear res;
+                for c = 1:length(region)
+                    [~, voxels] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r);
+                    res(:,c) = mean(ccnl_get_residuals(EXPT, glmodel, voxels, s), 2);
+                end
+
+            otherwise
+                assert(false, 'what should be voxel or sphere');
+        end
 
         data(s).res = nan(length(data(s).run), length(region));
         [V, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
         V_all = [V_all; V(~data(s).timeout)];
 
         for c = 1:length(region)
-
-            % TODO for sphere, it's
-            % TODO port from context to ccnl-fmri
-            % r = 10 / 1.5;
-            % [~, voxels] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r);
-            % pass voxels instead of cor(c,:)
-            % then res = mean(res,2)
-            %res = ccnl_get_residuals(EXPT, glmodel, cor(c,:), s);
-
             % not all runs were used in the GLMs
             which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
             data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));

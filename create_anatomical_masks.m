@@ -3,7 +3,7 @@
 
 % The ROI AAL2 labels (we make them bilateral later)
 %
-%hippocampus = {'Hippocampus'};
+hippocampus = {'Hippocampus'};
 %ofc = {'OFCmed', 'OFCant', 'OFCpost', 'OFClat', 'Frontal_Med_Orb', 'Frontal_Inf_Orb_2', 'Rectus'};
 %med_ofc = {'OFCmed', 'Frontal_Med_Orb', 'Rectus'};
 %rectus = {'Rectus'};
@@ -13,9 +13,9 @@ pallidum = {'Pallidum'};
 caudate = {'Caudate'};
 putamen = {'Putamen'};
 %bg = [striatum, pallidum];
-%v1 = {'Calcarine'};
-%m1 = {'Precentral'};
-%s1 = {'Postcentral'};
+v1 = {'Calcarine'};
+m1 = {'Precentral'};
+s1 = {'Postcentral'};
 %fusiform = {'Fusiform'};
 %angular = {'Angular'};
 %mid_front = {'Frontal_Mid_2'};
@@ -25,7 +25,8 @@ putamen = {'Putamen'};
 %
 %rois = {'hippocampus', 'ofc', 'med_ofc', 'rectus', 'vmpfc', 'striatum', 'pallidum', 'bg', ...
 %        'v1', 'm1', 's1', 'fusiform', 'angular', 'mid_front', 'dl_sup_front'};
-rois = {'striatum', 'pallidum', 'caudate', 'putamen'};
+%rois = {'striatum', 'pallidum', 'caudate', 'putamen'};
+rois = {'v1', 'm1', 's1', 'hippocampus'};
 
 group_mask_filename = fullfile('masks', 'mask.nii');
 

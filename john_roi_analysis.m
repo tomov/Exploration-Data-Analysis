@@ -22,6 +22,7 @@ for i = 1:length(fitfiles)
     [tbl, lats] = data2table_fns{i}(roi, data, results);
 
     ps = []; % for G and N weights
+    ws = [];
     for roi_idx = 1:length(roi)
         region = roi(roi_idx).name;
         formula = [region, ' ~ -1 + G + N'];
@@ -34,12 +35,13 @@ for i = 1:length(fitfiles)
 
         [w, names, stats] = fixedEffects(roi(roi_idx).res);
         ps(roi_idx,:) = stats.pValue';
+        ws(roi_idx,:) = w';
     end
 
     ps_corr = 1 - (1 - ps) .^ n;
 
     disp(fitfile);
-    tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr'});
+    tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), ws(:,1), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr', 'w_G', 'w_N'});
     %tbl = table({roi.name}', ps(:,1), ps(:,2), ps(:,3), ps_corr(:,1), ps_corr(:,2), ps_corr(:,3), 'VariableNames', {'ROI', 'intercept_uncorr', 'G_uncorr', 'N_uncorr', 'intercept_corr', 'G_corr', 'N_corr'});
     disp(tbl);
 end
