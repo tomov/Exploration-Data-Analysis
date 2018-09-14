@@ -83,8 +83,16 @@ else
                 r = 10 / 1.5; % 10 mm radius
                 clear res;
                 for c = 1:length(region)
-                    [~, voxels] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r);
-                    res(:,c) = mean(ccnl_get_residuals(EXPT, glmodel, voxels, s), 2);
+                    [~, vox] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r);
+
+                    % intersect with cluster
+                    c_vox = [];
+                    for i = 1:size(vox, 1)
+                        if CI(vox(i,1), vox(i,2), vox(i,3)) == CI(cor(c,1), cor(c,2), cor(c,3)) % note cluster idx != c
+                            c_vox = [c_vox; vox(i,:)];
+                        end
+                    end
+                    res(:,c) = mean(ccnl_get_residuals(EXPT, glmodel, c_vox, s), 2);
                 end
 
             otherwise

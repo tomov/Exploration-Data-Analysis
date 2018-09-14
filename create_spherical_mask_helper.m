@@ -17,8 +17,9 @@ for newx = floor(x - r) : ceil(x + r)
             if ~mask(newx, newy, newz), continue; end
             if (x - newx)^2 + (y - newy)^2 + (z - newz)^2 > r^2, continue; end
             sphere_mask(newx, newy, newz) = 1;
-            mni = cor2mni([newx newy newz], Vmask.mat);
-            sphere_coords = [sphere_coords; mni];
+           % mni = cor2mni([newx newy newz], Vmask.mat);
+           % sphere_coords = [sphere_coords; mni];
+            sphere_coords = [sphere_coords; newx newy newz];
         end
     end
 end
