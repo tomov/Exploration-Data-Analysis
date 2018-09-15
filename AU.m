@@ -9,24 +9,23 @@ function latents = AU(data, x)
     %   x (optional) - parameters
   
     if nargin < 2
-        G_0R = 0.1;
-        N_0R = 0.1;
-        G_0S = 0.1;
-        N_0S = 0.1;
         alpha = 0.1;
         beta = 0.1;
         a = 2;
         b = 2;
     else
-        G_0R = x(1);
-        N_0R = x(2);
-        G_0S = x(3);
-        N_0S = x(4);
-        alpha = x(5);
-        beta = x(6);
-        a = x(7);
-        b = x(8);
+        alpha = x(1);
+        beta = x(2);
+        a = x(3);
+        b = x(4);
     end
+
+    % G + N = S = irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)
+    % G - N = Q = expected r = 0 for both
+    G_0R = 8;
+    N_0R = 8;
+    G_0S = 0.000005;
+    N_0S = 0.000005;
 
     N = length(data.block);
 

@@ -9,24 +9,22 @@ function latents = OpAL(data, x)
     %   x (optional) - parameters
   
     if nargin < 2
-        G_0R = 0.1;
-        N_0R = 0.1;
-        G_0S = 0.1;
-        N_0S = 0.1;
-        V_0 = 0;
         alpha = 0.1;
         a = 2;
         b = 2;
     else
-        G_0R = x(1);
-        N_0R = x(2);
-        G_0S = x(3);
-        N_0S = x(4);
-        V_0 = x(5);
-        alpha = x(6);
-        a = x(7);
-        b = x(8);
+        alpha = x(1);
+        a = x(2);
+        b = x(3);
     end
+
+    % G + N = S = irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)
+    % G - N = Q = expected r = 0 for both
+    G_0R = 8;
+    N_0R = 8;
+    G_0S = 0.000005;
+    N_0S = 0.000005;
+    V_0 = 0;
 
     N = length(data.block);
     

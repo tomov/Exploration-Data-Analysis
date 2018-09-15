@@ -12,7 +12,7 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/roi.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/exploration_create_multi.m .
 #scp  *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
-scp  residuals_analysis.m residuals_analysis.sh  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  residuals_analysis.m residuals_analysis.sh  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  activations_analysis.m activations_analysis.sh  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  plot_figures.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  data2table.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
@@ -25,5 +25,7 @@ scp  residuals_analysis.m residuals_analysis.sh  mtomov13@ncflogin.rc.fas.harvar
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/fit*.sh .
 #scp  ../../libs/mfit/hfit*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  *OpAL*.sh *AU*.sh *ACU*.sh *OpAL*.m *AU*.m *ACU*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  AU.m fit_AU.m ACU.m fit_ACU.m OpAL.m fit_OpAL.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+scp  fit_AU.sh  fit_ACU.sh  fit_OpAL.sh  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/exploration_getSu* .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/tools/current/code/bin/ArcGet.py .
