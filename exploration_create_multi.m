@@ -1354,9 +1354,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1390,9 +1394,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1426,9 +1434,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1466,9 +1478,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1502,9 +1518,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1538,9 +1558,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1579,9 +1603,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1615,9 +1643,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
@@ -1651,9 +1683,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.orth{1} = 0; % do not orthogonalise them
 
-           multi.pmod(1).name{1} = 'GN';
+           multi.pmod(1).name{1} = 'both';
            multi.pmod(1).param{1} = latents.a * G' + latents.b * N';
            multi.pmod(1).poly{1} = 1;
+
+           multi.pmod(1).name{2} = 'diff';
+           multi.pmod(1).param{2} = latents.a * G' - latents.b * N';
+           multi.pmod(1).poly{2} = 1;
 
            multi.names{2} = 'choice_onset';
            multi.onsets{2} = data(subj).choice_onset(which_trials);
