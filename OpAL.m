@@ -9,21 +9,25 @@ function latents = OpAL(data, x)
     %   x (optional) - parameters
   
     if nargin < 2
+        G_0R = 0.1;
+        N_0R = 0.1;
+        G_0S = 0.1;
+        N_0S = 0.1;
+        V_0 = 0;
         alpha = 0.1;
         a = 2;
         b = 2;
     else
-        alpha = x(1);
-        a = x(2);
-        b = x(3);
+        G_0R = x(1);
+        N_0R = x(2);
+        G_0S = x(3);
+        N_0S = x(4);
+        V_0 = x(5);
+        alpha = x(6);
+        a = x(7);
+        b = x(8);
     end
-   
-    % same as AU and ACU TODO look into it
-    G_0R = 0.5 * var_to_S(alpha, beta, 16);
-    N_0R = 0.5 * var_to_S(alpha, beta, 16); 
-    G_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
-    N_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
-    V_0 = 0;
+
 
     N = length(data.block);
     
