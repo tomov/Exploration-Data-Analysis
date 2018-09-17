@@ -20,12 +20,15 @@ function latents = AU(data, x)
         b = x(4);
     end
 
-    % G + N = S = irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)
-    % G - N = Q = expected r = 0 for both
-    G_0R = 8;
-    N_0R = 8;
-    G_0S = 0.000005;
-    N_0S = 0.000005;
+    % G - N = Q --> Q* = alpha / (alpha + beta) E[r] = 0 for both safe and risky
+    % G + N = S --> S* = alpha / beta E[|r - Q*|] = mean absolute deviation from estimate of r
+    % => G0 = N0 = S*/2
+    %
+    % irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)
+    G_0R = 0.5 * var_to_S(alpha, beta, 16);
+    N_0R = 0.5 * var_to_S(alpha, beta, 16); 
+    G_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
+    N_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
 
     N = length(data.block);
 
@@ -78,4 +81,10 @@ end
 
 function x = rect_neg(x)
     x = max(-x,0);
+end
+
+% convert variance to S* = alpha / beta E[|r - Q*|] = alpha / beta E[|r|] = alpha/beta * sqrt(2/pi) std(r), where std(r)^2 = irreducible variance
+%
+function S = var_to_S(alpha, beta, var)
+    S = alpha / beta * sqrt(2 / pi) * sqrt(var);
 end

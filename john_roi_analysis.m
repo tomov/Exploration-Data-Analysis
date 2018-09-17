@@ -27,9 +27,9 @@ for i = 1:length(fitfiles)
         region = roi(roi_idx).name;
         formula = [region, ' ~ -1 + G + N'];
 
+        % ignore NaN (e.g. non-existant betas for bad runs) by default
         exclude = isnan(table2array(tbl(:,region)));
 
-        % fitglme ignores NaN (e.g. non-existant betas for bad runs) by default
         %roi(roi_idx).res = fitglme(tbl,formula,'Distribution','Normal','Link','Identity','FitMethod','Laplace', 'CovariancePattern','diagonal','Exclude',exclude);
         roi(roi_idx).res = fitlme(tbl,formula,'Exclude',exclude);
 

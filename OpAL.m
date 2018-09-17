@@ -17,13 +17,12 @@ function latents = OpAL(data, x)
         a = x(2);
         b = x(3);
     end
-
-    % G + N = S = irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)
-    % G - N = Q = expected r = 0 for both
-    G_0R = 8;
-    N_0R = 8;
-    G_0S = 0.000005;
-    N_0S = 0.000005;
+   
+    % same as AU and ACU TODO look into it
+    G_0R = 0.5 * var_to_S(alpha, beta, 16);
+    N_0R = 0.5 * var_to_S(alpha, beta, 16); 
+    G_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
+    N_0S = 0.5 * var_to_S(alpha, beta, 0.00001);
     V_0 = 0;
 
     N = length(data.block);
@@ -72,3 +71,6 @@ function latents = OpAL(data, x)
     end
 end
 
+function S = var_to_S(alpha, beta, var)
+    S = alpha / beta * sqrt(2 / pi) * sqrt(var);
+end
