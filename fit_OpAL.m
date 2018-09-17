@@ -9,20 +9,45 @@ end
 
 % create parameter structure using weakly informative priors
 
-param(1).name = 'alpha';
-param(1).logpdf = @(x) sum(log(betapdf(x,1.2,1.2)));
-param(1).lb = 0;
-param(1).ub = 1;
+param(1).name = 'G_0R';
+param(1).logpdf = @(x) sum(log(gampdf(x,1,5)));  % log density function for prior
+param(1).lb = 0;    % lower bound
+param(1).ub = 50;   % upper bound
 
-param(2).name = 'a';
-param(2).logpdf = @(x) sum(log(gampdf(x,1,5)));
-param(2).lb = 0;
+param(2).name = 'N_0R';
+param(2).logpdf = @(x) sum(log(gampdf(x,1,5))); 
+param(2).lb = 0;  
 param(2).ub = 50;
-
-param(3).name = 'b';
-param(3).logpdf = @(x) sum(log(gampdf(x,1,5)));
+  
+param(3).name = 'G_0S';
+param(3).logpdf = @(x) sum(log(gampdf(x,1,5))); 
 param(3).lb = 0;
-param(3).ub = 50; 
+param(3).ub = 50;
+
+param(4).name = 'N_0S';
+param(4).logpdf = @(x) sum(log(gampdf(x,1,5))); 
+param(4).lb = 0;  
+param(4).ub = 50;
+
+param(5).name = 'V_0';
+param(5).logpdf = @(x) sum(log(gampdf(x,1,5))); 
+param(5).lb = 0;    
+param(5).ub = 50; 
+
+param(6).name = 'alpha';
+param(6).logpdf = @(x) sum(log(betapdf(x,1.2,1.2)));
+param(6).lb = 0;
+param(6).ub = 1;
+
+param(7).name = 'a';
+param(7).logpdf = @(x) sum(log(gampdf(x,1,5)));
+param(7).lb = 0;
+param(7).ub = 50;
+
+param(8).name = 'b';
+param(8).logpdf = @(x) sum(log(gampdf(x,1,5)));
+param(8).lb = 0;
+param(8).ub = 50; 
 
 for s = 1:length(data)
     data(s).N = sum(~data(s).timeout); % we ignore timeouts when computing loglik

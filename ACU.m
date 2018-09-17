@@ -20,8 +20,9 @@ function latents = ACU(data, x)
         b = x(4);
     end
 
-    % G - N = Q --> Q* = alpha / (alpha + beta) E[r] = 0 for both safe and risky
-    % G + N = S --> S* = alpha / beta E[|r - Q*|] = mean absolute deviation from estimate of r
+    % V --> V* = 0
+    % G - N = Q --> Q* = alpha / beta (E[r] - V*) = alpha / beta E[r] = 0 for both safe and risky
+    % G + N = S --> S* = alpha / beta E[|r - V*|] = alpha / beta E[|r|] = mean absolute deviation from estimate of r
     % => G0 = N0 = S*/2
     %
     % irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)

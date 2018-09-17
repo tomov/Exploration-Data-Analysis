@@ -21,7 +21,7 @@ function latents = AU(data, x)
     end
 
     % G - N = Q --> Q* = alpha / (alpha + beta) E[r] = 0 for both safe and risky
-    % G + N = S --> S* = alpha / beta E[|r - Q*|] = mean absolute deviation from estimate of r
+    % G + N = S --> S* = alpha / beta E[|r - Q*|] = alpha / beta E[|r|]
     % => G0 = N0 = S*/2
     %
     % irreducible variance = 16 for risky, 0.00001 for safe (see Sam's kalman_filter.m)

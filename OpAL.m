@@ -75,6 +75,3 @@ function latents = OpAL(data, x)
     end
 end
 
-function S = var_to_S(alpha, beta, var)
-    S = alpha / beta * sqrt(2 / pi) * sqrt(var);
-end
