@@ -26,13 +26,15 @@ for i = 1:length(masks)
     [h, p, ci, stats] = ttest(b);
 
     p = 1 - (1 - p) .^ length(p);
+    t = stats.tstat;
     disp(mask);
     disp(any(p < alpha));
     p
-   
+    t
+    mean(b, 1)
+
     all_p{i} = p;
     all_stat{i} = stats;
-
     min_p(i,:) = min(p);
 end
 

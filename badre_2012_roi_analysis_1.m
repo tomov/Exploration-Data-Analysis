@@ -21,15 +21,14 @@ for i = 1:length(masks)
     end
 
     [h, p, ci, stats] = ttest(b);
-    ps(i,:) = p;
-    stat{i} = stats;
     t = stats.tstat;
+    ps(i,:) = p;
     m(i,:) = mean(b);
     disp(mask);
     p
     t
-    mean(b)
     b
+    stat{i} = stats;
 end
 
 p_uncorr = ps;

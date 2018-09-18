@@ -6,9 +6,12 @@ clear all;
 
 EXPT = exploration_expt();
 
+glmodel = 21;
+
 data = load_data;
 
 formula = 'C ~ -1 + V + RU + VTU + resRU';
+
 
 % find peak of HRF
 hrf = spm_hrf(0.001);
@@ -45,7 +48,7 @@ masks = badre_2012_create_masks(false);
 % extract residuals for each cluster
 %
 V_all = [];
-for s = 1:length(data) 
+for s = 1:length(data)
 
     r = 10 / 1.5; % 10 mm radius
     clear res;
@@ -65,8 +68,8 @@ for s = 1:length(data)
         which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
         data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));
 
-        % adjust for fact that the regressor was |RU| TODO restore!
-        %    data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+        % adjust for fact that the regressor was |RU|
+        data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
     end
 end
 
@@ -107,6 +110,9 @@ end
 save(outfile);
 
 
+save('badre_2012_residuals_analysis.mat');
+
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 table(masknames', p_uncorr, p_corr, pears_rs, pears_ps)
+

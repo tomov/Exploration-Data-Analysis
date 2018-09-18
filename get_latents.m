@@ -21,7 +21,8 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
    
     %load results_glme_fig3_nozscore_withtimeouts.mat;  % <--- the old one :( wrong
     load results_glme_fig3_nozscore.mat;
- 
+
+    % TODO use getEffects
     [w_f, names_f] = fixedEffects(results_VTURU);
     [w_r, names_r] = randomEffects(results_VTURU);
 
