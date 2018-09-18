@@ -1,6 +1,11 @@
 % correlate BG activity with model G and N
 %
 
+clear all;
+masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/v1.nii', 'masks/m1.nii'};
+
+john_roi = extract_roi_betas(masks, 'trial_onset');
+save('john_roi.mat');
 
 load('john_roi.mat', 'roi');
 data = load_data;

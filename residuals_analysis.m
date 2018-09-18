@@ -108,8 +108,10 @@ else
             which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
             data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));
 
-            % adjust for fact that the regressor was |RU|
-            data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+            % adjust for fact that the regressor was |RU| TODO restore!
+            %if strcmp(regressor, 'RU')
+            %    data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+            %end
         end
     end
 
