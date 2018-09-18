@@ -3,6 +3,13 @@
 
 clear all;
 
+
+EXPT = exploration_expt();
+
+data = load_data;
+
+formula = 'C ~ -1 + V + RU + VTU + resRU';
+
 % find peak of HRF
 hrf = spm_hrf(0.001);
 [~,hrf_offset] = max(hrf);
