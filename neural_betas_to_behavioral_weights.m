@@ -25,7 +25,6 @@ data = load_data;
 radius = 10 / 1.5; % 10 mm
 
 load results_glme_fig3_nozscore.mat;
-
 w = getEffects(results_VTURU, false);
 
 for c = 1:length(region)

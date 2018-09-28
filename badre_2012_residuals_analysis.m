@@ -54,7 +54,7 @@ for s = 1:length(data)
     clear res;
     for c = 1:length(masks)
         mask = masks{c};
-        [~, masknames{i}, ~] = fileparts(mask);
+        [~, masknames{c}, ~] = fileparts(mask);
 
         res(:,c) = mean(ccnl_get_residuals(EXPT, glmodel, mask, s), 2);
     end
@@ -106,8 +106,6 @@ for c = 1:numel(masks)
     pears_ps(c,:) = p;
 end
 
-
-save(outfile);
 
 
 save('badre_2012_residuals_analysis.mat');

@@ -1,13 +1,16 @@
 % correlate BG activity with model G and N
+% uses the nonsmooth betas from GLM 23 and manually
+% run GLM with G and N (fixed effects across subjects)
 %
 
 clear all;
-masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/v1.nii', 'masks/m1.nii'};
+%masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'};
+%masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'};
 
-john_roi = extract_roi_betas(masks, 'trial_onset');
-save('john_roi.mat');
+%roi = extract_roi_betas(masks, 'trial_onset');
+%save('roi.mat', '-v7.3');
 
-load('john_roi.mat', 'roi');
+load('roi.mat', 'roi');
 data = load_data;
 
 fitfiles = {'fit_AU_25nstarts_fixed.mat', 'fit_ACU_25nstarts_fixed.mat', 'fit_OpAL_25nstarts_fixed.mat', ...
@@ -43,7 +46,9 @@ for i = 1:length(fitfiles)
         ws(roi_idx,:) = w';
     end
 
-    ps_corr = 1 - (1 - ps) .^ n;
+
+    assert(n == 8);
+    ps_corr = 1 - (1 - ps) .^ (n/2); % TODO n/2 b/c we only care about the first 4 ROIs FIXME unhack
 
     disp(fitfile);
     tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), ws(:,1), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr', 'w_G', 'w_N'});
