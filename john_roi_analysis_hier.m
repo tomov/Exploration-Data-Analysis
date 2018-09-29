@@ -3,7 +3,7 @@
 %
 
 
-%load('john_roi.mat', 'roi');
+load('john_roi_1.mat', 'roi');
 data = load_data;
 
 fitfiles = {'fit_AU_25nstarts_fixed.mat', 'fit_ACU_25nstarts_fixed.mat', 'fit_OpAL_25nstarts_fixed.mat', ...

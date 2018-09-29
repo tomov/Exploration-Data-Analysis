@@ -11,8 +11,15 @@ load fit_OpAL_25nstarts_fixed.mat
 res(3) = results;
 
 disp('fixed effects');
-bms = mfit_bms(res)
 
+%disp('AU');
+%array2table(res(1).x, 'VariableNames', {res(1).param.name})
+%disp('ACU');
+%array2table(res(2).x, 'VariableNames', {res(2).param.name})
+%disp('OpAL');
+%array2table(res(3).x, 'VariableNames', {res(3).param.name})
+
+bms = mfit_bms(res)
 
 clear res;
 
@@ -24,6 +31,14 @@ load fit_OpAL_25nstarts_mixed.mat
 res(3) = results;
 
 disp('mixed effects');
+
+%disp('AU');
+%array2table(res(1).x, 'VariableNames', {res(1).param.name})
+%disp('ACU');
+%array2table(res(2).x, 'VariableNames', {res(2).param.name})
+%disp('OpAL');
+%array2table(res(3).x, 'VariableNames', {res(3).param.name})
+
 bms = mfit_bms(res)
 
 
@@ -37,6 +52,14 @@ load fit_OpAL_25nstarts_random.mat
 res(3) = results;
 
 disp('random effects');
+
+%disp('AU');
+%array2table(res(1).x, 'VariableNames', {res(1).param.name})
+%disp('ACU');
+%array2table(res(2).x, 'VariableNames', {res(2).param.name})
+%disp('OpAL');
+%array2table(res(3).x, 'VariableNames', {res(3).param.name})
+
 bms = mfit_bms(res)
 
 

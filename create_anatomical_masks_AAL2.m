@@ -45,6 +45,6 @@ for roi = rois
     
     % Create and save the mask
     %
-    ccnl_create_mask(labels, fullfile('masks', [roi, '.nii']), true, group_mask_filename);
-    ccnl_create_mask(labels, fullfile('masks', [roi, '_unnormalized.nii']), false);
+    ccnl_create_mask(labels, fullfile('masks', [roi, '.nii']), 'AAL2', true, group_mask_filename);
+    ccnl_create_mask(labels, fullfile('masks', [roi, '_unnormalized.nii']), 'AAL2', false);
 end
