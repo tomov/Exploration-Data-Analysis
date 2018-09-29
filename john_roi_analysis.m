@@ -34,7 +34,7 @@ for i = 1:length(fitfiles)
     ws = [];
     for roi_idx = 1:length(roi)
         region = roi(roi_idx).name;
-        formula = [region, ' ~ -1 + G + N'];
+        formula = [region, ' ~ -1 + G'];
 
         % ignore NaN (e.g. non-existant betas for bad runs) by default
         exclude = isnan(table2array(tbl(:,region)));
@@ -43,8 +43,20 @@ for i = 1:length(fitfiles)
         roi(roi_idx).res = fitlme(tbl,formula,'Exclude',exclude);
 
         [w, names, stats] = fixedEffects(roi(roi_idx).res);
-        ps(roi_idx,:) = stats.pValue';
-        ws(roi_idx,:) = w';
+        ps(roi_idx,1) = stats.pValue;
+        ws(roi_idx,1) = w;
+
+        formula = [region, ' ~ -1 + N'];
+
+        % ignore NaN (e.g. non-existant betas for bad runs) by default
+        exclude = isnan(table2array(tbl(:,region)));
+
+        %roi(roi_idx).res = fitglme(tbl,formula,'Distribution','Normal','Link','Identity','FitMethod','Laplace', 'CovariancePattern','diagonal','Exclude',exclude);
+        roi(roi_idx).res = fitlme(tbl,formula,'Exclude',exclude);
+
+        [w, names, stats] = fixedEffects(roi(roi_idx).res);
+        ps(roi_idx,2) = stats.pValue;
+        ws(roi_idx,2) = w;
     end
 
 
