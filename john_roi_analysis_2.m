@@ -9,7 +9,7 @@ clear all;
 %masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'};
 masks = {'masks/striatum.nii', 'masks/pallidum.nii'};
 
-glmodels = 1001:1009;
+glmodels = 1001:1009; % use nosmooth betas -- nothing shows up for smooth
 data = load_data;
 EXPT = exploration_expt();
 
@@ -23,8 +23,8 @@ for glmodel = glmodels
         clear b_G;
         clear b_N;
         for s = 1:length(data)
-            b_G(s) = mean(ccnl_get_beta(EXPT, glmodel, 'G', mask, s));
-            b_N(s) = mean(ccnl_get_beta(EXPT, glmodel, 'N', mask, s));
+            b_G(s) = mean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'G', mask, s));
+            b_N(s) = mean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'N', mask, s));
         end
 
         [h, p, ci, stats] = ttest(b_G);

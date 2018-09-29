@@ -8,6 +8,9 @@ EXPT = exploration_expt();
 glmodel = 21;
 regressor = 'RU';
 
+filename = ['badre_2012_b_to_w_glm', num2str(glmodel), '.mat'];
+disp(filename);
+
 load results_glme_fig3_nozscore.mat;
 w = getEffects(results_VTURU, false);
 
@@ -35,6 +38,6 @@ p_uncorr = ps;
 p_corr = 1 - (1 - ps) .^ length(ps);
 r = rs;
 
-save('badre_2012_b_to_w.mat');
+save(filename);
 
 table(region, p_uncorr, p_corr, r);

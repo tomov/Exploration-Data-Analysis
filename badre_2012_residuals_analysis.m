@@ -12,6 +12,8 @@ data = load_data;
 
 formula = 'C ~ -1 + V + RU + VTU + resRU';
 
+filename = ['badre_2012_residuals_analysis_glm', num2str(glmodel), '.mat'];
+disp(filename);
 
 % find peak of HRF
 hrf = spm_hrf(0.001);
@@ -50,7 +52,6 @@ masks = badre_2012_create_masks(false);
 V_all = [];
 for s = 1:length(data)
 
-    r = 10 / 1.5; % 10 mm radius
     clear res;
     for c = 1:length(masks)
         mask = masks{c};
@@ -69,11 +70,13 @@ for s = 1:length(data)
         data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));
 
         % adjust for fact that the regressor was |RU|
-        data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+        if glmodel == 21
+            data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+        end
     end
 end
 
-save('badre_2012_residuals_analysis.mat');
+save(filename);
 
 
 % fit behavioral GLM with residuals
@@ -107,8 +110,8 @@ for c = 1:numel(masks)
 end
 
 
+save(filename);
 
-save('badre_2012_residuals_analysis.mat');
 
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);

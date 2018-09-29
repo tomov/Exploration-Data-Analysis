@@ -4,13 +4,14 @@
 %
 
 clear all;
-masks = {'masks/striatum.nii', 'masks/pallidum.nii'};
-%masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'}; WRONG -- we don't believe half the ROIs would be significant; also caudate & putamen & striatum are highly correlated => bonferonni is too hash
+%masks = {'masks/striatum.nii', 'masks/pallidum.nii'}; % john_roi_1 -- first pass
+masks = {'masks/Ca.nii', 'masks/Pu.nii', 'masks/NAC.nii', 'masks/GPe.nii', 'masks/GPi.nii', 'masks/SNr.nii', 'masks/STH.nii'}; % john_roi_2 -- subcortical nuclei
+%masks = {'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'}; % john_roi_3 -- control ROIs
 
 %roi = extract_roi_betas(masks, 'trial_onset');
-%save('john_roi_1.mat', '-v7.3');
+%save('john_roi_2.mat', '-v7.3');
 
-load('john_roi_1.mat', 'roi');
+load('john_roi_2.mat', 'roi');
 data = load_data;
 
 fitfiles = {'fit_AU_25nstarts_fixed.mat', 'fit_ACU_25nstarts_fixed.mat', 'fit_OpAL_25nstarts_fixed.mat', ...

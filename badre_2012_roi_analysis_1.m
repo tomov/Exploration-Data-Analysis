@@ -9,6 +9,9 @@ EXPT = exploration_expt();
 glmodel = 21;
 regressor = 'RU';
 
+filename = ['badre_2012_roi_analysis_1_glm', num2str(glmodel), '.mat'];
+disp(filename);
+
 masks = badre_2012_create_masks(false);
 
 for i = 1:length(masks)
@@ -34,6 +37,6 @@ end
 p_uncorr = ps;
 p_corr = 1 - (1 - ps) .^ length(ps);
 
-save('badre_2012_roi_analysis_1.mat');
+save(filename);
 
 table(masknames', p_uncorr, p_corr, m);

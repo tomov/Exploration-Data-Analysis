@@ -1,6 +1,6 @@
 function [tbl, lats] = data2table_ACU(roi, data, results)
 
-G = []; N = []; S = []; NL = []; NR = []; GL = []; GR = []; tot = [];
+G = []; N = []; S = []; NL = []; NR = []; GL = []; GR = []; tot = []; V = [];
 
 for s = 1:length(data)
     if size(results.x, 1) == 1
@@ -17,12 +17,13 @@ for s = 1:length(data)
     NR = [NR; latents.N(:, 2)];
     G = [G; sum(latents.G, 2)];
     N = [N; sum(latents.N, 2)];
+    V = [V; latents.V];
     tot = [tot; latents.a * sum(latents.G, 2) + latents.b * sum(latents.N, 2)];
     n = size(latents.G,1);
     S = [S; zeros(n,1) + s];
 end
 
-tbl = table(G,N,tot,GL,GR,NL,NR,tot,S);
+tbl = table(G,N,tot,GL,GR,NL,NR,tot,S,V);
 
 % notice that we keep the NaN betas for the bad runs
 %
