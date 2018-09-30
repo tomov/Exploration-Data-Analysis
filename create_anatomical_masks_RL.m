@@ -3,7 +3,7 @@
 
 % The ROI RL atlas labels (bilateral by default)
 %
-rois = {'Ca', 'Pu', 'NAC', 'GPe', 'GPi', 'SNr', 'STH'};
+rois = {'Ca', 'Pu', 'NAC', 'GPe', 'GPi', 'SNr', 'STH', 'SNc', 'VTA'};
 
 group_mask_filename = fullfile('masks', 'mask.nii');
 

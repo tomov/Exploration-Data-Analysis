@@ -23,8 +23,8 @@ for glmodel = glmodels
         clear b_G;
         clear b_N;
         for s = 1:length(data)
-            b_G(s) = mean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'G', mask, s));
-            b_N(s) = mean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'N', mask, s));
+            b_G(s) = nanmean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'G', mask, s));
+            b_N(s) = nanmean(ccnl_get_beta_nosmooth(EXPT, glmodel, 'N', mask, s));
         end
 
         [h, p, ci, stats] = ttest(b_G);

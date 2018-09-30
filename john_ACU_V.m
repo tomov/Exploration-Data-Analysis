@@ -2,6 +2,7 @@
 % follow-up on john_roi_analysis
 %
 
+clear all;
 
 load('john_roi_2.mat', 'roi');
 data = load_data;
@@ -24,8 +25,32 @@ w
 
 % correlate GPe with N
 
-formula = 'GPe ~ -1 + G';
+formula = 'GPe ~ -1 + N';
 exclude = isnan(table2array(tbl(:,'GPe')));
+
+res = fitlme(tbl,formula,'Exclude',exclude);
+[w, names, stats] = fixedEffects(res);
+
+disp(formula);
+p = stats.pValue
+w
+
+% correlate SNc with PE
+
+formula = 'SNc ~ -1 + PE';
+exclude = isnan(table2array(tbl(:,'SNc')));
+
+res = fitlme(tbl,formula,'Exclude',exclude);
+[w, names, stats] = fixedEffects(res);
+
+disp(formula);
+p = stats.pValue
+w
+
+% correlate VTA with PE
+
+formula = 'VTA ~ -1 + PE';
+exclude = isnan(table2array(tbl(:,'VTA')));
 
 res = fitlme(tbl,formula,'Exclude',exclude);
 [w, names, stats] = fixedEffects(res);
