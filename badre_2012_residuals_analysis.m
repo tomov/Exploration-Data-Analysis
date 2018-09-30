@@ -10,6 +10,8 @@ glmodel = 21;
 
 data = load_data;
 
+normalize = true; % divide each residual by the corresponding beta
+
 formula = 'C ~ -1 + V + RU + VTU + resRU';
 
 filename = ['badre_2012_residuals_analysis_glm', num2str(glmodel), '.mat'];
@@ -36,7 +38,7 @@ for s = 1:length(data)
         if data(s).exclude(i)
             res_idx = [res_idx; NaN];
         else
-            r = find(data(s).run(i) == runs);
+            r = find(data(s).run(i) == runs); % scan session idx in GLM 
             res_idx = [res_idx; idx + nTRs * (r - 1)];
         end
     end
@@ -44,8 +46,30 @@ for s = 1:length(data)
 end
 
 
-% extract residuals for each mask
+% clusters = masks from paper
 masks = badre_2012_create_masks(false);
+
+% get betas to (optionally) normalize residuals in each run
+for c = 1:length(masks)
+    mask = masks{c};
+    m = load_mask(mask);
+    cnt = sum(m(:));
+
+    for s = 1:length(data)
+        runs = find(goodRuns{s});
+        data(s).b{c} = nan(length(data(s).run), cnt);
+
+        for run = 1:max(data(s).run)
+            r = find(run == runs); % scan session idx in GLM
+            if ~isempty(r)
+                reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
+                fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
+            end
+        end
+    end
+end
 
 % extract residuals for each cluster
 %
@@ -57,7 +81,9 @@ for s = 1:length(data)
         mask = masks{c};
         [~, masknames{c}, ~] = fileparts(mask);
 
-        res(:,c) = mean(ccnl_get_residuals(EXPT, glmodel, mask, s), 2);
+        res{c} = ccnl_get_residuals(EXPT, glmodel, mask, s);
+        data(s).all_res{c} = res{c};
+
     end
 
     data(s).res = nan(length(data(s).run), length(masks));
@@ -67,7 +93,13 @@ for s = 1:length(data)
     for c = 1:length(masks)
         % not all runs were used in the GLMs
         which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
-        data(s).res(~data(s).exclude,c) = squeeze(res(which_res,c,1));
+        res{c} = res{c}(which_res,:); % only consider 1 residual for each trial
+
+        if normalize
+            res{c} = res{c} ./ data(s).b{c}(~data(s).exclude);
+        end
+
+        data(s).res(~data(s).exclude,c) = mean(res{c}, 2);
 
         % adjust for fact that the regressor was |RU|
         if glmodel == 21

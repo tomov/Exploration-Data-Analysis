@@ -5,7 +5,7 @@
 
 clear all;
 
-pass = 2;
+pass = 3;
 
 switch pass
     case 1
@@ -24,8 +24,8 @@ switch pass
         assert(false);
 end
 
-%roi = extract_roi_betas(masks, 'trial_onset');
-%save(filename, '-v7.3');
+roi = extract_roi_betas(masks, 'trial_onset');
+save(filename, '-v7.3');
 
 load(filename, 'roi');
 data = load_data;
@@ -43,7 +43,7 @@ switch pass
     case 2
         n = length(roi) * 2; % we're only looking at 1 model and fit
     case 3
-        n = 1; % we're looking at each coefficient separately
+        n = length(roi) * 2;  % we're only looking at 1 model and fit
 end
 
 for i = 1:length(fitfiles)
