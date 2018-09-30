@@ -1,7 +1,8 @@
-% residuals analysis for RU for Badre 2012 RLPFC ROI
-% TODO dedupe with residuals_analysis.m
+% activations analysis for RU for Badre 2012 RLPFC ROI
+% TODO dedupe with activations_analysis.m
+% TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function badre_2012_residuals_analysis(glmodel, normalize)
+function badre_2012_activations_analysis(glmodel, normalize)
 
 printcode;
 
@@ -16,12 +17,12 @@ end
 
 data = load_data;
 
-formula = 'C ~ -1 + V + RU + VTU + resRU';
+formula = 'C ~ -1 + V + RU + VTU + actRU';
 
 if normalize
-    filename = ['badre_2012_residuals_analysis_glm', num2str(glmodel), '_normalized.mat'];
+    filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '_normalized.mat'];
 else
-    filename = ['badre_2012_residuals_analysis_glm', num2str(glmodel), '.mat'];
+    filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '.mat'];
 end
 disp(filename);
 
@@ -38,26 +39,26 @@ trs = TR/2 : TR : nTRs * TR;
 
 % find closest TR to each trial onset (adjusted for HRF f'n)
 for s = 1:length(data)
-    res_idx = [];
+    act_idx = [];
     runs = find(goodRuns{s});
     data(s).exclude = ~ismember(data(s).run, runs); % exclude bad runs
     for i = 1:length(data(s).trial_onset)
         [~, idx] = min(abs(trs - (data(s).trial_onset(i) + hrf_offset)));
         if data(s).exclude(i)
-            res_idx = [res_idx; NaN];
+            act_idx = [act_idx; NaN];
         else
             r = find(data(s).run(i) == runs); % scan session idx in GLM 
-            res_idx = [res_idx; idx + nTRs * (r - 1)];
+            act_idx = [act_idx; idx + nTRs * (r - 1)];
         end
     end
-    data(s).trial_onset_res_idx = res_idx;
+    data(s).trial_onset_act_idx = act_idx;
 end
 
 
 % clusters = masks from paper
 masks = badre_2012_create_masks(false);
 
-% get betas to (optionally) normalize residuals in each run
+% get betas to (optionally) normalize activations in each run
 for c = 1:length(masks)
     mask = masks{c};
     m = load_mask(mask);
@@ -70,48 +71,55 @@ for c = 1:length(masks)
         for run = 1:max(data(s).run)
             r = find(run == runs); % scan session idx in GLM
             if ~isempty(r)
+                % get beta for RU
                 reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
                 fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
                 b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
                 data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
+
+                % get beta0
+                reg = ['Sn(', num2str(r), ') constant'];
+                fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                b0 = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                data(s).b0{c}(data(s).run == run, :) = repmat(b0, sum(data(s).run == run), 1);
             end
         end
     end
 end
 
-% extract residuals for each cluster
+% extract activations for each cluster
 %
 V_all = [];
 for s = 1:length(data)
 
-    clear res;
+    clear act;
     for c = 1:length(masks)
         mask = masks{c};
         [~, masknames{c}, ~] = fileparts(mask);
 
-        res{c} = ccnl_get_residuals(EXPT, glmodel, mask, s);
-        data(s).all_res{c} = res{c};
+        act{c} = ccnl_get_activations(EXPT, glmodel, mask, s);
+        data(s).all_act{c} = act{c};
 
     end
 
-    data(s).res = nan(length(data(s).run), length(masks));
+    data(s).act = nan(length(data(s).run), length(masks));
     [V, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(masks)
         % not all runs were used in the GLMs
-        which_res = data(s).trial_onset_res_idx(~data(s).exclude); % trial onset residuals
-        res{c} = res{c}(which_res,:); % only consider 1 residual for each trial
+        which_act = data(s).trial_onset_act_idx(~data(s).exclude); % trial onset activations
+        act{c} = act{c}(which_act,:); % only consider 1 activation for each trial
 
         if normalize
-            res{c} = res{c} ./ data(s).b{c}(~data(s).exclude);
+            act{c} = (act{c} - data(s).b0{c}(~data(s).exclude)) ./ data(s).b{c}(~data(s).exclude);
         end
 
-        data(s).res(~data(s).exclude,c) = mean(res{c}, 2);
+        data(s).act(~data(s).exclude,c) = mean(act{c}, 2);
 
-        % adjust for fact that the regressor was |RU|
+        % adjust for fact that the regactsor was |RU|
         if glmodel == 21
-            data(s).res(:,c) = data(s).res(:,c) .* (RU >= 0) + (-data(s).res(:,c)) .* (RU < 0);
+            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
         end
     end
 end
@@ -119,31 +127,32 @@ end
 save(filename, '-v7.3');
 
 
-% fit behavioral GLM with residuals
+% fit behavioral GLM with activations
 %
 ps = [];
 for c = 1:numel(masks)
-    res = [];
+    act = [];
     exclude = logical([]);
     for s = 1:length(data)
-        res = [res; data(s).res(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
-        exclude = [exclude; data(s).exclude(~data(s).timeout)]; % bad runs are also out (their residuals are NaNs)
+        act = [act; data(s).act(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
+        exclude = [exclude; data(s).exclude(~data(s).timeout)]; % bad runs are also out (their activations are NaNs)
     end
-    assert(all(isnan(res(exclude))));
-    assert(all(~isnan(res(~exclude))));
+    assert(all(isnan(act(exclude))));
+    assert(all(~isnan(act(~exclude))));
 
     tbl = data2table(data,0,1); % exclude timeouts for fitting
-    resRU = res;
-    tbl = [tbl table(resRU)];
+    actRU = act;
+    tbl = [tbl table(actRU)];
 
     results{c} = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
     [w, names, stats] = fixedEffects(results{c});
     ps(c,:) = stats.pValue';
     stats.pValue
+    w
 
-    % sanity check -- residuals should NOT correlate with regressor
+    % sanity check -- activations should correlate with regressor
     RU = table2array(tbl(:,'RU'));
-    [r,p] = corr(RU(~exclude), res(~exclude));
+    [r,p] = corr(RU(~exclude), act(~exclude));
 
     pears_rs(c,:) = r;
     pears_ps(c,:) = p;
