@@ -3,6 +3,8 @@
 % run GLM with G and N (fixed effects across subjects)
 %
 
+printcode;
+
 clear all;
 
 pass = 3;

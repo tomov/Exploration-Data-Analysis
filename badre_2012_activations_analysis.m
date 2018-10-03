@@ -18,6 +18,7 @@ end
 data = load_data;
 
 formula = 'C ~ -1 + V + RU + VTU + actRU';
+formula_RU = 'C ~ -1 + V + RU + VTU';
 
 if normalize
     filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '_normalized.mat'];
@@ -111,7 +112,7 @@ for s = 1:length(data)
         which_act = data(s).trial_onset_act_idx(~data(s).exclude); % trial onset activations
         act{c} = act{c}(which_act,:); % only consider 1 activation for each trial
 
-        if normalize
+        if normalize % alternatively, do act - b0, where b0 is averaged across runs (i.e. for entire subject)
             act{c} = (act{c} - data(s).b0{c}(~data(s).exclude)) ./ data(s).b{c}(~data(s).exclude);
         end
 
@@ -147,8 +148,17 @@ for c = 1:numel(masks)
     results{c} = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
     [w, names, stats] = fixedEffects(results{c});
     ps(c,:) = stats.pValue';
+    results{c}
     stats.pValue
     w
+
+    % model comparison with original formula
+    results_RU{c} = fitglme(tbl,formula_RU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp{c} = compare(results_RU{c}, results{c}); % order is important -- see docs
+    comp{c}
+    p_comp(c,:) = comp{c}.pValue(2);
+    BIC(c,:) = comp{c}.BIC';
+
 
     % sanity check -- activations should correlate with regressor
     RU = table2array(tbl(:,'RU'));
@@ -164,5 +174,7 @@ save(filename, '-v7.3');
 
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-table(masknames', p_uncorr, p_corr, pears_rs, pears_ps)
+BIC_RU = BIC(:,1);
+BIC_actRU = BIC(:,2);
+table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_RU, BIC_actRU, p_comp)
 

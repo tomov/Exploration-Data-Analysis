@@ -4,6 +4,8 @@
 % similar to badre_2012_roi_analysis_1.m
 %
 
+printcode;
+
 clear all;
 
 %masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'};
