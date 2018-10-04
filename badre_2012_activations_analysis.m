@@ -1,4 +1,6 @@
 % activations analysis for RU for Badre 2012 RLPFC ROI
+% see if average activation in ROI predicts choices better than RU from model
+%
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
@@ -167,9 +169,9 @@ for s = 1:length(data)
 
         data(s).act(~data(s).exclude,c) = mean(act{c}, 2);
 
-        % adjust for fact that the regactsor was |RU|
+        % adjust for fact that the regressor was |RU|
         if glmodel == 21
-        %    data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0); TODO FIXME
+            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
         end
     end
 end
