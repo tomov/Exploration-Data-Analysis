@@ -22,8 +22,10 @@ disp(filename);
 
 % clusters = masks from paper
 masks = badre_2012_create_masks(false);
+masks = masks(1); % TODO all masks
 
 % extract trial_onset (raw, unsmoothed) betas
+%{
 roi = extract_roi_betas(masks, 'trial_onset');
 save(filename, '-v7.3');
 
@@ -31,18 +33,18 @@ load(filename, 'roi');
 
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
-for roi_idx = 1:length(roi)
-    for s = 1:length(s)
-        B = roi(roi_idx).subj(s).betas;
+for c = 1:length(roi)
+    for s = 1:length(data)
+        B = roi(c).subj(s).betas;
         runs = find(goodRuns{s});
         data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
-        which_nan = any(isnan(B(~data(s).exclude, :), 1); % exclude nan voxels (ignoring bad runs and timeouts)
+        which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
         B(:, which_nan) = [];
-        data(s).betas{roi_idx} = B;
+        data(s).betas{c} = B;
     end
 end
 
-for s = 1:length(s)
+for s = 1:length(data)
     which_all = logical(ones(length(data(s).run), 1));
     [~, absRU] =  get_latents(data, s, which_all, 'abs');
     [~, RU] = get_latents(data, s, which_all, 'left');
@@ -50,19 +52,29 @@ for s = 1:length(s)
     data(s).RU = RU;
 end
 
-for roi_idx = 1:length(roi)
+save(filename, '-v7.3');
+%}
+
+load(filename); 
+
+for c = 1:numel(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+
     decRU = [];
     exclude = [];
     for s = 1:length(data)
         exclude = [exclude; data(s).exclude];
-        mdl = fitlm(data(s).betas{roi_idx}, data(s).absRU, 'exclude', data(s).exclude, 'Intercept', true);
-        pred = predict(mdl, data(s).betas{roi_idx}); % TODO do leave-one-run-out to avoid overfitting and just recovering |RU| 
+        X = data(s).betas{c};
+        y = data(s).absRU;
+        mdl = fitlm(X, y, 'exclude', data(s).exclude, 'Intercept', true);
+        pred = predict(mdl, X); % TODO do leave-one-run-out to avoid overfitting and just recovering |RU| 
         pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         decRU = [decRU; pred];
     end
+    exclude = logical(exclude);
 
     tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
-    tbl = tbl(~exclude, :);
     tbl = [tbl table(decRU)];
 
     
@@ -89,14 +101,6 @@ for roi_idx = 1:length(roi)
     comp2{c}
     p_comp2(c,:) = comp2{c}.pValue(2);
     BIC2(c,:) = comp2{c}.BIC';
-
-
-    % sanity check -- activations should correlate with regressor
-    RU = table2array(tbl(:,'RU'));
-    [r,p] = corr(RU(~exclude), act(~exclude));
-
-    pears_rs(c,:) = r;
-    pears_ps(c,:) = p;
 end
 
 save(filename, '-v7.3');
@@ -106,5 +110,5 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_RU = BIC(:,1);
 BIC_both = BIC(:,2);
 BIC_decRU = BIC2(:,1);
-table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2)
+table(masknames', p_uncorr, p_corr, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2)
 

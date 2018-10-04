@@ -7,7 +7,7 @@ printcode;
 
 clear all;
 
-pass = 3;
+pass = 2;
 
 switch pass
     case 1
@@ -16,7 +16,8 @@ switch pass
         filename = 'john_roi_1.mat';
     case 2
         % second pass -- focus on ACU_mixed
-        masks = {'masks/Ca.nii', 'masks/Pu.nii', 'masks/NAC.nii', 'masks/GPe.nii', 'masks/GPi.nii', 'masks/SNr.nii', 'masks/STH.nii', 'masks/SNc.nii', 'masks/VTA.nii'}; % john_roi_2 -- subcortical nuclei
+        %masks = {'masks/Ca.nii', 'masks/Pu.nii', 'masks/NAC.nii', 'masks/GPe.nii', 'masks/GPi.nii', 'masks/SNr.nii', 'masks/STH.nii', 'masks/SNc.nii', 'masks/VTA.nii'}; % john_roi_2 -- subcortical nuclei
+        masks = {'masks/GPe.nii', 'masks/GPi.nii'}; % john_roi_2 -- subcortical nuclei
         filename = 'john_roi_2.mat';
     case 3
         % third pass -- control ROIs
@@ -48,6 +49,11 @@ switch pass
         n = length(roi) * 2;  % we're only looking at 1 model and fit
 end
 
+timeouts = [];
+for s = 1:length(data)
+    timeouts = [timeouts; data(s).timeout];
+end
+
 for i = 1:length(fitfiles)
     fitfile = fitfiles{i};
 
@@ -59,10 +65,10 @@ for i = 1:length(fitfiles)
     ws = [];
     for roi_idx = 1:length(roi)
         region = roi(roi_idx).name;
-        formula = [region, ' ~ -1 + G + N'];
+        formula = [region, ' ~ 1 + N'];
 
-        % ignore NaN (e.g. non-existant betas for bad runs) by default
-        exclude = isnan(table2array(tbl(:,region)));
+        % ignore NaN (e.g. non-existant betas for bad runs) and timeouts
+        exclude = isnan(table2array(tbl(:,region))) | timeouts;
 
         %roi(roi_idx).res = fitglme(tbl,formula,'Distribution','Normal','Link','Identity','FitMethod','Laplace', 'CovariancePattern','diagonal','Exclude',exclude);
         roi(roi_idx).res = fitlme(tbl,formula,'Exclude',exclude);
@@ -77,7 +83,8 @@ for i = 1:length(fitfiles)
 
     disp(fitfile);
     disp(n);
-    tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), ws(:,1), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr', 'w_G', 'w_N'});
+    tbl = table({roi.name}', ps(:,2), ps_corr(:,2), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'G_corr', 'w_G'});
+    %tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), ws(:,1), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr', 'w_G', 'w_N'});
     %tbl = table({roi.name}', ps(:,1), ps(:,2), ps(:,3), ps_corr(:,1), ps_corr(:,2), ps_corr(:,3), 'VariableNames', {'ROI', 'intercept_uncorr', 'G_uncorr', 'N_uncorr', 'intercept_corr', 'G_corr', 'N_corr'});
     disp(tbl);
 end
