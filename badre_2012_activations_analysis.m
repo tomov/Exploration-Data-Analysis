@@ -12,19 +12,16 @@ if ~exist('glmodel', 'var')
     glmodel = 21;
 end
 if ~exist('normalize', 'var')
-    normalize = true; % divide each activation by the corresponding beta
+    normalize = 1; % divide each activation by the corresponding beta
 end
 
 data = load_data;
 
-formula = 'C ~ -1 + V + RU + VTU + actRU';
+formula_both = 'C ~ -1 + V + RU + VTU + actRU';
 formula_RU = 'C ~ -1 + V + RU + VTU';
+formula_actRU = 'C ~ -1 + V + actRU + VTU';
 
-if normalize
-    filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '_normalized.mat'];
-else
-    filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '.mat'];
-end
+filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '_normalize', num2str(normalize), '.mat'];
 disp(filename);
 
 % find peak of HRF
@@ -58,6 +55,7 @@ end
 
 % clusters = masks from paper
 masks = badre_2012_create_masks(false);
+masks = masks(1); % TODO use all masks
 
 % get betas to (optionally) normalize activations in each run
 for c = 1:length(masks)
@@ -69,21 +67,68 @@ for c = 1:length(masks)
         runs = find(goodRuns{s});
         data(s).b{c} = nan(length(data(s).run), cnt);
 
-        for run = 1:max(data(s).run)
-            r = find(run == runs); % scan session idx in GLM
-            if ~isempty(r)
-                % get beta for RU
-                reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
-                fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
-                b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
-                data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
+        switch normalize
+            case 0
+                % do nothing
 
-                % get beta0
-                reg = ['Sn(', num2str(r), ') constant'];
-                fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
-                b0 = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
-                data(s).b0{c}(data(s).run == run, :) = repmat(b0, sum(data(s).run == run), 1);
-            end
+            case 1
+                % act_RU = (act - b0) / b_RU
+                % i.e. assume other b's are insignificant
+                %
+                for run = 1:max(data(s).run)
+                    r = find(run == runs); % scan session idx in GLM
+                    if ~isempty(r)
+                        % get beta for RU
+                        reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
+                        fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                        b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                        data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
+
+                        % get beta0
+                        reg = ['Sn(', num2str(r), ') constant'];
+                        fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                        b0 = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                        data(s).b0{c}(data(s).run == run, :) = repmat(b0, sum(data(s).run == run), 1);
+                    end
+                end
+
+            case 2
+                % act_RU = (act - X_\RU * b_\RU) ./ b_RU
+                % i.e. take other regressors into accoutn
+                %
+                % TODO dedupe with ccnl_get_beta and ccnl_get_activations / ccnl_get_residuals
+                % also improve those based on this
+                %
+                modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
+                load(fullfile(modeldir,'SPM.mat'));
+                names = SPM.xX.name';
+                cdir = pwd;
+                cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
+                B = spm_data_read(SPM.Vbeta, find(m));
+                cd(cdir);
+                X = SPM.xX.X;
+
+                % separate RU betas and regressors from the rest
+                which_RU = contains(names, 'RU');
+                B_noRU = B(~which_RU, :);
+                B_RU = B(which_RU, :);
+                B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
+                X_noRU = X(:, ~which_RU);
+                X_RU = X(:, which_RU);
+
+                fprintf('  c = %s, s = %d\n', mask, s);
+
+                data(s).B_noRU{c} = B_noRU;
+                data(s).B_RU{c} = B_RU;
+                data(s).X_noRU{c} = X_noRU;
+                data(s).X_RU{c} = X_RU;
+
+            otherwise
+                % alternatively, do act - b0, where b0 is averaged across runs (i.e. for entire subject)
+                % or, better, (act - b0) / b_RU, where both b's are averaged across runs -> make out-of-sample predictions for same subject
+                % or same but averaged across runs and subjects -> allows you to make out-of-sample predictions for new subjects
+                assert(false);
+
         end
     end
 end
@@ -108,11 +153,15 @@ for s = 1:length(data)
     V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(masks)
+        if normalize == 2
+            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) ./ data(s).B_RU{c};
+        end
+
         % not all runs were used in the GLMs
         which_act = data(s).trial_onset_act_idx(~data(s).exclude); % trial onset activations
         act{c} = act{c}(which_act,:); % only consider 1 activation for each trial
 
-        if normalize % alternatively, do act - b0, where b0 is averaged across runs (i.e. for entire subject)
+        if normalize == 1
             act{c} = (act{c} - data(s).b0{c}(~data(s).exclude)) ./ data(s).b{c}(~data(s).exclude);
         end
 
@@ -120,7 +169,7 @@ for s = 1:length(data)
 
         % adjust for fact that the regactsor was |RU|
         if glmodel == 21
-            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+        %    data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0); TODO FIXME
         end
     end
 end
@@ -145,19 +194,29 @@ for c = 1:numel(masks)
     actRU = act;
     tbl = [tbl table(actRU)];
 
-    results{c} = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
-    [w, names, stats] = fixedEffects(results{c});
+    % glm with both RU and actRU
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    [w, names, stats] = fixedEffects(results_both{c});
     ps(c,:) = stats.pValue';
-    results{c}
+    results_both{c}
     stats.pValue
     w
 
-    % model comparison with original formula
+    % glm with RU only
+    % do model comparison
     results_RU{c} = fitglme(tbl,formula_RU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
-    comp{c} = compare(results_RU{c}, results{c}); % order is important -- see docs
+    comp{c} = compare(results_RU{c}, results_both{c}); % order is important -- see docs
     comp{c}
     p_comp(c,:) = comp{c}.pValue(2);
     BIC(c,:) = comp{c}.BIC';
+
+    % glm with actRU only
+    % do second model comparison
+    results_actRU{c} = fitglme(tbl,formula_actRU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp2{c} = compare(results_actRU{c}, results_both{c}); % order is important -- see docs
+    comp2{c}
+    p_comp2(c,:) = comp2{c}.pValue(2);
+    BIC2(c,:) = comp2{c}.BIC';
 
 
     % sanity check -- activations should correlate with regressor
@@ -175,6 +234,7 @@ save(filename, '-v7.3');
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_RU = BIC(:,1);
-BIC_actRU = BIC(:,2);
-table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_RU, BIC_actRU, p_comp)
+BIC_both = BIC(:,2);
+BIC_actRU = BIC2(:,1);
+table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_RU, BIC_both, p_comp, BIC_actRU, p_comp2)
 
