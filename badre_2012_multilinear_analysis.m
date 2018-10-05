@@ -68,6 +68,7 @@ for c = 1:numel(masks)
 
     decRU = [];
     exclude = [];
+    rmse = [];
     for s = 1:length(data)
         exclude = [exclude; data(s).exclude];
         X = data(s).betas{c};
@@ -76,6 +77,7 @@ for c = 1:numel(masks)
         pred = predict(mdl, X);
         pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         decRU = [decRU; pred];
+        rmse(s) = mdl.RMSE;
     end
     exclude = logical(exclude);
 
@@ -107,6 +109,18 @@ for c = 1:numel(masks)
     comp2{c}
     p_comp2(c,:) = comp2{c}.pValue(2);
     BIC2(c,:) = comp2{c}.BIC';
+
+    % correlate RMSE with behavioral weights across subjects
+    % => see if better decodeability is associated with more reliance on regressor in decision
+    %
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
+    [r, p] = corr(abs(w(:,2)), rmse');
+    disp('rmse to w');
+    r
+    p
+    p_ax(c,:) = p;
+    r_ax(c,:) = r;
 end
 
 save(filename, '-v7.3');
@@ -116,5 +130,5 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_RU = BIC(:,1);
 BIC_both = BIC(:,2);
 BIC_decRU = BIC2(:,1);
-table(masknames', p_uncorr, p_corr, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2)
+table(masknames', p_uncorr, p_corr, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2, p_ax, r_ax)
 

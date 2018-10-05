@@ -12,13 +12,13 @@ if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
 
-outfile = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
-outfile
+filename = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
+filename
 
 
 if load_first_half
     % optionally load pre-computed residuals (b/c the 2nd half doesn't work on the stupid cluster...)
-    load(outfile);
+    load(filename);
 else
 
     % group-level settings
@@ -93,7 +93,7 @@ for s = 1:length(data)
             data(s).RU = RU; % for sign-correction
         case 'TU'
             [V, ~, TU] = get_latents(data, s, which_all, 'abs');
-            data.y = TU;
+            data(s).y = TU;
             V_all = [V_all; V];
         otherwise
             assert(false);
@@ -169,9 +169,9 @@ for c = 1:numel(masks)
     w = getEffects(results_VTURU, false);
     switch regressor
         case 'RU'
-            [r, p] = corr(w(:,2), rmse');
+            [r, p] = corr(abs(w(:,2)), rmse');
         case 'TU'
-            [r, p] = corr(w(:,3), rmse');
+            [r, p] = corr(abs(w(:,3)), rmse');
         otherwise
             assert(false);
     end
@@ -189,5 +189,5 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
 BIC_dec = BIC2(:,1);
-table(masknames', p_uncorr, p_corr, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+table(region, p_uncorr, p_corr, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
 

@@ -1,3 +1,5 @@
+% plot G and N for a few subjects, for given condition
+
 data = load_data;
 
 fitfile = 'fit_ACU_25nstarts_mixed';
@@ -21,7 +23,7 @@ for s = 1:10 %length(data)
     subplot(10, 1, s);
     hold on;
     h = plot([G, N]);
-    set(h, {'color'}, {[1 0 0]; [0 1 0]});
+    set(h, {'color'}, {[0 1 0]; [1 0 0]});
     for t = 10.5:10:80
         plot([t t], [-1 20], '--', 'color', [0.8 0.8 0.8]);
     end
@@ -29,3 +31,9 @@ for s = 1:10 %length(data)
     set(gca, 'xtick', []);
     hold off;
 end
+
+% are G and N correlated?
+tbl = data2table_ACU([], data, results);
+[r, p] = corr(tbl.G, tbl.N);
+r
+p

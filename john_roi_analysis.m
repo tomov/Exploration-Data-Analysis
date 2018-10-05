@@ -27,8 +27,10 @@ switch pass
         assert(false);
 end
 
+%{
 roi = extract_roi_betas(masks, 'trial_onset');
 save(filename, '-v7.3');
+%}
 
 load(filename, 'roi');
 data = load_data;
@@ -40,13 +42,16 @@ data2table_fns = {@data2table_AU, @data2table_ACU, @data2table_OpAL, ...
                 @data2table_AU, @data2table_ACU, @data2table_OpAL, ...
                 @data2table_AU, @data2table_ACU, @data2table_OpAL};
 
+fitfiles = fitfiles(5);
+data2table_fns = data2table_fns(5);
+
 switch pass
     case 1
-        n = length(fitfiles) * length(roi) * 2; % we're looking at all models & fits
+        n = length(fitfiles) * length(roi); % we're looking at all models & fits
     case 2
-        n = length(roi) * 2; % we're only looking at 1 model and fit
+        n = length(roi); % we're only looking at 1 model and fit
     case 3
-        n = length(roi) * 2;  % we're only looking at 1 model and fit
+        n = length(roi);  % we're only looking at 1 model and fit
 end
 
 timeouts = [];
@@ -63,9 +68,11 @@ for i = 1:length(fitfiles)
 
     ps = []; % for G and N weights
     ws = [];
+    r_pears = [];
+    p_pears = [];
     for roi_idx = 1:length(roi)
         region = roi(roi_idx).name;
-        formula = [region, ' ~ 1 + N'];
+        formula = [region, ' ~ 1 + G'];
 
         % ignore NaN (e.g. non-existant betas for bad runs) and timeouts
         exclude = isnan(table2array(tbl(:,region))) | timeouts;
@@ -76,14 +83,21 @@ for i = 1:length(fitfiles)
         [w, names, stats] = fixedEffects(roi(roi_idx).res);
         ps(roi_idx,:) = stats.pValue';
         ws(roi_idx,:) = w';
+       
+        % correlate w's with a
+        %[w_r] = randomEffects(roi(roi_idx).res);
+        %w_Gs = w_r(2:2:end);
+        %[r, p] = corr(w_Gs, [lats.a]');
+        %r_pears(roi_idx,:) = r;
+        %p_pears(roi_idx,:) = p;
     end
-
 
     ps_corr = 1 - (1 - ps) .^ n;
 
     disp(fitfile);
     disp(n);
     tbl = table({roi.name}', ps(:,2), ps_corr(:,2), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'G_corr', 'w_G'});
+    %tbl = table({roi.name}', ps(:,2), ps_corr(:,2), ws(:,2), p_pears, r_pears, 'VariableNames', {'ROI', 'G_uncorr', 'G_corr', 'w_G', 'p_pears', 'r_pears'});
     %tbl = table({roi.name}', ps(:,1), ps(:,2), ps_corr(:,1), ps_corr(:,2), ws(:,1), ws(:,2), 'VariableNames', {'ROI', 'G_uncorr', 'N_uncorr', 'G_corr', 'N_corr', 'w_G', 'w_N'});
     %tbl = table({roi.name}', ps(:,1), ps(:,2), ps(:,3), ps_corr(:,1), ps_corr(:,2), ps_corr(:,3), 'VariableNames', {'ROI', 'intercept_uncorr', 'G_uncorr', 'N_uncorr', 'intercept_corr', 'G_corr', 'N_corr'});
     disp(tbl);
