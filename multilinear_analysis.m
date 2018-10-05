@@ -92,7 +92,7 @@ for s = 1:length(data)
             data(s).y = absRU;
             data(s).RU = RU; % for sign-correction
         case 'TU'
-            [V, ~, TU] = get_latents(data, s, which_all, 'abs');
+            [V, ~, TU] = get_latents(data, s, which_all, 'left');
             data(s).y = TU;
             V_all = [V_all; V];
         otherwise
