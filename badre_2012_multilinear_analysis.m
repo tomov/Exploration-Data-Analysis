@@ -33,6 +33,8 @@ load(filename, 'roi');
 
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
+% clean up betas
+%
 for c = 1:length(roi)
     for s = 1:length(data)
         B = roi(c).subj(s).betas;
@@ -44,12 +46,14 @@ for c = 1:length(roi)
     end
 end
 
+% extract regressors
+%
 for s = 1:length(data)
     which_all = logical(ones(length(data(s).run), 1));
     [~, absRU] =  get_latents(data, s, which_all, 'abs');
     [~, RU] = get_latents(data, s, which_all, 'left');
     data(s).absRU = absRU;
-    data(s).RU = RU;
+    data(s).RU = RU; % for sign-correction
 end
 
 save(filename, '-v7.3');
@@ -60,6 +64,7 @@ load(filename);
 for c = 1:numel(masks)
     mask = masks{c};
     [~, masknames{c}, ~] = fileparts(mask);
+    disp(mask);
 
     decRU = [];
     exclude = [];
@@ -68,7 +73,7 @@ for c = 1:numel(masks)
         X = data(s).betas{c};
         y = data(s).absRU;
         mdl = fitlm(X, y, 'exclude', data(s).exclude, 'Intercept', true);
-        pred = predict(mdl, X); % TODO do leave-one-run-out to avoid overfitting and just recovering |RU| 
+        pred = predict(mdl, X);
         pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         decRU = [decRU; pred];
     end
@@ -85,6 +90,7 @@ for c = 1:numel(masks)
     results_both{c}
     stats.pValue
     w
+    names
 
     % glm with RU only
     % do model comparison

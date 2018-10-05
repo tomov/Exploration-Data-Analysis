@@ -3,6 +3,8 @@
 
 function [ps, results, data, region, mni, cor] = residuals_analysis(glmodel, regressor, contrast, what, load_first_half)
 
+printcode;
+
 if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
