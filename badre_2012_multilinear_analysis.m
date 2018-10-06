@@ -75,74 +75,7 @@ function badre_2012_multilinear_analysis(method)
             X = X(~data(s).exclude, :);
             y = y(~data(s).exclude);
 
-            switch method
-                case 'fitlm'
-                    mdl = fitlm(X, y, 'Intercept', true);
-                    pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
-                    mse(s) = mdl.MSE;
-
-                case 'fitrlinear_ridge'
-                    mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge');
-                    mdl
-                    pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
-                    mse(s) = loss(mdl, X, y);
-
-                case 'fitrlinear_ridge_CV'
-                    % find good lambda using CV
-                    cv = cvpartition_from_folds(data(s).run(~data(s).exclude)); % one run per fold
-                    Lambda = logspace(-5,0,100);
-                    cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
-                    [l, idx] = min(kfoldLoss(cvmdl));
-                    fprintf('      min lambda for %d = %f\n', s, idx);
-
-                    mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'Lambda', Lambda(idx));
-                    pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
-                    mse(s) = loss(mdl, X, y);
-
-                case 'fitrlinear_lasso'
-                    mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso');
-                    pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
-                    mse(s) = loss(mdl, X, y);
-
-                case 'ridge'
-                    Lambda = 0.1;
-                    coef = ridge(y, X, Lambda, 0);
-                    pred = [ones(size(data(s).betas{c}, 1), 1), data(s).betas{c}] * coef; % include intercept term
-                    mse(s) = immse(y, pred(~data(s).exclude));
-
-                case 'ridge_CV'
-                    cv = cvpartition_from_folds(data(s).run(~data(s).exclude)); % one run per fold
-                    Lambda = logspace(-5,0,100);
-                    m = [];
-                    for i = 1:length(Lambda)
-                        f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
-                        m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
-                    end
-                    [~, idx] = min(m);
-                    fprintf('      min lambda for %d = %f\n', s, idx);
-
-                    pred = ridgepred(X, y, data(s).betas{c}, Lambda(idx));
-                    mse(s) = immse(y, pred(~data(s).exclude));
-
-                case 'lasso'
-                    [coef, FitInfo] = lasso(X, y, 'NumLambda', 1);
-                    coef0 = FitInfo.Intercept;
-                    pred = data(s).betas{c} * coef + coef0;
-                    mse(s) = immse(y, pred(~data(s).exclude));
-
-                case 'lasso_CV'
-                    cv = cvpartition_from_folds(data(s).run(~data(s).exclude)); % one run per fold
-                    [B, FitInfo] = lasso(X, y, 'CV', cv);
-                    save shit.mat
-                    idx = FitInfo.Index1SE;
-                    coef = B(:, idx);
-                    coef0 = FitInfo.Intercept(idx);
-                    pred = data(s).betas{c} * coef + coef0;
-                    mse(s) = immse(y, pred(~data(s).exclude));
-
-                otherwise
-                    assert(false);
-            end
+            [pred, mse(s)] = multilinear_fit(X, y, Xtest, method, data(s).run(~data(s).exclude)); % one run per fold
 
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
             decRU = [decRU; pred];
