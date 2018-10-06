@@ -75,7 +75,9 @@ function badre_2012_multilinear_analysis(method)
             X = X(~data(s).exclude, :);
             y = y(~data(s).exclude);
 
-            [pred, mse(s)] = multilinear_fit(X, y, Xtest, method, data(s).run(~data(s).exclude)); % one run per fold
+            % predict using full data set; we ignore bad trials later 
+            % also for CV, one run per fold
+            [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
 
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
             decRU = [decRU; pred];
@@ -136,10 +138,3 @@ function badre_2012_multilinear_analysis(method)
 
 end
 
-
-
-function pred = ridgepred(X, y, Xtest, Lambda)
-    coef = ridge(y, X, Lambda, 0);
-    Xtest = [ones(size(Xtest, 1), 1), Xtest]; % include intercept term
-    pred = Xtest * coef;
-end

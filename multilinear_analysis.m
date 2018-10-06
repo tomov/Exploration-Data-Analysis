@@ -4,7 +4,7 @@
 % merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
 %
 
-function multilinear_analysis(glmodel, regressor, contrast, load_first_half)
+function multilinear_analysis(glmodel, regressor, contrast, method, load_first_half)
 
 printcode;
 
@@ -12,7 +12,7 @@ if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
 
-filename = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
+filename = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '.mat'];
 filename
 
 
@@ -109,18 +109,25 @@ for c = 1:numel(masks)
 
     dec = [];
     exclude = [];
-    rmse = [];
+    mse = [];
     for s = 1:length(data)
         exclude = [exclude; data(s).exclude];
         X = data(s).betas{c};
         y = data(s).y;
-        mdl = fitlm(X, y, 'exclude', data(s).exclude, 'Intercept', true);
-        pred = predict(mdl, X);
+
+        % remove bad data points
+        X = X(~data(s).exclude, :);
+        y = y(~data(s).exclude);
+
+        % predict using full data set; we ignore bad trials later 
+        % also for CV, one run per fold
+        [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+
+
         if glmodel == 21 && strcmp(regressor, 'RU')
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         end
         dec = [dec; pred];
-        rmse(s) = mdl.RMSE;
     end
     exclude = logical(exclude);
 
@@ -169,13 +176,13 @@ for c = 1:numel(masks)
     w = getEffects(results_VTURU, false);
     switch regressor
         case 'RU'
-            [r, p] = corr(abs(w(:,2)), rmse');
+            [r, p] = corr(abs(w(:,2)), mse');
         case 'TU'
-            [r, p] = corr(abs(w(:,3)), rmse');
+            [r, p] = corr(abs(w(:,3)), mse');
         otherwise
             assert(false);
     end
-    disp('rmse to w');
+    disp('mse to w');
     r
     p
     p_ax(c,:) = p;

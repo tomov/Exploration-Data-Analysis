@@ -33,7 +33,7 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/fit*.sh .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/badre_*.sh .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/badre_2012_multilinear_analysis.m  .
-scp badre_2012_multilinear_analysis.m multilinear_fit.m mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+scp multilinear_analysis.m badre_2012_multilinear_analysis.m multilinear_fit.m mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/cvpartition.m  .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/multilinear_analysis.m  .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/output/*.out  output/

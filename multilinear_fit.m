@@ -11,13 +11,13 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
     switch method
         case 'fitlm'
             mdl = fitlm(X, y, 'Intercept', true);
-            pred = predict(mdl, Xtest); % predict using full data set; we ignore bad trials later
+            pred = predict(mdl, Xtest);
             mse = mdl.MSE;
 
         case 'fitrlinear_ridge'
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge');
             mdl
-            pred = predict(mdl, Xtest); % predict using full data set; we ignore bad trials later
+            pred = predict(mdl, Xtest);
             mse = loss(mdl, X, y);
 
         case 'fitrlinear_ridge_CV'
@@ -26,22 +26,34 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
             Lambda = logspace(-5,0,100);
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
             [l, idx] = min(kfoldLoss(cvmdl));
-            fprintf('      min lambda for %d = %f\n', s, idx);
+            fprintf('      min lambda = %d\n', idx);
 
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'Lambda', Lambda(idx));
-            pred = predict(mdl, Xtest); % predict using full data set; we ignore bad trials later
+            pred = predict(mdl, Xtest);
             mse = loss(mdl, X, y);
 
         case 'fitrlinear_lasso'
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso');
-            pred = predict(mdl, Xtest); % predict using full data set; we ignore bad trials later
+            pred = predict(mdl, Xtest);
+            mse = loss(mdl, X, y);
+
+        case 'fitrlinear_lasso_CV'
+            % find good lambda using CV
+            cv = cvpartition_from_folds(foldid);
+            Lambda = logspace(-5,0,100);
+            cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'CVPartition', cv, 'Lambda', Lambda);
+            [l, idx] = min(kfoldLoss(cvmdl));
+            fprintf('      min lambda = %d\n', idx);
+
+            mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'Lambda', Lambda(idx));
+            pred = predict(mdl, Xtest);
             mse = loss(mdl, X, y);
 
         case 'ridge'
             Lambda = 0.1;
             coef = ridge(y, X, Lambda, 0);
             pred = [ones(size(Xtest, 1), 1), Xtest] * coef; % include intercept term
-            mse = immse(y, [ones(size(Xtest, 1), 1), X] * coef);
+            mse = immse(y, [ones(size(X, 1), 1), X] * coef);
 
         case 'ridge_CV'
             cv = cvpartition_from_folds(foldid);
@@ -52,10 +64,10 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
                 m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
-            fprintf('      min lambda for %d = %f\n', s, idx);
+            fprintf('      min lambda = %d\n', idx);
 
             pred = ridgepred(X, y, Xtest, Lambda(idx));
-            mse = immse(y, ridgepred(X, y, X, Lambda(idx));
+            mse = immse(y, ridgepred(X, y, X, Lambda(idx)));
 
         case 'lasso'
             [coef, FitInfo] = lasso(X, y, 'NumLambda', 1);
@@ -76,4 +88,12 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
             assert(false);
     end
 
+end
+
+
+
+function pred = ridgepred(X, y, Xtest, Lambda)
+    coef = ridge(y, X, Lambda, 0);
+    Xtest = [ones(size(Xtest, 1), 1), Xtest]; % include intercept term
+    pred = Xtest * coef;
 end
