@@ -7,7 +7,7 @@ printcode;
 
 clear all;
 
-pass = 2;
+pass = 1;
 
 switch pass
     case 1
