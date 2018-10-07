@@ -4,9 +4,15 @@
 % merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
 %
 
-function multilinear_analysis(glmodel, regressor, contrast, method, load_first_half)
+function multilinear_analysis(glmodel, regressor, contrast, method, get_null, load_first_half)
 
 printcode;
+
+null_iters = 1000;
+
+if ~exist('get_null', 'var')
+    get_null = false;
+end
 
 if ~exist('load_first_half', 'var')
     load_first_half = false;
@@ -17,53 +23,69 @@ filename
 
 
 if load_first_half
-    % optionally load pre-computed residuals (b/c the 2nd half doesn't work on the stupid cluster...)
+    % optionally load pre-computed betas to speed things up
     load(filename);
 else
-
-    % group-level settings
-    p = 0.001;
-    alpha = 0.05;
-    Dis = 20;
-    Num = 1; % # peak voxels per cluster; default in bspmview is 3
-    direct = '+';
 
     EXPT = exploration_expt();
 
     data = load_data;
 
-    switch regressor
-        case 'RU'
-            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
-            formula_orig = 'C ~ -1 + V + RU + VTU';
-            formula_dec = 'C ~ -1 + V + decRU + VTU';
-        case 'TU'
-            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
-            formula_orig = 'C ~ -1 + V + RU + VTU';
-            formula_dec = 'C ~ -1 + V + RU + VdecTU';
+    % special case a priori ROIs; otherwise expect a glm & contrast
+    switch glmodel
+        case 'badre'
+            % clusters = masks from paper
+            masks = badre_2012_create_masks(false);
+            masks = masks(1); % TODO all masks
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
+
+        case 'tommy'
+
         otherwise
-            assert(false);
+
+            % group-level settings
+            p = 0.001;
+            alpha = 0.05;
+            Dis = 20;
+            Num = 1; % # peak voxels per cluster; default in bspmview is 3
+            direct = '+';
+
+            [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+
+            r = 10 / 1.5; % 10 mm radius
+
+            % create spherical masks around peak voxel of each cluster (intersected with cluster)
+            %
+            for c = 1:length(region)
+                masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
+                cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
+                ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
+            end
+
+            % extract trial_onset (raw, unsmoothed) betas
+            %
+            roi = extract_roi_betas(masks, 'trial_onset');
     end
-
-    [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
-
-    r = 10 / 1.5; % 10 mm radius
-
-    % create spherical masks around peak voxel of each cluster (intersected with cluster)
-    %
-    for c = 1:length(region)
-        masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
-        cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
-        ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
-    end
-
-    % extract trial_onset (raw, unsmoothed) betas
-    %
-    roi = extract_roi_betas(masks, 'trial_onset');
 
     save(filename, '-v7.3');
 end
 
+% define behavioral / hybrid GLM formulas
+switch regressor
+    case 'RU'
+        formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + decRU + VTU';
+    case 'TU'
+        formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + RU + VdecTU';
+    otherwise
+        assert(false);
+end
 
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
@@ -102,6 +124,10 @@ end
 
 save(filename, '-v7.3');
 
+rng default; % for reproducibility
+
+% run analysis
+%
 for c = 1:numel(masks)
     mask = masks{c};
     [~, masknames{c}, ~] = fileparts(mask);
@@ -122,12 +148,31 @@ for c = 1:numel(masks)
         % predict using full data set; we ignore bad trials later 
         % also for CV, one run per fold
         [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+        data(s).mse{c} = mse(s);
 
-
-        if glmodel == 21 && strcmp(regressor, 'RU')
+        if strcmp(regressor, 'RU')
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         end
         dec = [dec; pred];
+
+        % optionally generate null distribution
+        if get_null
+            null_mse = [];
+            for i = 1:null_iters
+                y = y(randperm(length(y)));
+                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                null_mse = [null_mse, m];
+            end
+            data(s).null_mse{c} = null_mse;
+
+            % calculate p-value based on null distribution
+            null_mse = [null_mse mse(s)];
+            null_mse = sort(null_mse);
+            idx = find(null_mse == mse(s));
+            p = idx / length(null_mse);
+            fprintf('                    subj %d null mse p = %.4f\n', s, p);
+            data(s).null_p{c} = p;
+        end
     end
     exclude = logical(exclude);
 
