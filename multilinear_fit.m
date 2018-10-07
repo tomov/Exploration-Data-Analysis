@@ -23,7 +23,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
         case 'fitrlinear_ridge_CV'
             % find good lambda using CV
             cv = cvpartition_from_folds(foldid);
-            Lambda = logspace(-5,0,100);
+            Lambda = logspace(-10,10,21);
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
             [l, idx] = min(kfoldLoss(cvmdl));
             fprintf('      min lambda = %d\n', idx);
@@ -40,7 +40,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
         case 'fitrlinear_lasso_CV'
             % find good lambda using CV
             cv = cvpartition_from_folds(foldid);
-            Lambda = logspace(-5,0,100);
+            Lambda = logspace(-10,10,21);
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'CVPartition', cv, 'Lambda', Lambda);
             [l, idx] = min(kfoldLoss(cvmdl));
             fprintf('      min lambda = %d\n', idx);
@@ -57,13 +57,15 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
 
         case 'ridge_CV'
             cv = cvpartition_from_folds(foldid);
-            Lambda = logspace(-5,0,100);
+            Lambda = logspace(-10,10,21);
             m = [];
             for i = 1:length(Lambda)
                 f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
                 m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
+            Lambda
+            m
             fprintf('      min lambda = %d\n', idx);
 
             pred = ridgepred(X, y, Xtest, Lambda(idx));

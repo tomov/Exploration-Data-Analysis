@@ -1,5 +1,5 @@
 % correlate BG with model G and N
-% use smooth betas from GLMs 1001..1009 from the ROI
+% use (non)smooth betas from GLMs 1001..1009 from the ROI
 % do a t-test across subjects
 % similar to badre_2012_roi_analysis_1.m
 %

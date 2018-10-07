@@ -5,7 +5,7 @@
 #scp john_roi_betas.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp exploration_expt_nosmooth.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp badre_2012_*.m  multilinear_analysis.m ccnl_create_spherical_mask.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
-#scp john_roi_analysis_2.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp john_roi_analysis_3.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp cvpartition*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp masks/*.nii  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks/
 #scp  ccnl_create_spherical_mask.m create_spherical_mask_helper.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
