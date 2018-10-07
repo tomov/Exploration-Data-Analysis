@@ -26,7 +26,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
             Lambda = logspace(-10,10,21);
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
             [l, idx] = min(kfoldLoss(cvmdl));
-            fprintf('      min lambda = %d\n', idx);
+            %fprintf('      min lambda = %d\n', idx);
 
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'Lambda', Lambda(idx));
             pred = predict(mdl, Xtest);
@@ -43,7 +43,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
             Lambda = logspace(-10,10,21);
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'CVPartition', cv, 'Lambda', Lambda);
             [l, idx] = min(kfoldLoss(cvmdl));
-            fprintf('      min lambda = %d\n', idx);
+            %fprintf('      min lambda = %d\n', idx);
 
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'Lambda', Lambda(idx));
             pred = predict(mdl, Xtest);
@@ -64,9 +64,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
                 m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
-            Lambda
-            m
-            fprintf('      min lambda = %d\n', idx);
+            %fprintf('      min lambda = %d\n', idx);
 
             pred = ridgepred(X, y, Xtest, Lambda(idx));
             mse = immse(y, ridgepred(X, y, X, Lambda(idx)));

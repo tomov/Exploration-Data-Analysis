@@ -4,59 +4,75 @@
 %
 % TODO dedupe with badre_2012_activations_analysis.m
 
-function badre_2012_multilinear_analysis(method)
+function badre_2012_multilinear_analysis(method, get_null, skip_first_half)
 
     printcode;
 
-    EXPT = exploration_expt();
+    null_iters = 1000;
 
-    data = load_data;
+    if ~exist('get_null', 'var')
+        get_null = false;
+    end
 
-    formula_both = 'C ~ -1 + V + RU + VTU + decRU';
-    formula_RU = 'C ~ -1 + V + RU + VTU';
-    formula_decRU = 'C ~ -1 + V + decRU + VTU';
+    if ~exist('skip_first_half', 'var')
+        skip_first_half = false;
+    end
 
     filename = ['badre_2012_multilinear_analysis_', method, '.mat'];
     disp(filename);
 
-    % clusters = masks from paper
-    masks = badre_2012_create_masks(false);
-    masks = masks(1); % TODO all masks
+    % optionally skip this stuff if it's been pre-generated 
+    if ~skip_first_half
 
-    % extract trial_onset (raw, unsmoothed) betas
-    roi = extract_roi_betas(masks, 'trial_onset');
-    save(filename, '-v7.3');
+        EXPT = exploration_expt();
 
-    load(filename, 'roi'); 
+        data = load_data;
 
-    [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+        formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        formula_RU = 'C ~ -1 + V + RU + VTU';
+        formula_decRU = 'C ~ -1 + V + decRU + VTU';
 
-    % clean up betas
-    %
-    for c = 1:length(roi)
-        for s = 1:length(data)
-            B = roi(c).subj(s).betas;
-            runs = find(goodRuns{s});
-            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
-            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
-            B(:, which_nan) = [];
-            data(s).betas{c} = B;
+        % clusters = masks from paper
+        masks = badre_2012_create_masks(false);
+        masks = masks(1); % TODO all masks
+
+        % extract trial_onset (raw, unsmoothed) betas
+        roi = extract_roi_betas(masks, 'trial_onset');
+        save(filename, '-v7.3');
+
+        load(filename, 'roi'); 
+
+        [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+        % clean up betas
+        %
+        for c = 1:length(roi)
+            for s = 1:length(data)
+                B = roi(c).subj(s).betas;
+                runs = find(goodRuns{s});
+                data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+                which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+                B(:, which_nan) = [];
+                data(s).betas{c} = B;
+            end
         end
-    end
 
-    % extract regressors
-    %
-    for s = 1:length(data)
-        which_all = logical(ones(length(data(s).run), 1));
-        [~, absRU] =  get_latents(data, s, which_all, 'abs');
-        [~, RU] = get_latents(data, s, which_all, 'left');
-        data(s).absRU = absRU;
-        data(s).RU = RU; % for sign-correction
-    end
+        % extract regressors
+        %
+        for s = 1:length(data)
+            which_all = logical(ones(length(data(s).run), 1));
+            [~, absRU] =  get_latents(data, s, which_all, 'abs');
+            [~, RU] = get_latents(data, s, which_all, 'left');
+            data(s).absRU = absRU;
+            data(s).RU = RU; % for sign-correction
+        end
 
-    save(filename, '-v7.3');
+        save(filename, '-v7.3');
+    end
 
     load(filename); 
+
+    rng default; % for repro
 
     for c = 1:numel(masks)
         mask = masks{c};
@@ -78,9 +94,29 @@ function badre_2012_multilinear_analysis(method)
             % predict using full data set; we ignore bad trials later 
             % also for CV, one run per fold
             [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+            data(s).mse{c} = mse(s);
 
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
             decRU = [decRU; pred];
+
+            % optionally generate null distribution
+            if get_null
+                null_mse = [];
+                for i = 1:null_iters
+                    y = y(randperm(length(y)));
+                    [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                    null_mse = [null_mse, m];
+                end
+                data(s).null_mse{c} = null_mse;
+
+                % calculate p-value based on null distribution
+                null_mse = [null_mse mse(s)];
+                null_mse = sort(null_mse);
+                idx = find(null_mse == mse(s));
+                p = idx / length(null_mse);
+                fprintf('                    subj %d null mse p = %.4f\n', s, p);
+                data(s).null_p{c} = p;
+            end
         end
         exclude = logical(exclude);
 
