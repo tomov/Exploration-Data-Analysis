@@ -21,7 +21,6 @@ end
 filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '.mat'];
 filename
 
-
 if load_first_half
     % optionally load pre-computed betas to speed things up
     load(filename);
@@ -70,8 +69,24 @@ else
             roi = extract_roi_betas(masks, 'trial_onset');
     end
 
+    [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+    % clean up betas
+    %
+    for c = 1:length(roi)
+        for s = 1:length(data)
+            B = roi(c).subj(s).betas;
+            runs = find(goodRuns{s});
+            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
+            data(s).betas{c} = B;
+        end
+    end
+
     save(filename, '-v7.3');
 end
+
 
 % define behavioral / hybrid GLM formulas
 switch regressor
@@ -85,21 +100,6 @@ switch regressor
         formula_dec = 'C ~ -1 + V + RU + VdecTU';
     otherwise
         assert(false);
-end
-
-[~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
-
-% clean up betas
-%
-for c = 1:length(roi)
-    for s = 1:length(data)
-        B = roi(c).subj(s).betas;
-        runs = find(goodRuns{s});
-        data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
-        which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
-        B(:, which_nan) = [];
-        data(s).betas{c} = B;
-    end
 end
 
 % extract regressors
