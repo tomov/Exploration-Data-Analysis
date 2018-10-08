@@ -8,7 +8,7 @@ function multilinear_analysis(glmodel, regressor, contrast, method, get_null, lo
 
 printcode;
 
-null_iters = 1000;
+null_iters = 100;
 
 if ~exist('get_null', 'var')
     get_null = false;
@@ -18,7 +18,7 @@ if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
 
-filename = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '.mat'];
+filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '.mat'];
 filename
 
 
