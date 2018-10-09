@@ -42,6 +42,7 @@ for c = 1:length(region)
     for s = 1:length(data)
         b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, c_vox, s));
     end
+    all_b{c} = b;
 
 
     switch regressor

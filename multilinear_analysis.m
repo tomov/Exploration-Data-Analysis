@@ -4,7 +4,7 @@
 % merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
 %
 
-function multilinear_analysis(glmodel, regressor, contrast, method, get_null, load_first_half)
+function multilinear_analysis(glmodel, regressor, contrast, method, get_null, do_orth, load_first_half)
 
 printcode;
 
@@ -14,11 +14,15 @@ if ~exist('get_null', 'var')
     get_null = false;
 end
 
+if ~exist('do_orth', 'var')
+    do_orth = true;
+end
+
 if ~exist('load_first_half', 'var')
     load_first_half = false;
 end
 
-filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '.mat'];
+filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '_orth=', num2str(do_orth), '.mat'];
 filename
 
 if load_first_half
@@ -91,13 +95,23 @@ end
 % define behavioral / hybrid GLM formulas
 switch regressor
     case 'RU'
-        formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        end
         formula_orig = 'C ~ -1 + V + RU + VTU';
         formula_dec = 'C ~ -1 + V + decRU + VTU';
+
     case 'TU'
-        formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+        end
         formula_orig = 'C ~ -1 + V + RU + VTU';
         formula_dec = 'C ~ -1 + V + RU + VdecTU';
+
     otherwise
         assert(false);
 end
@@ -182,9 +196,19 @@ for c = 1:numel(masks)
         case 'RU'
             decRU = dec;
             tbl = [tbl table(decRU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.RU(~exclude), decRU(~exclude)]);
+            decRU_orth = decRU;
+            decRU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(decRU_orth)];
         case 'TU'
             VdecTU = V_all ./ dec;
             tbl = [tbl table(VdecTU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.VTU(~exclude), VdecTU(~exclude)]);
+            VdecTU_orth = VdecTU;
+            VdecTU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(VdecTU_orth)];
         otherwise
             assert(false);
     end

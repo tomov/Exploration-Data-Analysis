@@ -23,6 +23,7 @@ for i = 1:length(masks)
     for s = 1:length(data)
         b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
     end
+    all_b{i} = b;
 
     [r,p] = corr(w(:,2), b');
     disp(mask);
@@ -40,4 +41,4 @@ r = rs;
 
 save(filename);
 
-table(region, p_uncorr, p_corr, r);
+table(masks', p_uncorr, p_corr, r);
