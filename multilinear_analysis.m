@@ -46,6 +46,12 @@ else
             roi = extract_roi_betas(masks, 'trial_onset');
 
         case 'tommy'
+            % clusters = masks from paper
+            masks = tommy_2017_create_masks(false);
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
 
         otherwise
 
