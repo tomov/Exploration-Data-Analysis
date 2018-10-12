@@ -69,67 +69,89 @@ for c = 1:length(masks)
         runs = find(goodRuns{s});
         data(s).b{c} = nan(length(data(s).run), cnt);
 
-        switch normalize
-            case 0
-                % do nothing
+        if normalize == 0
+            % do nothing
+        elseif normalize == 1
+            % act_RU = (act - b0) / b_RU
+            % i.e. assume other b's are insignificant
+            %
+            for run = 1:max(data(s).run)
+                r = find(run == runs); % scan session idx in GLM
+                if ~isempty(r)
+                    % get beta for RU
+                    reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
+                    fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                    b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                    data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
 
-            case 1
-                % act_RU = (act - b0) / b_RU
-                % i.e. assume other b's are insignificant
-                %
-                for run = 1:max(data(s).run)
-                    r = find(run == runs); % scan session idx in GLM
-                    if ~isempty(r)
-                        % get beta for RU
-                        reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
-                        fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
-                        b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
-                        data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
-
-                        % get beta0
-                        reg = ['Sn(', num2str(r), ') constant'];
-                        fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
-                        b0 = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
-                        data(s).b0{c}(data(s).run == run, :) = repmat(b0, sum(data(s).run == run), 1);
-                    end
+                    % get beta0
+                    reg = ['Sn(', num2str(r), ') constant'];
+                    fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
+                    b0 = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
+                    data(s).b0{c}(data(s).run == run, :) = repmat(b0, sum(data(s).run == run), 1);
                 end
+            end
+        elseif normalize == 2
+            % act_RU = (act - X_\RU * b_\RU) ./ b_RU
+            % i.e. take other regressors into accoutn
+            %
+            % TODO dedupe with ccnl_get_beta and ccnl_get_activations / ccnl_get_residuals
+            % also improve those based on this
+            %
+            modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
+            load(fullfile(modeldir,'SPM.mat'));
+            names = SPM.xX.name';
+            cdir = pwd;
+            cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
+            B = spm_data_read(SPM.Vbeta, find(m));
+            cd(cdir);
+            X = SPM.xX.X;
 
-            case 2
-                % act_RU = (act - X_\RU * b_\RU) ./ b_RU
-                % i.e. take other regressors into accoutn
-                %
-                % TODO dedupe with ccnl_get_beta and ccnl_get_activations / ccnl_get_residuals
-                % also improve those based on this
-                %
-                modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
-                load(fullfile(modeldir,'SPM.mat'));
-                names = SPM.xX.name';
-                cdir = pwd;
-                cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
-                B = spm_data_read(SPM.Vbeta, find(m));
-                cd(cdir);
-                X = SPM.xX.X;
+            % separate RU betas and regressors from the rest
+            which_RU = contains(names, 'RU');
+            B_noRU = B(~which_RU, :);
+            B_RU = B(which_RU, :);
+            B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
+            X_noRU = X(:, ~which_RU);
+            X_RU = X(:, which_RU);
 
-                % separate RU betas and regressors from the rest
-                which_RU = contains(names, 'RU');
-                B_noRU = B(~which_RU, :);
-                B_RU = B(which_RU, :);
-                B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
-                X_noRU = X(:, ~which_RU);
-                X_RU = X(:, which_RU);
+            fprintf('  c = %s, s = %d\n', mask, s);
 
-                fprintf('  c = %s, s = %d\n', mask, s);
+            data(s).B_noRU{c} = B_noRU;
+            data(s).B_RU{c} = B_RU;
+            data(s).X_noRU{c} = X_noRU;
+            data(s).X_RU{c} = X_RU;
 
-                data(s).B_noRU{c} = B_noRU;
-                data(s).B_RU{c} = B_RU;
-                data(s).X_noRU{c} = X_noRU;
-                data(s).X_RU{c} = X_RU;
+        elseif normalize == 3 || normalize == 4
+            % act_RU = (act - X_\RU * b_\RU) ./ b_RU
+            % i.e. take other regressors into accoutn
+            % same as 2 BUT using whitened / filtered X and Y (!) like SPM
+            %
+            modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
+            load(fullfile(modeldir,'SPM.mat'));
+            names = SPM.xX.name';
+            cdir = pwd;
+            cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
+            B = spm_data_read(SPM.Vbeta, find(m));
+            cd(cdir);
+            X = SPM.xX.xKXs.X;
 
-            otherwise
-                % alternatively, do act - b0, where b0 is averaged across runs (i.e. for entire subject)
-                % or, better, (act - b0) / b_RU, where both b's are averaged across runs -> make out-of-sample predictions for same subject
-                % or same but averaged across runs and subjects -> allows you to make out-of-sample predictions for new subjects
-                assert(false);
+            % separate RU betas and regressors from the rest
+            which_RU = contains(names, 'RU');
+            B_noRU = B(~which_RU, :);
+            B_RU = B(which_RU, :);
+            B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
+            X_noRU = X(:, ~which_RU);
+            X_RU = X(:, which_RU);
+
+            fprintf('  c = %s, s = %d\n', mask, s);
+
+            data(s).B_noRU{c} = B_noRU;
+            data(s).B_RU{c} = B_RU;
+            data(s).X_noRU{c} = X_noRU;
+            data(s).X_RU{c} = X_RU;
+        else
+            assert(false);
 
         end
     end
@@ -139,6 +161,8 @@ end
 %
 V_all = [];
 for s = 1:length(data)
+    modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
+    load(fullfile(modeldir,'SPM.mat'));
 
     clear act;
     for c = 1:length(masks)
@@ -157,6 +181,17 @@ for s = 1:length(data)
     for c = 1:length(masks)
         if normalize == 2
             act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) ./ data(s).B_RU{c};
+        elseif normalize == 3
+            act{c} = spm_filter(SPM.xX.K,SPM.xX.W*act{c});
+            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) ./ data(s).B_RU{c};
+        elseif normalize == 4
+            % ridge regression -- regulalize by lambda
+            % x_RU = (activation - sum of x_i * b_i, for i != RU) * b_RU / (b_RU^2 + lambda)
+            % strictly speaking we should call it decRU instead of act but whatevs
+            %
+            lambda = 1; % TODO determine in principled way; hard to do b/c GLM is already run => nothing to fit / cross-validate...
+            act{c} = spm_filter(SPM.xX.K,SPM.xX.W*act{c});
+            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) .* data(s).B_RU{c} ./ (data(s).B_RU{c}.^2 + lambda);
         end
 
         % not all runs were used in the GLMs
