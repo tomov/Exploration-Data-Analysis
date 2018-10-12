@@ -5,7 +5,7 @@
 #scp john_roi_betas.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp exploration_expt_nosmooth.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp badre_2012_*.m  multilinear_analysis.m ccnl_create_spherical_mask.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
-#scp john_roi_analysis_3.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+scp john_roi_analysis_4.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp cvpartition*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp masks/Ca.nii masks/Pu.nii masks/NAC.nii  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks/
 #scp  ccnl_create_spherical_mask.m create_spherical_mask_helper.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
@@ -13,7 +13,7 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/john_roi_analysis.m .
 #scp -r  ../../libs/ccnl-fmri/*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp  ../../libs/ccnl-fmri/*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
-#scp  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/ccnl_roi_glm.m ../../libs/ccnl-fmri/
+#scp   ../../libs/ccnl-fmri/ccnl_roi_glm.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/run_ccnl_fmri_con*.m .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/roi.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/betas_*.mat .
@@ -37,7 +37,7 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/badre_2012_b_to_w_glm21.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/badre_*.sh .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/badre_2012_multilinear_analysis.m  .
-scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/multilinear_analysis_TU_TU_glmtommy_ridge_CV*.mat  .
+#scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/multilinear_analysis_TU_TU_glmtommy_ridge_CV*.mat  .
 #scp tommy_2017_roi_analysis_1.m tommy_2017_create_masks.m tommy_2017_neural_betas_to_behavioral_weights.m  multilinear_analysis.m mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/cvpartition.m  .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/multilinear_analysis.m  .

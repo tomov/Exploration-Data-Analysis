@@ -64,10 +64,31 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
                 m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
-            %fprintf('      min lambda = %d\n', idx);
+            fprintf('      min lambda = %d\n', idx);
 
             pred = ridgepred(X, y, Xtest, Lambda(idx));
             mse = immse(y, ridgepred(X, y, X, Lambda(idx)));
+
+        case 'ridge_CV_CV'
+            % actually use CV predictions & results
+            %
+            cv = cvpartition_from_folds(foldid);
+            Lambda = logspace(-10,10,21);
+            m = [];
+            for i = 1:length(Lambda)
+                f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
+                m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
+            end
+            [~, idx] = min(m);
+            %fprintf('                                                                  min lambda = %d (%e)\n', idx, Lambda(idx));
+
+            f = @(XTRAIN,ytrain,XTEST,ytest) ridgepred(XTRAIN,ytrain,XTEST, Lambda(idx));
+            pred = crossval(f, X, y, 'partition', cv);
+            pred = pred';
+            pred = pred(:);
+            mse = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
+            %fprintf('                                                                  mse sanity: %e vs. %e\n', mse, immse(pred, y));
+
 
         case 'lasso'
             [coef, FitInfo] = lasso(X, y, 'NumLambda', 1);

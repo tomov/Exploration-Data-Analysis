@@ -94,55 +94,53 @@ else
         end
     end
 
-    save(filename, '-v7.3');
-end
 
-
-% define behavioral / hybrid GLM formulas
-switch regressor
-    case 'RU'
-        if do_orth
-            formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
-        else
-            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
-        end
-        formula_orig = 'C ~ -1 + V + RU + VTU';
-        formula_dec = 'C ~ -1 + V + decRU + VTU';
-
-    case 'TU'
-        if do_orth
-            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
-        else
-            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
-        end
-        formula_orig = 'C ~ -1 + V + RU + VTU';
-        formula_dec = 'C ~ -1 + V + RU + VdecTU';
-
-    otherwise
-        assert(false);
-end
-
-% extract regressors
-%
-V_all = [];
-for s = 1:length(data)
-    which_all = logical(ones(length(data(s).run), 1));
+    % define behavioral / hybrid GLM formulas
     switch regressor
         case 'RU'
-            [~, absRU] =  get_latents(data, s, which_all, 'abs');
-            [~, RU] = get_latents(data, s, which_all, 'left');
-            data(s).y = absRU;
-            data(s).RU = RU; % for sign-correction
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + decRU + VTU';
+
         case 'TU'
-            [V, ~, TU] = get_latents(data, s, which_all, 'left');
-            data(s).y = TU;
-            V_all = [V_all; V];
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + RU + VdecTU';
+
         otherwise
             assert(false);
     end
-end
 
-save(filename, '-v7.3');
+    % extract regressors
+    %
+    V_all = [];
+    for s = 1:length(data)
+        which_all = logical(ones(length(data(s).run), 1));
+        switch regressor
+            case 'RU'
+                [~, absRU] =  get_latents(data, s, which_all, 'abs');
+                [~, RU] = get_latents(data, s, which_all, 'left');
+                data(s).y = absRU;
+                data(s).RU = RU; % for sign-correction
+            case 'TU'
+                [V, ~, TU] = get_latents(data, s, which_all, 'left');
+                data(s).y = TU;
+                V_all = [V_all; V];
+            otherwise
+                assert(false);
+        end
+    end
+
+    save(filename, '-v7.3');
+end
 
 rng default; % for reproducibility
 
@@ -169,6 +167,12 @@ for c = 1:numel(masks)
         % also for CV, one run per fold
         [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
         data(s).mse{c} = mse(s);
+
+        if strcmp(method, 'ridge_CV_CV')
+            tmp = pred;
+            pred = nan(length(data(s).run), 1);
+            pred(~data(s).exclude) = tmp;
+        end
 
         if strcmp(regressor, 'RU')
             pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
