@@ -77,16 +77,18 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
             m = [];
             for i = 1:length(Lambda)
                 f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
-                m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
+                m(i) = crossval('mse', X, y, 'Predfun', f);
             end
             [~, idx] = min(m);
             %fprintf('                                                                  min lambda = %d (%e)\n', idx, Lambda(idx));
 
             f = @(XTRAIN,ytrain,XTEST,ytest) ridgepred(XTRAIN,ytrain,XTEST, Lambda(idx));
-            pred = crossval(f, X, y, 'partition', cv);
+            pred = crossval(f, X, y);
             pred = pred';
             pred = pred(:);
-            mse = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
+
+            mse = immse(y, pred);
+            %mse = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             %fprintf('                                                                  mse sanity: %e vs. %e\n', mse, immse(pred, y));
 
 
