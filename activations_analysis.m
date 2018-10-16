@@ -93,7 +93,9 @@ else
             data(s).act(~data(s).exclude,c) = squeeze(act(which_act,c,1));
 
             % adjust for fact that the regactsor was |RU|
-            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+            if strcmp(regressor, 'RU')
+                data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+            end
         end
     end
 

@@ -1,30 +1,61 @@
-% activations analysis for RU for Badre 2012 RLPFC ROI
-% see if average activation in ROI predicts choices better than RU from model
+% univariate decoder analysis 
+% see if activation in ROI predicts choices better than regressor from model
 %
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function badre_2012_activations_analysis(glmodel, normalize)
+function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda)
 
 printcode;
 
 EXPT = exploration_expt();
 
-if ~exist('glmodel', 'var')
-    glmodel = 21;
-end
-if ~exist('normalize', 'var')
-    normalize = 1; % divide each activation by the corresponding beta
-end
-
 data = load_data;
 
-formula_both = 'C ~ -1 + V + RU + VTU + actRU';
-formula_RU = 'C ~ -1 + V + RU + VTU';
-formula_actRU = 'C ~ -1 + V + actRU + VTU';
+if ~exist('do_orth', 'var')
+    do_orth = false;
+end
+if ~exist('lambda', 'var')
+    lambda = 1;
+end
 
-filename = ['badre_2012_activations_analysis_glm', num2str(glmodel), '_normalize', num2str(normalize), '.mat'];
+filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda);
 disp(filename);
+
+% get ROI masks
+switch contrast
+    case 'badre'
+        % clusters = masks from paper
+        masks = badre_2012_create_masks(false);
+        masks = masks(1); % TODO use all masks
+
+        for c = 1:length(masks)
+            mask = masks{c};
+            [~, masknames{c}, ~] = fileparts(mask);
+            region{c,:} = masknames{c};
+        end
+
+    otherwise
+        % group-level settings
+        p = 0.001;
+        alpha = 0.05;
+        Dis = 20;
+        Num = 1; % # peak voxels per cluster; default in bspmview is 3
+        direct = '+';
+
+        [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+
+        r = 10 / 1.5; % 10 mm radius
+
+        % create spherical masks around peak voxel of each cluster (intersected with cluster)
+        %
+        for c = 1:length(region)
+            masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
+            cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
+            ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
+        end
+
+end
 
 % find peak of HRF
 hrf = spm_hrf(0.001);
@@ -55,9 +86,30 @@ for s = 1:length(data)
 end
 
 
-% clusters = masks from paper
-masks = badre_2012_create_masks(false);
-masks = masks(1); % TODO use all masks
+% define behavioral / hybrid GLM formulas
+switch regressor
+    case 'RU'
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        end
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + decRU + VTU';
+
+    case 'TU'
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+        end
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + RU + VdecTU';
+
+    otherwise
+        assert(false);
+end
+
 
 % get betas to (optionally) normalize activations in each run
 for c = 1:length(masks)
@@ -78,8 +130,8 @@ for c = 1:length(masks)
             for run = 1:max(data(s).run)
                 r = find(run == runs); % scan session idx in GLM
                 if ~isempty(r)
-                    % get beta for RU
-                    reg = ['Sn(', num2str(r), ') trial_onsetxRU'];
+                    % get beta for regressor
+                    reg = ['Sn(', num2str(r), ') trial_onsetx', regressor];
                     fprintf('  c = %s, s = %d, run = %d, r = %d, reg = %s\n', mask, s, run, r, reg);
                     b = ccnl_get_beta(EXPT, glmodel, reg, mask, s);
                     data(s).b{c}(data(s).run == run, :) = repmat(b, sum(data(s).run == run), 1);
@@ -108,19 +160,19 @@ for c = 1:length(masks)
             X = SPM.xX.X;
 
             % separate RU betas and regressors from the rest
-            which_RU = contains(names, 'RU');
-            B_noRU = B(~which_RU, :);
-            B_RU = B(which_RU, :);
-            B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
-            X_noRU = X(:, ~which_RU);
-            X_RU = X(:, which_RU);
+            which_reg = contains(names, regressor);
+            B_noreg = B(~which_reg, :);
+            B_reg = B(which_reg, :);
+            B_reg = repelem(B_reg, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
+            X_noreg = X(:, ~which_reg);
+            X_reg = X(:, which_reg);
 
             fprintf('  c = %s, s = %d\n', mask, s);
 
-            data(s).B_noRU{c} = B_noRU;
-            data(s).B_RU{c} = B_RU;
-            data(s).X_noRU{c} = X_noRU;
-            data(s).X_RU{c} = X_RU;
+            data(s).B_noreg{c} = B_noreg;
+            data(s).B_reg{c} = B_reg;
+            data(s).X_noreg{c} = X_noreg;
+            data(s).X_reg{c} = X_reg;
 
         elseif normalize == 3 || normalize == 4
             % act_RU = (act - X_\RU * b_\RU) ./ b_RU
@@ -137,19 +189,19 @@ for c = 1:length(masks)
             X = SPM.xX.xKXs.X;
 
             % separate RU betas and regressors from the rest
-            which_RU = contains(names, 'RU');
-            B_noRU = B(~which_RU, :);
-            B_RU = B(which_RU, :);
-            B_RU = repelem(B_RU, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
-            X_noRU = X(:, ~which_RU);
-            X_RU = X(:, which_RU);
+            which_reg = contains(names, regressor);
+            B_noreg = B(~which_reg, :);
+            B_reg = B(which_reg, :);
+            B_reg = repelem(B_reg, nTRs, 1); % we're need one for each TR b/c we're doing element-wise divison by b_RU
+            X_noreg = X(:, ~which_reg);
+            X_reg = X(:, which_reg);
 
             fprintf('  c = %s, s = %d\n', mask, s);
 
-            data(s).B_noRU{c} = B_noRU;
-            data(s).B_RU{c} = B_RU;
-            data(s).X_noRU{c} = X_noRU;
-            data(s).X_RU{c} = X_RU;
+            data(s).B_noreg{c} = B_noreg;
+            data(s).B_reg{c} = B_reg;
+            data(s).X_noreg{c} = X_noreg;
+            data(s).X_reg{c} = X_reg;
         else
             assert(false);
 
@@ -175,16 +227,17 @@ for s = 1:length(data)
     end
 
     data(s).act = nan(length(data(s).run), length(masks));
-    [V, RU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
+    [V, RU, TU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
+    data(s).TU = TU;
     V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(masks)
         if normalize == 2
-            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) ./ data(s).B_RU{c};
+            act{c} = (act{c} - data(s).X_noreg{c} * data(s).B_noreg{c}) ./ data(s).B_reg{c};
         elseif normalize == 3
             act{c} = spm_filter(SPM.xX.K,SPM.xX.W*act{c});
-            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) ./ data(s).B_RU{c};
+            act{c} = (act{c} - data(s).X_noreg{c} * data(s).B_noreg{c}) ./ data(s).B_reg{c};
         elseif normalize == 4
             % ridge regression -- regulalize by lambda
             % x_RU = (activation - sum of x_i * b_i, for i != RU) * b_RU / (b_RU^2 + lambda)
@@ -192,7 +245,7 @@ for s = 1:length(data)
             %
             lambda = 1; % TODO determine in principled way; hard to do b/c GLM is already run => nothing to fit / cross-validate...
             act{c} = spm_filter(SPM.xX.K,SPM.xX.W*act{c});
-            act{c} = (act{c} - data(s).X_noRU{c} * data(s).B_noRU{c}) .* data(s).B_RU{c} ./ (data(s).B_RU{c}.^2 + lambda);
+            act{c} = (act{c} - data(s).X_noreg{c} * data(s).B_noreg{c}) .* data(s).B_reg{c} ./ (data(s).B_reg{c}.^2 + lambda);
         end
 
         % not all runs were used in the GLMs
@@ -206,7 +259,7 @@ for s = 1:length(data)
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
         % adjust for fact that the regressor was |RU|
-        if glmodel == 21
+        if glmodel == 21 && strcmp(regressor, 'RU')
             data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
         end
     end
@@ -227,14 +280,38 @@ for c = 1:numel(masks)
         bad_runs = [bad_runs; data(s).bad_runs(~data(s).timeout)]; % bad runs are also out (their activations are NaNs)
 
         which = ~data(s).bad_runs & ~data(s).timeout;
-        mse(s) = immse(data(s).RU(which), data(s).act(which, c));
+        switch regressor % TODO act is still whitened & filtered => MSE might be wrong
+            case 'RU'
+                mse(s) = immse(data(s).RU(which), data(s).act(which, c));
+            case 'TU'
+                mse(s) = immse(data(s).TU(which), data(s).act(which, c));
+        end
     end
     assert(all(isnan(act(bad_runs))));
     assert(all(~isnan(act(~bad_runs))));
 
-    tbl = data2table(data,0,1); % bad_runs timeouts for fitting
-    actRU = act;
-    tbl = [tbl table(actRU)];
+    tbl = data2table(data,0,1); % exclude timeouts for fitting
+
+    switch regressor
+        case 'RU'
+            decRU = act;
+            tbl = [tbl table(decRU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
+            decRU_orth = decRU;
+            decRU_orth(~bad_runs) = tmp(:,2);
+            tbl = [tbl table(decRU_orth)];
+        case 'TU'
+            VdecTU = V_all ./ act;
+            tbl = [tbl table(VdecTU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
+            VdecTU_orth = VdecTU;
+            VdecTU_orth(~bad_runs) = tmp(:,2);
+            tbl = [tbl table(VdecTU_orth)];
+        otherwise
+            assert(false);
+    end
 
     % glm with both RU and actRU
     results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
@@ -246,24 +323,31 @@ for c = 1:numel(masks)
 
     % glm with RU only
     % do model comparison
-    results_RU{c} = fitglme(tbl,formula_RU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
-    comp{c} = compare(results_RU{c}, results_both{c}); % order is important -- see docs
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
     comp{c}
     p_comp(c,:) = comp{c}.pValue(2);
     BIC(c,:) = comp{c}.BIC';
 
     % glm with actRU only
     % do second model comparison
-    results_actRU{c} = fitglme(tbl,formula_actRU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
-    comp2{c} = compare(results_actRU{c}, results_both{c}); % order is important -- see docs
+    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+    comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
     comp2{c}
     p_comp2(c,:) = comp2{c}.pValue(2);
     BIC2(c,:) = comp2{c}.BIC';
 
 
     % sanity check -- activations should correlate with regressor
-    RU = table2array(tbl(:,'RU'));
-    [r,p] = corr(RU(~bad_runs), act(~bad_runs));
+    switch regressor
+        case 'RU'
+            RU = table2array(tbl(:,'RU'));
+            [r,p] = corr(RU(~bad_runs), act(~bad_runs));
+        case 'TU'
+            TU = table2array(tbl(:,'TU'));
+            [r,p] = corr(TU(~bad_runs), act(~bad_runs));
+    end
+
 
     pears_rs(c,:) = r;
     pears_ps(c,:) = p;
@@ -273,7 +357,14 @@ for c = 1:numel(masks)
     %
     load results_glme_fig3_nozscore.mat;
     w = getEffects(results_VTURU, false);
-    [r, p] = corr(abs(w(:,2)), mse');
+    switch regressor
+        case 'RU'
+            [r, p] = corr(abs(w(:,2)), mse');
+        case 'TU'
+            [r, p] = corr(abs(w(:,3)), mse');
+        otherwise
+            assert(false);
+    end
     disp('mse to w');
     r
     p
@@ -287,8 +378,8 @@ save(filename, '-v7.3');
 
 p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-BIC_RU = BIC(:,1);
+BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
-BIC_actRU = BIC2(:,1);
-table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_RU, BIC_both, p_comp, BIC_actRU, p_comp2, p_ax, r_ax)
+BIC_dec = BIC2(:,1);
+table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
 

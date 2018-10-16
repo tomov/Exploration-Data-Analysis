@@ -248,7 +248,7 @@ for c = 1:numel(masks)
     p_comp2(c,:) = comp2{c}.pValue(2);
     BIC2(c,:) = comp2{c}.BIC';
 
-    % correlate RMSE with behavioral weights across subjects
+    % correlate MSE with behavioral weights across subjects
     % => see if better decodeability is associated with more reliance on regressor in decision
     %
     load results_glme_fig3_nozscore.mat;
