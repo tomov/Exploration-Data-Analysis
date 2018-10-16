@@ -1,26 +1,29 @@
-function rsa = exploration_create_rsa(rsa_idx, subj, run)
+function rsa = exploration_create_rsa(rsa_idx, subj)
 
     % Create rsa structure, helper function for creating EXPT in
     % exploration_expt.m
     %
-    % USAGE: rsa = exploration_create_rsa(model,subj,run)
+    % USAGE: rsa = exploration_create_rsa(model,subj)
     %
     % INPUTS:
     %   rsa_idx - positive integer indicating which RSA we're doing
     %   subj - integer specifying which subject is being analyzed
-    %   run - integer specifying the run
     %
     % OUTPUTS:
     %   rsa - a structure with the following fields:
-    %     .event 
-    %     .betas_glmodel
-    %     .radius
-    %     .model
+    %     .glmodel - which GLM to use to get the trial-by-trial betas; make sure to have a unique regressor for each trial, e.g. 'trial_onset_1', 'trial_onset_2', etc.
+    %     .event - which within-trial event to use for neural activity; used to pick the right betas (needs to be substring of the regressor name), e.g. 'trial_onset'
+    %     .which_trials - which trials to include (e.g. not timeouts)
+    %     .model - struct array describing the models used for behavioral RDMs (see Kriegeskorte et al. 2008) with the fields:
+    %         .name - model name
+    %         .features - [nTrials x D] feature vector
+    %         .distance_measure - name (e.g. 'cosine') or function handler to be used as a distance measure for the RDMs (passed to pdist, see MATLAB documentation)
+    %         .is_control - whether this is a control model (e.g. time)
     %
     % Momchil Tomov, Sep 2018
 
 
-    fprintf('rsa %d, subj %d, run %d\n', rsa_idx, subj, run);
+    fprintf('rsa %d, subj %d\n', rsa_idx, subj);
 
     data = load_data;
     conds = {'RS', 'SR', 'RR', 'SS'};
@@ -29,12 +32,11 @@ function rsa = exploration_create_rsa(rsa_idx, subj, run)
     [allSubjects, subjdirs, goodRuns, goodSubjs] = exploration_getSubjectsDirsAndRuns();
     
   
-    % skip bad runs
+    % skip bad runs and timeouts
     runs = find(goodRuns{subj});
-    run = runs(run);
-    fprintf('run %d \n', run);
-    
-    which_trials = data(subj).run == run;  
+    bad_run = ~ismember(data(s).run, runs);
+    exclude = bad_run | data(s).timeout;
+    which_trials = ~exclude;
    
     fprintf('which_trials = %s\n', sprintf('%d', which_trials));
 
@@ -46,7 +48,8 @@ function rsa = exploration_create_rsa(rsa_idx, subj, run)
         %
         case 1
             rsa.event = 'trial_onset';
-            rsa.betas_glmodel = 144;
+            rsa.glmodel = 23;
+            rsa.which_trials = ~data.timeout(~bad_run);
 
             %rsa.regressors = {'trial_onset_subj_1_run_1', ... etc.. };
             %rsa.radius = 2.6666;
@@ -55,6 +58,7 @@ function rsa = exploration_create_rsa(rsa_idx, subj, run)
             rsa.model(1).features = data(subj).cond(which_trials);
             rsa.model(1).distance_measure = @(c1, c2) c1 ~= c2;
             rsa.model(1).is_control = false;
+            assert(sum(rsa.which_trials) == size(rsa.model(1).features, 1)); % TODO for all
 
             rsa.model(2).name = 'RS_SR_vs_RR_SS';
             rsa.model(2).features = data(subj).cond(which_trials) == 1 | data(subj).cond(which_trials) == 2;
@@ -67,8 +71,8 @@ function rsa = exploration_create_rsa(rsa_idx, subj, run)
             [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'left');
 
             rsa.event = 'trial_onset';
-            rsa.betas_glmodel = 144;
-            rsa.radius = 2.6666;
+            rsa.glmodel = 23;
+            rsa.which_trials = ~data.timeout(~bad_run);
 
             rsa.model(1).name = 'Qs_and_sigmas';
             rsa.model(1).features = [Q1, Q2, std1, std2];
