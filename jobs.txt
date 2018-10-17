@@ -949,3 +949,9 @@ badre_2012_activations_analysis.sh glm 21 normalize: output/badre_2012_activatio
 ----------------
 badre_2012_residuals_analysis.sh glm 21 non-normalize: output/badre_2012_residuals_analysis_54839311.out -- Submitted batch job 54839311
 badre_2012_residuals_analysis.sh glm 21 normalize: output/badre_2012_residuals_analysis_54839312.out -- Submitted batch job 54839312
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_rsa_searchlight.sh for GLM 1, 1-10000, subjects : output/ccnl_rsa_searchlight_1_1-10000_goodSubjects_88725418.out -- Submitted batch job 88725418
+ccnl_rsa_searchlight.sh for GLM 1, 10001-20000, subjects : output/ccnl_rsa_searchlight_1_10001-20000_goodSubjects_88725418.out -- Submitted batch job 88725418
+ccnl_rsa_searchlight.sh for GLM 1, 20001-30000, subjects : output/ccnl_rsa_searchlight_1_20001-30000_goodSubjects_88725418.out -- Submitted batch job 88725418

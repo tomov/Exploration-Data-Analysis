@@ -39,7 +39,7 @@ else
         case 'badre'
             % clusters = masks from paper
             masks = badre_2012_create_masks(false);
-            masks = masks(1); % TODO all masks
+            %masks = masks(1); % TODO all masks
             region = masks';
 
             % extract trial_onset (raw, unsmoothed) betas

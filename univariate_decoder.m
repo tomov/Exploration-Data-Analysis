@@ -27,7 +27,7 @@ switch contrast
     case 'badre'
         % clusters = masks from paper
         masks = badre_2012_create_masks(false);
-        masks = masks(1); % TODO use all masks
+        %masks = masks(1); % TODO use all masks
 
         for c = 1:length(masks)
             mask = masks{c};
@@ -243,7 +243,6 @@ for s = 1:length(data)
             % x_RU = (activation - sum of x_i * b_i, for i != RU) * b_RU / (b_RU^2 + lambda)
             % strictly speaking we should call it decRU instead of act but whatevs
             %
-            lambda = 1; % TODO determine in principled way; hard to do b/c GLM is already run => nothing to fit / cross-validate...
             act{c} = spm_filter(SPM.xX.K,SPM.xX.W*act{c});
             act{c} = (act{c} - data(s).X_noreg{c} * data(s).B_noreg{c}) .* data(s).B_reg{c} ./ (data(s).B_reg{c}.^2 + lambda);
         end
@@ -381,5 +380,5 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
 BIC_dec = BIC2(:,1);
-table(masknames', p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
 

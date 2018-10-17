@@ -6,6 +6,7 @@ function masks = badre_2012_create_mask(do_create)
 mni = [36 56 -8; ... % RU @ trial onset
        40 60 -10; ... % explorers; ventral RLPFC
        30 52 -14; ... % same
+       35 50 15; ... % Zajkowski et al. 2017 RLPFC
        24 48 20; ... % explorers; dorsal RLPFC
        30 52 16; ... % same
        18 40 22; ... % same

@@ -13,6 +13,8 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
     %   rsa - a structure with the following fields:
     %     .glmodel - which GLM to use to get the trial-by-trial betas; make sure to have a unique regressor for each trial, e.g. 'trial_onset_1', 'trial_onset_2', etc.
     %     .event - which within-trial event to use for neural activity; used to pick the right betas (needs to be substring of the regressor name), e.g. 'trial_onset'
+    %     .mask - path to .nii file, or 3D binary vector of voxels to consider
+    %     .radius - searchlight radius in voxels
     %     .which_trials - which trials to include (e.g. not timeouts)
     %     .model - struct array describing the models used for behavioral RDMs (see Kriegeskorte et al. 2008) with the fields:
     %         .name - model name
@@ -34,8 +36,8 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
   
     % skip bad runs and timeouts
     runs = find(goodRuns{subj});
-    bad_run = ~ismember(data(s).run, runs);
-    exclude = bad_run | data(s).timeout;
+    bad_run = ~ismember(data(subj).run, runs);
+    exclude = bad_run | data(subj).timeout;
     which_trials = ~exclude;
    
     fprintf('which_trials = %s\n', sprintf('%d', which_trials));
@@ -49,7 +51,9 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
         case 1
             rsa.event = 'trial_onset';
             rsa.glmodel = 23;
-            rsa.which_trials = ~data.timeout(~bad_run);
+            rsa.radius = 10 / 1.5;
+            rsa.mask = 'masks/mask.nii';
+            rsa.which_trials = ~data(subj).timeout(~bad_run);
 
             %rsa.regressors = {'trial_onset_subj_1_run_1', ... etc.. };
             %rsa.radius = 2.6666;
@@ -72,7 +76,9 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
 
             rsa.event = 'trial_onset';
             rsa.glmodel = 23;
-            rsa.which_trials = ~data.timeout(~bad_run);
+            rsa.radius = 10 / 1.5;
+            rsa.mask = 'masks/mask.nii';
+            rsa.which_trials = ~data(subj).timeout(~bad_run);
 
             rsa.model(1).name = 'Qs_and_sigmas';
             rsa.model(1).features = [Q1, Q2, std1, std2];
