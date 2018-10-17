@@ -1039,6 +1039,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                multi.durations{5} = zeros(size(multi.onsets{5}));
            end
 
+
         % #Sam
         % glm 21 with RU = max - min
         % RU, TU, trial pmod @ trial_onset
@@ -1147,6 +1148,81 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
            multi.pmod(1).name{1} = 'diff';
            multi.pmod(1).param{1} = diff';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           if sum(which_trials & data(subj).timeout) > 0
+               multi.names{5} = 'trial_onset_timeouts';
+               multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).timeout); % timeouts only
+               multi.durations{5} = zeros(size(multi.onsets{5}));
+           end
+
+
+        % #Sam
+        % glm 12 without timeouts
+        % |DV| @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        %
+        case 29
+           [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials & ~data(subj).timeout); % exclude timeouts
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'DV';
+           multi.pmod(1).param{1} = DV';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           if sum(which_trials & data(subj).timeout) > 0
+               multi.names{5} = 'trial_onset_timeouts';
+               multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).timeout); % timeouts only
+               multi.durations{5} = zeros(size(multi.onsets{5}));
+           end
+
+        % #Sam
+        % V without timeouts
+        % |V| @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        %
+        case 30
+           [V, RU, TU] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials & ~data(subj).timeout); % exclude timeouts
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'V';
+           multi.pmod(1).param{1} = V';
            multi.pmod(1).poly{1} = 1;    
 
            multi.names{2} = 'choice_onset';

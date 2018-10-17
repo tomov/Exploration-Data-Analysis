@@ -80,22 +80,27 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
             rsa.mask = 'masks/mask.nii';
             rsa.which_trials = ~data(subj).timeout(~bad_run);
 
-            rsa.model(1).name = 'Qs_and_sigmas';
-            rsa.model(1).features = [Q1, Q2, std1, std2];
+            rsa.model(1).name = 'Qs';
+            rsa.model(1).features = [Q1, Q2];
             rsa.model(1).distance_measure = 'cosine';
             rsa.model(1).is_control = false;
 
+            rsa.model(2).name = 'sigmas';
+            rsa.model(2).features = [std1, std2];
+            rsa.model(2).distance_measure = 'cosine';
+            rsa.model(2).is_control = false;
+
             % controls
 
-            rsa.model(2).name = 'time';
-            rsa.model(2).features = data(subj).trial_onset(which_trials);
-            rsa.model(2).distance_measure = 'euclidean';
-            rsa.model(2).is_control = true;
-
-            rsa.model(3).name = 'run';
-            rsa.model(3).features = data(subj).run(which_trials);
-            rsa.model(3).distance_measure = @(c1, c2) c1 ~= c2;
+            rsa.model(3).name = 'time';
+            rsa.model(3).features = data(subj).trial_onset(which_trials);
+            rsa.model(3).distance_measure = 'euclidean';
             rsa.model(3).is_control = true;
+
+            rsa.model(4).name = 'run';
+            rsa.model(4).features = data(subj).run(which_trials);
+            rsa.model(4).distance_measure = @(c1, c2) c1 ~= c2;
+            rsa.model(4).is_control = true;
 
         otherwise
             assert(false, 'invalid rsa_idx -- should be one of the above');

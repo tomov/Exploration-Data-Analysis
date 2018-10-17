@@ -21,7 +21,7 @@ do
         start_idx=$(((batch - 1) * batch_size + 1))
         end_idx=$((batch * batch_size))
 
-        shuffledSubjects=( $(printf '%s\n' "${goodSubjects[@]}" | shuf ) )   # shuffle subjects so parallel GLM's don't use the same hard disk
+        shuffledSubjects=( $(printf '%s\n' "${goodSubjects[@]}" | shuf ) )   # shuffle subjects so parallel batches don't use the same hard disk
         subj_arg="${shuffledSubjects[@]}" # stringify it
 
         outfileprefix="output/ccnl_rsa_searchlight_${rsa_idx}_${start_idx}-${end_idx}_goodSubjects"
@@ -41,7 +41,7 @@ do
         #
         sbatch_output_split=($sbatch_output)
         job_id=${sbatch_output_split[3]}
-        echo ccnl_rsa_searchlight.sh for GLM ${rsa_idx}, ${start_idx}-${end_idx}, subjects ${subj_arg}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
+        echo ccnl_rsa_searchlight.sh for rsa_idx ${rsa_idx}, ${start_idx}-${end_idx}, subjects ${subj_arg}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
 
         echo watch job status with: sacct -j ${job_id}
         echo watch output with: tail -f ${outfileprefix}_${job_id}.out
