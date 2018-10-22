@@ -1,6 +1,6 @@
 #scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp  exploration_create_multi.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
-scp  exploration_create_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  exploration_create_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  random_string.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp extract_roi_betas.m get_activations_submask.m badre_2012_roi_analysis.m badre_2012_create_masks.m  betapath_from_maskpath.m preload_betas_from_masks.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp ccnl_get_beta_nosmooth.m data2table_AU.m load_mask.m john_roi_analysis.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
@@ -15,6 +15,7 @@ scp  exploration_create_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershma
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/john_roi_analysis.m .
 #scp -r  ../../libs/ccnl-fmri/*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp  ../../libs/ccnl-fmri/*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
+scp  ../../libs/ccnl-fmri/ccnl_check_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/*.m  ../../libs/ccnl-fmri/
 #scp   ../../libs/ccnl-fmri/ccnl_roi_glm.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/run_ccnl_fmri_con*.m .
