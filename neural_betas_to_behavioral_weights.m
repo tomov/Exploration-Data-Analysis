@@ -1,3 +1,4 @@
+DEPRECATED -- use cross_subject.m
 function neural_betas_to_behavioral_weights(glmodel, regressor, contrast)
 
 % TODO dedupe with residuals_analysis.m

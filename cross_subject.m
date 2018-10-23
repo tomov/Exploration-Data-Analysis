@@ -1,14 +1,16 @@
-function main_effect(glmodel, regressor, contrast)
+function cross_subject(glmodel, regressor, contrast)
 
-printcode;
+% TODO dedupe with residuals_analysis.m
+% TODO support what = voxel, not just sphere
+
+what = 'sphere';
 
 EXPT = exploration_expt();
 
 data = load_data;
 
-filename = sprintf('main_effect_glm%d_%s_%s.mat', glmodel, regressor, replace(contrast, ' ', '_'));
+filename = sprintf('cross_subject_glm%d_%s_%s_%s.mat', glmodel, regressor, replace(contrast, ' ', '_'), what);
 disp(filename);
-
 
 % get ROI masks
 switch contrast
@@ -40,39 +42,62 @@ switch contrast
             cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
             ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
         end
-        masknames = region';
 end
 
 
-clear stat;
 
+load results_glme_fig3_nozscore.mat;
+w = getEffects(results_VTURU, false);
 
-for i = 1:length(masks)
-    mask = masks{i};
-    [~, masknames{i}, ~] = fileparts(mask);
+for c = 1:length(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+
+    %{
+    [~, vox] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), radius);
+
+    % intersect with cluster
+    c_vox = [];
+    for i = 1:size(vox, 1)
+        if CI(vox(i,1), vox(i,2), vox(i,3)) == CI(cor(c,1), cor(c,2), cor(c,3)) % note cluster idx != c
+            c_vox = [c_vox; vox(i,:)];
+        end
+    end
+    %}
 
     clear b;
     for s = 1:length(data)
         b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
     end
+    all_b{c} = b;
 
-    [h, p, ci, stats] = ttest(b);
-    t = stats.tstat;
-    ps(i,:) = p;
-    m(i,:) = mean(b);
+
+    switch regressor
+        case 'RU'
+            [r, p] = corr(w(:,2), b');
+
+        case 'TU'
+            [r, p] = corr(w(:,3), b');
+
+        otherwise
+            assert(false);
+    end
+
     disp(mask);
+    r
     p
-    t
-    b
-    stat{i} = stats;
+
+    ps(c,:) = p;
+    rs(c,:) = r;
 end
 
 p_uncorr = ps;
 p_corr = 1 - (1 - ps) .^ length(ps);
+r = rs;
 
 save(filename, '-v7.3');
 
 if exist('region', 'var')
     masknames = region';
 end
-table(masknames', p_uncorr, p_corr, m)
+table(masknames', p_uncorr, p_corr, r);
