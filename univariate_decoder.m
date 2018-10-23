@@ -35,6 +35,16 @@ switch contrast
             region{c,:} = masknames{c};
         end
 
+    case 'tommy'
+        % clusters = masks from paper
+        masks = tommy_2017_create_masks(false);
+
+        for c = 1:length(masks)
+            mask = masks{c};
+            [~, masknames{c}, ~] = fileparts(mask);
+            region{c,:} = masknames{c};
+        end
+
     otherwise
         % group-level settings
         p = 0.001;
