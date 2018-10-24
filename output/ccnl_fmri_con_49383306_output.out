@@ -1,0 +1,306 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+Duplicate application tag in applications 'SPM' and 'SPM'.
+Duplicate application tag in applications 'BasicIO' and 'BasicIO'.
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             22:59:22 - 27/07/2018
+========================================================================
+Contrasts folder                        :       ./glmOutput/model1/subj1
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+	contrast image  2               :                   ...computing       ...written con_0002.nii
+	spm{T} image  2                 :                   ...computing      ...written spmT_0002.nii
+	contrast image  3               :                   ...computing       ...written con_0003.nii
+	spm{T} image  3                 :                   ...computing      ...written spmT_0003.nii
+	contrast image  4               :                   ...computing       ...written con_0004.nii
+	spm{T} image  4                 :                   ...computing      ...written spmT_0004.nii
+	contrast image  5               :                   ...computing       ...written con_0005.nii
+	spm{T} image  5                 :                   ...computing      ...written spmT_0005.nii
+	contrast image  6               :                   ...computing       ...written con_0006.nii
+	spm{T} image  6                 :                   ...computing      ...written spmT_0006.nii
+	contrast image  7               :                   ...computing       ...written con_0007.nii
+	spm{T} image  7                 :                   ...computing      ...written spmT_0007.nii
+	contrast image  8               :                   ...computing       ...written con_0008.nii
+	spm{T} image  8                 :                   ...computing      ...written spmT_0008.nii
+Completed                               :          22:59:56 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             22:59:59 - 27/07/2018
+========================================================================
+Contrasts folder                        :       ./glmOutput/model1/subj2
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+	contrast image  2               :                   ...computing       ...written con_0002.nii
+	spm{T} image  2                 :                   ...computing      ...written spmT_0002.nii
+	contrast image  3               :                   ...computing       ...written con_0003.nii
+	spm{T} image  3                 :                   ...computing      ...written spmT_0003.nii
+	contrast image  4               :                   ...computing       ...written con_0004.nii
+	spm{T} image  4                 :                   ...computing      ...written spmT_0004.nii
+	contrast image  5               :                   ...computing       ...written con_0005.nii
+	spm{T} image  5                 :                   ...computing      ...written spmT_0005.nii
+	contrast image  6               :                   ...computing       ...written con_0006.nii
+	spm{T} image  6                 :                   ...computing      ...written spmT_0006.nii
+	contrast image  7               :                   ...computing       ...written con_0007.nii
+	spm{T} image  7                 :                   ...computing      ...written spmT_0007.nii
+	contrast image  8               :                   ...computing       ...written con_0008.nii
+	spm{T} image  8                 :                   ...computing      ...written spmT_0008.nii
+Completed                               :          23:00:24 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:25 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:25 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:27 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:29 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con1
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:29 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:30 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:30 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:34 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:36 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con2
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:36 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:36 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:36 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:40 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:41 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con3
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:41 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:42 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:42 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:43 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:45 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con4
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:45 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:45 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:45 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:47 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:49 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con5
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:49 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:49 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:49 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:51 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:52 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con6
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:53 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:53 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:53 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:55 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:00:56 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con7
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:00:56 - 27/07/2018
+Done    'Contrast Manager'
+Done
+
+Mapping files                           :                        ...done
+Design configuration                    :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          23:00:56 - 27/07/2018
+
+SPM12: spm_spm (v6842)                             23:00:56 - 27/07/2018
+========================================================================
+Chunk   1/1                             :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          23:00:58 - 27/07/2018
+
+
+------------------------------------------------------------------------
+Running job #1
+------------------------------------------------------------------------
+Running 'Contrast Manager'
+
+SPM12: spm_contrasts.m                             23:01:00 - 27/07/2018
+========================================================================
+Contrasts folder                        :        ./glmOutput/model1/con8
+Deleting contrasts                      :                        ...done
+	contrast image  1               :                   ...computing       ...written con_0001.nii
+	spm{T} image  1                 :                   ...computing      ...written spmT_0001.nii
+Completed                               :          23:01:00 - 27/07/2018
+Done    'Contrast Manager'
+Done
+

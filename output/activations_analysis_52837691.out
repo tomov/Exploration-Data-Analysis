@@ -1,0 +1,271 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+
+outfile =
+
+    'activations_analysis_TU_glm19.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model19/con2/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2)
+  Columns 1 through 5
+
+    'Positive'    'Parietal_Inf_L'         [46991]    [11.3081]    [-44]
+            []    'Thalamus_L'             [ 3321]    [ 8.1504]    [-14]
+            []    'Location not in ...'    [  328]    [ 6.3548]    [ -2]
+
+  Columns 6 through 7
+
+    [-40]    [50]
+    [-26]    [12]
+    [-32]    [22]
+
+cor
+Computed activations for subject 1
+cor
+Computed activations for subject 2
+cor
+Computed activations for subject 3
+cor
+Computed activations for subject 4
+cor
+Computed activations for subject 5
+cor
+Computed activations for subject 6
+cor
+Computed activations for subject 7
+cor
+Computed activations for subject 8
+cor
+Computed activations for subject 9
+cor
+Computed activations for subject 10
+cor
+Computed activations for subject 11
+cor
+Computed activations for subject 12
+cor
+Computed activations for subject 13
+cor
+Computed activations for subject 14
+cor
+Computed activations for subject 15
+cor
+Computed activations for subject 16
+cor
+Computed activations for subject 17
+cor
+Computed activations for subject 18
+cor
+Computed activations for subject 19
+cor
+Computed activations for subject 20
+cor
+Computed activations for subject 21
+cor
+Computed activations for subject 22
+cor
+Computed activations for subject 23
+cor
+Computed activations for subject 24
+cor
+Computed activations for subject 25
+cor
+Computed activations for subject 26
+cor
+Computed activations for subject 27
+cor
+Computed activations for subject 28
+cor
+Computed activations for subject 29
+cor
+Computed activations for subject 30
+cor
+Computed activations for subject 31
+[Warning: Final linear predictor from PL iterations is not feasible.] 
+[> In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/checkFinalPLSolution (line 1507)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingPL (line 1724)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingML (line 2018)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/refit (line 4322)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel (line 4288)
+  In GeneralizedLinearMixedModel/fitStandardLMEModel (line 1317)
+  In GeneralizedLinearMixedModel/fitter (line 891)
+  In classreg.regr.FitObject/doFit (line 94)
+  In GeneralizedLinearMixedModel.fit (line 2411)
+  In fitglme (line 389)
+  In activations_analysis (line 129)] 
+
+ans =
+
+         0
+         0
+    0.5217
+
+[Warning: Final linear predictor from PL iterations is not feasible.] 
+[> In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/checkFinalPLSolution (line 1507)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingPL (line 1724)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingML (line 2018)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/refit (line 4322)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel (line 4288)
+  In GeneralizedLinearMixedModel/fitStandardLMEModel (line 1317)
+  In GeneralizedLinearMixedModel/fitter (line 891)
+  In classreg.regr.FitObject/doFit (line 94)
+  In GeneralizedLinearMixedModel.fit (line 2411)
+  In fitglme (line 389)
+  In activations_analysis (line 129)] 
+
+ans =
+
+         0
+         0
+    0.4688
+
+
+ans =
+
+         0
+         0
+    0.3944
+
+
+ans =
+
+  3×6 table
+
+            region             extent     stat            mni           p_uncorr    p_corr 
+    _______________________    ______    ______    _________________    ________    _______
+
+    'Parietal_Inf_L'           46991     11.308    -44    -40     50    0.52168     0.89056
+    'Thalamus_L'                3321     8.1504    -14    -26     12    0.46883     0.85013
+    'Location not in atlas'      328     6.3548     -2    -32     22    0.39443     0.77792
+

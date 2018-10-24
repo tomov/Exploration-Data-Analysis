@@ -1,0 +1,97 @@
+Saving output to '/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects'
+ArcGet.py: WARNING: Unable to determine Age for DOB=""
+
+SUBJECT: 180805_UEP_999 (CBSCentral_S08738) AGE:       0                             
+GENDER:                                 HADEDNESS:                               
+RACE:                                   ETHNICITY:                               
+ENGLISH:                                LANGUAGE:                                
+WEIGHT:                                 HEIGHT:                                  
+SESSION: 180805_UEP_999 (Accession ID CBSCentral_E11427)
+
+downld  num quality  type         series                           note
+    no    1 usable   LOCALIZER    localizer_32ch_uncombined        
+    no    2 usable   localizer_32ch_uncombined localizer_32ch_uncombined        
+    no    3 usable   AAHead_Scout_32ch AAHead_Scout_32ch                
+    no    4 usable   AAScout      AAHead_Scout_32ch_MPR_sag        
+    no    5 usable   AAScout      AAHead_Scout_32ch_MPR_cor        
+    no    6 usable   AAScout      AAHead_Scout_32ch_MPR_tra        
+   YES    7 usable   MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS         
+    no   99 usable   PhoenixZIPReport PhoenixZIPReport                 
+
+Getting Data...
+Scan    7 MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS from '180805_UEP_999'
+################################################## 19.53 MB 5.48 MB/s
+################################################## 39.06 MB 7.55 MB/s
+#########                                          42.83 MB 7.79 MB/s Total
+Done with '180805_UEP_999'.
+ArcGet.py: =================================================================
+ArcGet.py: SUMMARY of WARNINGS:
+ArcGet.py: WARNING: Unable to determine Age for DOB=""
+------------------
+Run = 180805_UEP_999.MR.Investigators_Gershman.7.1.20180805.205611.35fgi8.dcm
+count = 0
+filename = struct
+mri_convert -it siemens_dicom -ot nii -i 180805_UEP_999.MR.Investigators_Gershman.7.1.20180805.205611.35fgi8.dcm -o /ncf/gershman/Lab/Exploration/subjects/180805_UEP_999/preproc/struct.nii 
+$Id: mri_convert.c,v 1.225 2015/10/19 18:48:26 fischl Exp $
+reading from 180805_UEP_999.MR.Investigators_Gershman.7.1.20180805.205611.35fgi8.dcm...
+Getting Series No 
+Scanning Directory 
+INFO: loading series header info.
+INFO: sorting.
+INFO: (256 256 176), nframes = 1, ismosaic=0
+sdfi->UseSliceScaleFactor 0
+datatype = 4, short=4, float=3
+PE Dir ROW ROW
+AutoAlign matrix detected 
+AutoAlign Matrix --------------------- 
+ 1.00000   0.00000   0.00000   0.00000;
+ 0.00000   1.00000   0.00000   0.00000;
+ 0.00000   0.00000   1.00000   0.00000;
+ 0.00000   0.00000   0.00000   1.00000;
+
+FileName 		/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects/180805_UEP_999/RAW/180805_UEP_999.MR.Investigators_Gershman.7.1.20180805.205611.35fgi8.dcm
+Identification
+	NumarisVer        syngo MR E11
+	ScannerModel      Prisma_fit
+	PatientName       180805_UEP_999
+Date and time
+	StudyDate         20180805
+	StudyTime         205611.176000 
+	SeriesTime        210450.713000 
+	AcqTime           205811.992500 
+Acquisition parameters
+	PulseSeq          tfl3d4_16ns 
+	Protocol          T1_MEMPRAGE_1.0mm_p2
+	PhEncDir          ROW
+	EchoNo            1
+	FlipAngle         7
+	EchoTime          1.69
+	InversionTime     1100
+	RepetitionTime    2530
+	PhEncFOV          256
+	ReadoutFOV        256
+Image information
+	RunNo             6
+	SeriesNo          7
+	ImageNo           1
+	NImageRows        256
+	NImageCols        256
+	NFrames           1
+	SliceArraylSize   1
+	IsMosaic          0
+	ImgPos             92.2743 148.9690 113.8887 
+	VolRes              1.0000   1.0000   1.0000 
+	VolDim            256      256      176 
+	Vc                 -0.0093  -0.9996   0.0248 
+	Vr                 -0.0278  -0.0245  -0.9993 
+	Vs                 -0.9996   0.0100   0.0275 
+	VolCenter          -0.4369  18.7573  -8.4287 
+	TransferSyntaxUID 1.2.840.10008.1.2.1
+UseSliceScaleFactor 0 (slice 0: 1)
+IsDWI = 0
+INFO: no Siemens slice order reversal detected (good!). 
+TR=2530.00, TE=1.69, TI=1100.00, flip angle=7.00
+i_ras = (-0.00931851, -0.99965, 0.0247717)
+j_ras = (-0.0277827, -0.0245044, -0.999314)
+k_ras = (-0.999571, 0.0100003, 0.0275446)
+writing to /ncf/gershman/Lab/Exploration/subjects/180805_UEP_999/preproc/struct.nii...

@@ -1,0 +1,591 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+
+outfile =
+
+    'b_to_w_RU_glm19_sphere_max.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model19/con1/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2)
+[Warning: No voxels found after cluster FWE correction. Setting extent threshold
+= 5.] 
+[> In ccnl_extract_clusters>bspm_extract_clusters (line 146)
+  In ccnl_extract_clusters (line 85)
+  In neural_betas_to_behavioral_weights (line 23)] 
+  Columns 1 through 6
+
+    'Positive'    'Location not in ...'    [ 73]    [5.3515]    [-22]    [ 46]
+            []    'Location not in ...'    [  8]    [4.5067]    [-28]    [ 36]
+            []    'OFCant_R'               [ 84]    [4.4683]    [ 20]    [ 50]
+            []    'Location not in ...'    [104]    [4.3580]    [ 34]    [ 46]
+            []    'Frontal_Mid_2_R'        [ 85]    [4.0503]    [ 42]    [ 22]
+            []    'Parietal_Inf_R'         [ 15]    [4.0384]    [ 56]    [-56]
+            []    'Location not in ...'    [ 16]    [3.8811]    [-56]    [-58]
+            []    'Location not in ...'    [ 36]    [3.7088]    [ 28]    [ 26]
+            []    'Frontal_Sup_2_R'        [  8]    [3.4903]    [ 36]    [ 54]
+            []    'Frontal_Mid_2_L'        [  5]    [3.4861]    [-46]    [ 46]
+
+  Column 7
+
+    [ -6]
+    [  0]
+    [-14]
+    [ -8]
+    [ 36]
+    [ 46]
+    [ 42]
+    [ -2]
+    [ 12]
+    [ -8]
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Location not in atlas
+
+r =
+
+   -0.2816
+
+
+p =
+
+    0.1249
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Location not in atlas
+
+r =
+
+   -0.0244
+
+
+p =
+
+    0.8964
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+OFCant_R
+
+r =
+
+    0.1469
+
+
+p =
+
+    0.4305
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Location not in atlas
+
+r =
+
+    0.1169
+
+
+p =
+
+    0.5311
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Frontal_Mid_2_R
+
+r =
+
+   -0.0347
+
+
+p =
+
+    0.8531
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Parietal_Inf_R
+
+r =
+
+    0.0339
+
+
+p =
+
+    0.8564
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Location not in atlas
+
+r =
+
+    0.0942
+
+
+p =
+
+    0.6142
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Location not in atlas
+
+r =
+
+    0.0833
+
+
+p =
+
+    0.6561
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Frontal_Sup_2_R
+
+r =
+
+    0.0954
+
+
+p =
+
+    0.6098
+
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+cor
+Frontal_Mid_2_L
+
+r =
+
+    0.0028
+
+
+p =
+
+    0.9879
+

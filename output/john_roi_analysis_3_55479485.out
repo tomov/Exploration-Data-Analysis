@@ -1,0 +1,2978 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE john_roi_analysis_3.m-------------------
+% correlate BG with model G and N
+% use nonsmooth betas averaged within the ROI
+% do a t-test across subjects
+% similar to badre_2012_roi_analysis_1.m
+%
+
+printcode;
+
+clear all;
+
+%masks = {'masks/striatum.nii', 'masks/putamen.nii', 'masks/caudate.nii', 'masks/pallidum.nii', 'masks/v1.nii', 'masks/s1.nii', 'masks/m1.nii', 'masks/hippocampus.nii'};
+masks = {'masks/striatum.nii', 'masks/pallidum.nii'};
+
+glmodels = 1019:1027;
+data = load_data;
+EXPT = exploration_expt();
+
+n = length(masks) * length(glmodels);
+
+for glmodel = glmodels
+    for i = 1:length(masks)
+        mask = masks{i};
+        [~, masknames{i}, ~] = fileparts(mask);
+
+        clear b_G;
+        clear b_N;
+        for s = 1:length(data)
+            b_G = ccnl_roi_glm(exploration_expt_nosmooth(), glmodel, mask, 'G');
+        end
+
+        [h, p, ci, stats] = ttest(b_G);
+        t_G(i,:) = stats.tstat;
+        ps_G(i,:) = p;
+        w_G(i,:) = mean(b_G);
+
+        %[h, p, ci, stats] = ttest(b_N);
+        %t_N(i,:) = stats.tstat;
+        %ps_N(i,:) = p;
+        %w_N(i,:) = mean(b_N);
+
+        disp([mask, ', G']);
+        t_G(i,:)
+        p
+        w_G(i,:)
+
+        %disp([mask, ', N']);
+        %t_N(i,:)
+        %p
+        %w_N(i,:)
+    end
+
+    G_uncorr = ps_G;
+    G_corr = 1 - (1 - ps_G) .^ length(ps_G);
+
+    %N_uncorr = ps_N;
+    %N_corr = 1 - (1 - ps_N) .^ length(ps_N);
+
+    disp(['GLM ', num2str(glmodel)]);
+    table(masknames', G_uncorr, G_corr, w_G, t_G)
+    %table(masknames', G_uncorr, N_uncorr, G_corr, N_corr, w_G, w_N, t_G, t_N)
+end
+
+--------------------- END FILE john_roi_analysis_3.m-------------------
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3
+Subject 4
+Subject 5
+Subject 6
+Subject 7
+Subject 8
+Subject 9
+Subject 10
+Subject 11
+Subject 12
+Subject 13
+Subject 14
+Subject 15
+Subject 16
+Subject 17
+Subject 18
+Subject 19
+Subject 20
+Subject 21
+Subject 22
+Subject 23
+Subject 24
+Subject 25
+Subject 26
+Subject 27
+Subject 28
+Subject 29
+Subject 30
+Subject 31
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+Subject 1
+Subject 2
+Subject 3

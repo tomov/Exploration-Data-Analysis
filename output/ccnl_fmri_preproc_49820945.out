@@ -1,0 +1,149 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+
+SPM12: spm_realign (v6070)                         00:10:54 - 02/08/2018
+========================================================================
+Completed                               :          00:59:14 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     00:59:15 - 02/08/2018
+========================================================================
+Completed                               :          01:25:35 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        01:25:35 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          01:33:52 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     01:33:52 - 02/08/2018
+========================================================================
+Completed                               :          02:05:39 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        02:05:39 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          02:13:45 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     02:13:45 - 02/08/2018
+========================================================================
+Completed                               :          02:45:30 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        02:45:30 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          02:53:35 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     02:53:35 - 02/08/2018
+========================================================================
+Completed                               :          03:25:34 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        03:25:34 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          03:33:42 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     03:33:42 - 02/08/2018
+========================================================================
+Completed                               :          04:05:38 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        04:05:38 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          04:13:38 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     04:13:38 - 02/08/2018
+========================================================================
+Completed                               :          04:45:23 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        04:45:23 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          04:53:21 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     04:53:21 - 02/08/2018
+========================================================================
+Completed                               :          05:24:48 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        05:24:48 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          05:32:46 - 02/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     05:32:46 - 02/08/2018
+========================================================================
+Completed                               :          06:03:50 - 02/08/2018
+
+SPM12: spm_uw_apply (v6301)                        06:03:50 - 02/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          06:11:34 - 02/08/2018
+
+SPM12: spm_preproc_run (v6365)                     06:11:34 - 02/08/2018
+========================================================================
+Segment /ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc/struct.nii
+Completed                               :          06:21:54 - 02/08/2018
+
+SPM12: spm_imcalc (v6124)                          06:21:54 - 02/08/2018
+========================================================================
+Coregistering structural and mean functional...
+
+SPM12: spm_coreg (v6435)                           06:21:59 - 02/08/2018
+========================================================================
+Completed                               :          06:22:35 - 02/08/2018
+Normalizing functionals...
+Smoothing functionals...
+Normalizing structural...
+[Warning: ImCalc should be preferred to spm_mean.] 
+[> In spm_mean (line 23)
+  In ccnl_fmri_preproc (line 107)] 
+
+SPM12: spm_mean (v6081)                            07:22:35 - 02/08/2018
+========================================================================
+Mean image written to file 'mean.nii' in current directory

@@ -1,0 +1,1437 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE multilinear_analysis.m-------------------
+% multilinear regression analysis 
+% try to decode |RU| or TU from multivariate ROI activity and see if it predicts
+% choices better than behavioral model alone
+% merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
+%
+
+function multilinear_analysis(glmodel, regressor, contrast, method, get_null, do_orth, load_first_half)
+
+printcode;
+
+null_iters = 100;
+
+if ~exist('get_null', 'var')
+    get_null = false;
+end
+
+if ~exist('do_orth', 'var')
+    do_orth = true;
+end
+
+if ~exist('load_first_half', 'var')
+    load_first_half = false;
+end
+
+filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '_orth=', num2str(do_orth), '.mat'];
+filename
+
+if load_first_half
+    % optionally load pre-computed betas to speed things up
+    load(filename);
+else
+
+    EXPT = exploration_expt();
+
+    data = load_data;
+
+    % special case a priori ROIs; otherwise expect a glm & contrast
+    switch glmodel
+        case 'badre'
+            % clusters = masks from paper
+            masks = badre_2012_create_masks(false);
+            masks = masks(1); % TODO all masks
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
+
+        case 'tommy'
+            % clusters = masks from paper
+            masks = tommy_2017_create_masks(false);
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
+
+        otherwise
+
+            % group-level settings
+            p = 0.001;
+            alpha = 0.05;
+            Dis = 20;
+            Num = 1; % # peak voxels per cluster; default in bspmview is 3
+            direct = '+';
+
+            [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+
+            r = 10 / 1.5; % 10 mm radius
+
+            % create spherical masks around peak voxel of each cluster (intersected with cluster)
+            %
+            for c = 1:length(region)
+                masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
+                cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
+                ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
+            end
+
+            % extract trial_onset (raw, unsmoothed) betas
+            %
+            roi = extract_roi_betas(masks, 'trial_onset');
+    end
+
+    [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+    % clean up betas
+    %
+    for c = 1:length(roi)
+        for s = 1:length(data)
+            B = roi(c).subj(s).betas;
+            runs = find(goodRuns{s});
+            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
+            data(s).betas{c} = B;
+        end
+    end
+
+    save(filename, '-v7.3');
+end
+
+
+% define behavioral / hybrid GLM formulas
+switch regressor
+    case 'RU'
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+        end
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + decRU + VTU';
+
+    case 'TU'
+        if do_orth
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+        else
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+        end
+        formula_orig = 'C ~ -1 + V + RU + VTU';
+        formula_dec = 'C ~ -1 + V + RU + VdecTU';
+
+    otherwise
+        assert(false);
+end
+
+% extract regressors
+%
+V_all = [];
+for s = 1:length(data)
+    which_all = logical(ones(length(data(s).run), 1));
+    switch regressor
+        case 'RU'
+            [~, absRU] =  get_latents(data, s, which_all, 'abs');
+            [~, RU] = get_latents(data, s, which_all, 'left');
+            data(s).y = absRU;
+            data(s).RU = RU; % for sign-correction
+        case 'TU'
+            [V, ~, TU] = get_latents(data, s, which_all, 'left');
+            data(s).y = TU;
+            V_all = [V_all; V];
+        otherwise
+            assert(false);
+    end
+end
+
+save(filename, '-v7.3');
+
+rng default; % for reproducibility
+
+% run analysis
+%
+for c = 1:numel(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+    disp(region{c});
+
+    dec = [];
+    exclude = [];
+    mse = [];
+    for s = 1:length(data)
+        exclude = [exclude; data(s).exclude];
+        X = data(s).betas{c};
+        y = data(s).y;
+
+        % remove bad data points
+        X = X(~data(s).exclude, :);
+        y = y(~data(s).exclude);
+
+        % predict using full data set; we ignore bad trials later 
+        % also for CV, one run per fold
+        [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+        data(s).mse{c} = mse(s);
+
+        if strcmp(regressor, 'RU')
+            pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
+        end
+        dec = [dec; pred];
+
+        % optionally generate null distribution
+        if get_null
+            null_mse = [];
+            for i = 1:null_iters
+                y = y(randperm(length(y)));
+                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                null_mse = [null_mse, m];
+            end
+            data(s).null_mse{c} = null_mse;
+
+            % calculate p-value based on null distribution
+            null_mse = [null_mse mse(s)];
+            null_mse = sort(null_mse);
+            idx = find(null_mse == mse(s));
+            p = idx / length(null_mse);
+            fprintf('                    subj %d null mse p = %.4f\n', s, p);
+            data(s).null_p{c} = p;
+        end
+    end
+    exclude = logical(exclude);
+
+    tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
+
+    switch regressor
+        case 'RU'
+            decRU = dec;
+            tbl = [tbl table(decRU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.RU(~exclude), decRU(~exclude)]);
+            decRU_orth = decRU;
+            decRU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(decRU_orth)];
+        case 'TU'
+            VdecTU = V_all ./ dec;
+            tbl = [tbl table(VdecTU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.VTU(~exclude), VdecTU(~exclude)]);
+            VdecTU_orth = VdecTU;
+            VdecTU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(VdecTU_orth)];
+        otherwise
+            assert(false);
+    end
+
+    % glm with both the model and decoded regressor
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    [w, names, stats] = fixedEffects(results_both{c});
+    ps(c,:) = stats.pValue';
+    results_both{c}
+    stats.pValue
+    w
+    names
+
+    % original glm (model only)
+    % do model comparison
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
+    comp{c}
+    p_comp(c,:) = comp{c}.pValue(2);
+    BIC(c,:) = comp{c}.BIC';
+
+    % glm with decoded regressor only
+    % do second model comparison
+    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
+    comp2{c}
+    p_comp2(c,:) = comp2{c}.pValue(2);
+    BIC2(c,:) = comp2{c}.BIC';
+
+    % correlate RMSE with behavioral weights across subjects
+    % => see if better decodeability is associated with more reliance on regressor in decision
+    %
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
+    switch regressor
+        case 'RU'
+            [r, p] = corr(abs(w(:,2)), mse');
+        case 'TU'
+            [r, p] = corr(abs(w(:,3)), mse');
+        otherwise
+            assert(false);
+    end
+    disp('mse to w');
+    r
+    p
+    p_ax(c,:) = p;
+    r_ax(c,:) = r;
+end
+
+save(filename, '-v7.3');
+
+p_uncorr = ps(:,4);
+p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+BIC_orig = BIC(:,1);
+BIC_both = BIC(:,2);
+BIC_dec = BIC2(:,1);
+table(region, p_uncorr, p_corr, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+
+
+--------------------- END FILE multilinear_analysis.m-------------------
+
+filename =
+
+    'multilinear_analysis_TU_TU_-_trial_glm21_ridge_CV_orth=1.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model21/con6/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2)
+  Columns 1 through 6
+
+    'Positive'    'Parietal_Inf_R'         [2042]    [7.5078]    [ 38]    [-46]
+            []    'Parietal_Inf_L'         [1521]    [7.2982]    [-46]    [-40]
+            []    'Location not in ...'    [ 468]    [6.2314]    [ 22]    [ -2]
+            []    'Precentral_L'           [ 282]    [5.7913]    [-42]    [  2]
+            []    'Precentral_R'           [ 258]    [4.8413]    [ 46]    [  8]
+            []    'Insula_L'               [ 268]    [4.8153]    [-30]    [ 22]
+
+  Column 7
+
+    [44]
+    [48]
+    [52]
+    [28]
+    [30]
+    [ 2]
+
+  betas_filename = betas_mask_subj=1_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=2_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=3_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=4_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=5_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=6_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=7_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=8_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=9_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=10_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=11_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=12_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=13_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=14_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=15_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=16_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=17_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=18_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=19_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=20_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=21_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=22_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=23_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=24_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=25_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=26_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=27_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=28_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=29_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=30_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+  betas_filename = betas_mask_subj=31_trial_onset.mat
+    mask sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii: 945 voxels
+    mask sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii: 865 voxels
+    mask sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii: 302 voxels
+    mask sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii: 282 voxels
+    mask sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii: 258 voxels
+    mask sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii: 239 voxels
+Parietal_Inf_R
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7501.7    7530.3    -3746.9          7493.7  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate      SE            tStat      DF      pValue  
+    'RU'                   0.088312     0.0045106     19.579    9475           0
+    'VTU'                7.3165e-05    4.4089e-05     1.6595    9475    0.097055
+    'V'                     0.13928      0.011426      12.19    9475           0
+    'VdecTU_orth'         -0.096068      0.053004    -1.8125    9475    0.069946
+
+
+    Lower         Upper     
+       0.07947      0.097153
+    -1.326e-05    0.00015959
+       0.11689       0.16168
+      -0.19997     0.0078313
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0971
+         0
+    0.0699
+
+
+w =
+
+    0.0883
+    0.0001
+    0.1393
+   -0.0961
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7501.7    7530.3    -3746.9    2.8323    1      
+
+
+    pValue  
+            
+    0.092388
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7540.4    7561.9    -3767.2                     
+    ALTGLME    4     7501.7    7530.3    -3746.9    40.719    1      
+
+
+    pValue    
+              
+    1.7575e-10
+
+mse to w
+
+r =
+
+   -0.0626
+
+
+p =
+
+    0.7380
+
+Parietal_Inf_L
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7503.2    7531.9    -3747.6          7495.2  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate      SE            tStat      DF  
+    'RU'                   0.087396     0.0044426     19.672    9475
+    'VTU'                0.00011947    2.6116e-05     4.5744    9475
+    'V'                     0.12479     0.0039619     31.497    9475
+    'VdecTU_orth'          -0.02691      0.014708    -1.8296    9475
+
+
+    pValue        Lower         Upper     
+             0      0.078688      0.096105
+    4.8358e-06    6.8273e-05    0.00017066
+             0       0.11702       0.13256
+      0.067341     -0.055742     0.0019211
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.0673
+
+
+w =
+
+    0.0874
+    0.0001
+    0.1248
+   -0.0269
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue 
+    GLME       3     7502.5      7524    -3748.3                                
+    ALTGLME    4     7503.2    7531.9    -3747.6    1.2983    1          0.25452
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7540.3    7561.8    -3767.2                     
+    ALTGLME    4     7503.2    7531.9    -3747.6    39.105    1      
+
+
+    pValue    
+              
+    4.0161e-10
+
+mse to w
+
+r =
+
+   -0.2780
+
+
+p =
+
+    0.1300
+
+Location not in atlas
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7471.2    7499.8    -3731.6          7463.2  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate       SE            tStat      DF  
+    'RU'                    0.091148     0.0045417     20.069    9475
+    'VTU'                -0.00017866    5.7501e-05    -3.1071    9475
+    'V'                       0.2121      0.015616     13.583    9475
+    'VdecTU_orth'           -0.44039      0.072434    -6.0799    9475
+
+
+    pValue        Lower          Upper     
+             0       0.082246       0.10005
+     0.0018946    -0.00029138    -6.595e-05
+             0        0.18149       0.24271
+    1.2489e-09       -0.58238       -0.2984
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0019
+         0
+    0.0000
+
+
+w =
+
+    0.0911
+   -0.0002
+    0.2121
+   -0.4404
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7471.2    7499.8    -3731.6    33.345    1      
+
+
+    pValue   
+             
+    7.717e-09
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7514.9    7536.4    -3754.5                     
+    ALTGLME    4     7471.2    7499.8    -3731.6    45.715    1      
+
+
+    pValue    
+              
+    1.3675e-11
+
+mse to w
+
+r =
+
+   -0.1545
+
+
+p =
+
+    0.4066
+
+Precentral_L
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7422.9    7451.5    -3707.5          7414.9  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate       SE            tStat      DF  
+    'RU'                    0.094069     0.0045887       20.5    9475
+    'VTU'                -0.00030901    5.5371e-05    -5.5808    9475
+    'V'                      0.25704      0.015583     16.495    9475
+    'VdecTU_orth'           -0.65082      0.071845    -9.0586    9475
+
+
+    pValue        Lower          Upper      
+             0       0.085074        0.10306
+    2.4607e-08    -0.00041755    -0.00020047
+             0        0.22649        0.28758
+             0       -0.79165       -0.50999
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-07 *
+
+         0
+    0.2461
+         0
+         0
+
+
+w =
+
+    0.0941
+   -0.0003
+    0.2570
+   -0.6508
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7502.5      7524    -3748.3                               
+    ALTGLME    4     7422.9    7451.5    -3707.5    81.62     1          0     
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7482.6    7504.1    -3738.3                     
+    ALTGLME    4     7422.9    7451.5    -3707.5    61.711    1      
+
+
+    pValue    
+              
+    3.9968e-15
+
+mse to w
+
+r =
+
+    0.0777
+
+
+p =
+
+    0.6779
+
+Precentral_R
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7503.3    7531.9    -3747.6          7495.3  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate      SE           tStat      DF  
+    'RU'                   0.087253    0.0044399     19.652    9475
+    'VTU'                0.00012607    2.617e-05     4.8173    9475
+    'V'                     0.12353    0.0040078     30.821    9475
+    'VdecTU_orth'         -0.020921     0.015003    -1.3945    9475
+
+
+    pValue        Lower         Upper     
+             0      0.078549      0.095956
+    1.4779e-06    7.4768e-05    0.00017737
+             0       0.11567       0.13138
+        0.1632      -0.05033     0.0084871
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.1632
+
+
+w =
+
+    0.0873
+    0.0001
+    0.1235
+   -0.0209
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue 
+    GLME       3     7502.5      7524    -3748.3                                
+    ALTGLME    4     7503.3    7531.9    -3747.6    1.2579    1          0.26204
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7540.2    7561.7    -3767.1                     
+    ALTGLME    4     7503.3    7531.9    -3747.6    38.92     1      
+
+
+    pValue    
+              
+    4.4153e-10
+
+mse to w
+
+r =
+
+   -0.0307
+
+
+p =
+
+    0.8697
+
+Insula_L
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 223)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7470.8    7499.4    -3731.4          7462.8  
+
+Fixed effects coefficients (95% CIs):
+    Name                 Estimate       SE            tStat     DF  
+    'RU'                    0.090921     0.0045223    20.105    9475
+    'VTU'                -0.00016474    4.9457e-05    -3.331    9475
+    'V'                        0.205      0.013179    15.555    9475
+    'VdecTU_orth'           -0.40629      0.060786    -6.684    9475
+
+
+    pValue        Lower          Upper      
+             0       0.082057       0.099786
+    0.00086867    -0.00026169    -6.7794e-05
+             0        0.17917        0.23084
+    2.4559e-11       -0.52544       -0.28714
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-03 *
+
+         0
+    0.8687
+         0
+    0.0000
+
+
+w =
+
+    0.0909
+   -0.0002
+    0.2050
+   -0.4063
+
+
+names =
+
+  4×1 table
+
+        Name     
+    _____________
+
+    'RU'         
+    'VTU'        
+    'V'          
+    'VdecTU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 233)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7470.8    7499.4    -3731.4    33.728    1      
+
+
+    pValue    
+              
+    6.3371e-09
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 241)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7515.4    7536.9    -3754.7                     
+    ALTGLME    4     7470.8    7499.4    -3731.4    46.607    1      
+
+
+    pValue    
+              
+    8.6746e-12
+
+mse to w
+
+r =
+
+   -0.2468
+
+
+p =
+
+    0.1807
+
+
+ans =
+
+  6×10 table
+
+            region              p_uncorr       p_corr      BIC_orig    BIC_both      p_comp      BIC_dec     p_comp2       p_ax        r_ax   
+    _______________________    __________    __________    ________    ________    __________    _______    __________    _______    _________
+
+    'Parietal_Inf_R'             0.069946       0.35278    7524        7530.3        0.092388    7561.9     1.7575e-10    0.73804    -0.062582
+    'Parietal_Inf_L'             0.067341       0.34183    7524        7531.9         0.25452    7561.8     4.0161e-10    0.13001     -0.27796
+    'Location not in atlas'    1.2489e-09    7.4934e-09    7524        7499.8       7.717e-09    7536.4     1.3675e-11    0.40665     -0.15449
+    'Precentral_L'                      0             0    7524        7451.5               0    7504.1     3.9968e-15     0.6779     0.077675
+    'Precentral_R'                 0.1632       0.65665    7524        7531.9         0.26204    7561.7     4.4153e-10    0.86966    -0.030728
+    'Insula_L'                 2.4559e-11    1.4735e-10    7524        7499.4      6.3371e-09    7536.9     8.6746e-12     0.1807     -0.24682
+

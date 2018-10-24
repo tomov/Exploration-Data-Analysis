@@ -1,0 +1,16 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+{Error: File:
+/net/rcss2/srv/export/gershman/share_root/Lab/scripts/matlab/Exploration/run_ccnl_fmri_con.m
+Line: 4 Column: 95
+Expression or statement is incorrect--possibly unbalanced (, {, or [.
+} 
+>> 

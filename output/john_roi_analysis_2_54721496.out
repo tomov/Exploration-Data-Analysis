@@ -1,0 +1,1934 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+   -0.4190
+
+
+p =
+
+    0.8714
+
+
+ans =
+
+  -1.4612e-04
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.1632
+
+
+p =
+
+    0.8714
+
+
+ans =
+
+  -5.0336e-04
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+   -0.0452
+
+
+p =
+
+    0.6267
+
+
+ans =
+
+  -1.8319e-05
+
+masks/pallidum.nii, N
+
+ans =
+
+    0.4915
+
+
+p =
+
+    0.6267
+
+
+ans =
+
+    0.0019
+
+GLM 1001
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr         w_G            w_N           t_G         t_N   
+    __________    ________    ________    _______    _______    ___________    ___________    _________    ________
+
+    'striatum'    0.67818     0.87144     0.89643    0.98347    -0.00014612    -0.00050336     -0.41903    -0.16322
+    'pallidum'    0.96422     0.62668     0.99872    0.86064    -1.8319e-05      0.0019031    -0.045239     0.49145
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+   -0.3163
+
+
+p =
+
+    0.5027
+
+
+ans =
+
+  -6.5023e-04
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.6785
+
+
+p =
+
+    0.5027
+
+
+ans =
+
+   -0.0069
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+   -0.1513
+
+
+p =
+
+    0.7788
+
+
+ans =
+
+  -3.5629e-04
+
+masks/pallidum.nii, N
+
+ans =
+
+    0.2834
+
+
+p =
+
+    0.7788
+
+
+ans =
+
+    0.0034
+
+GLM 1002
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr         w_G           w_N          t_G         t_N  
+    __________    ________    ________    _______    _______    ___________    __________    ________    _______
+
+    'striatum'    0.75397     0.50265     0.93947    0.75265    -0.00065023    -0.0069107    -0.31629    -0.6785
+    'pallidum'    0.88073     0.77882     0.98577    0.95108    -0.00035629     0.0034475    -0.15133     0.2834
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+    0.8100
+
+
+p =
+
+    0.4116
+
+
+ans =
+
+    0.0569
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.8326
+
+
+p =
+
+    0.4116
+
+
+ans =
+
+   -0.0518
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    0.3712
+
+
+p =
+
+    0.9983
+
+
+ans =
+
+    0.0243
+
+masks/pallidum.nii, N
+
+ans =
+
+   -0.0021
+
+
+p =
+
+    0.9983
+
+
+ans =
+
+  -1.4317e-04
+
+GLM 1003
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr       w_G           w_N          t_G         t_N    
+    __________    ________    ________    _______    _______    ________    ___________    _______    __________
+
+    'striatum'    0.42434     0.41165     0.66862    0.65384    0.056881      -0.051823    0.80996       -0.8326
+    'pallidum'    0.71312     0.99831      0.9177          1    0.024275    -0.00014317    0.37116    -0.0021393
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+    0.5716
+
+
+p =
+
+    0.3339
+
+
+ans =
+
+    0.0047
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.9820
+
+
+p =
+
+    0.3339
+
+
+ans =
+
+   -0.0059
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    0.9579
+
+
+p =
+
+    0.9113
+
+
+ans =
+
+    0.0062
+
+masks/pallidum.nii, N
+
+ans =
+
+   -0.1124
+
+
+p =
+
+    0.9113
+
+
+ans =
+
+  -6.9417e-04
+
+GLM 1004
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr        w_G           w_N          t_G        t_N   
+    __________    ________    ________    _______    _______    _________    ___________    _______    ________
+
+    'striatum'    0.57184     0.33394     0.81667    0.55637    0.0047059     -0.0059403    0.57162    -0.98202
+    'pallidum'    0.34575     0.91127     0.57196    0.99213     0.006183    -0.00069417    0.95794    -0.11239
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+   -0.4202
+
+
+p =
+
+    0.3740
+
+
+ans =
+
+   -0.0022
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.9024
+
+
+p =
+
+    0.3740
+
+
+ans =
+
+   -0.0086
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    1.1141
+
+
+p =
+
+    0.6011
+
+
+ans =
+
+    0.0077
+
+masks/pallidum.nii, N
+
+ans =
+
+    0.5284
+
+
+p =
+
+    0.6011
+
+
+ans =
+
+    0.0065
+
+GLM 1005
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr        w_G           w_N          t_G         t_N   
+    __________    ________    ________    _______    _______    __________    __________    ________    ________
+
+    'striatum'    0.67735     0.37402      0.8959    0.60814    -0.0021624    -0.0085564    -0.42018    -0.90243
+    'pallidum'    0.27408     0.60108     0.47304    0.84087     0.0077169     0.0064882      1.1141     0.52844
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+    0.2416
+
+
+p =
+
+    0.7593
+
+
+ans =
+
+    0.0094
+
+masks/striatum.nii, N
+
+ans =
+
+    0.3092
+
+
+p =
+
+    0.7593
+
+
+ans =
+
+    0.0120
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    1.5443
+
+
+p =
+
+    0.5521
+
+
+ans =
+
+    0.0898
+
+masks/pallidum.nii, N
+
+ans =
+
+    0.6014
+
+
+p =
+
+    0.5521
+
+
+ans =
+
+    0.0123
+
+GLM 1006
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr        w_G         w_N         t_G        t_N  
+    __________    ________    ________    _______    _______    _________    ________    _______    _______
+
+    'striatum'     0.8107     0.75932     0.96416    0.94207    0.0094061    0.011969    0.24165    0.30918
+    'pallidum'    0.13301     0.55209     0.24833    0.79937     0.089804    0.012332     1.5443    0.60141
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+   -0.1137
+
+
+p =
+
+    0.4381
+
+
+ans =
+
+   -0.0025
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.7859
+
+
+p =
+
+    0.4381
+
+
+ans =
+
+   -0.0290
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+   -0.3731
+
+
+p =
+
+    0.8302
+
+
+ans =
+
+   -0.0136
+
+masks/pallidum.nii, N
+
+ans =
+
+   -0.2163
+
+
+p =
+
+    0.8302
+
+
+ans =
+
+   -0.0090
+
+GLM 1007
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr        w_G           w_N          t_G         t_N   
+    __________    ________    ________    _______    _______    __________    __________    ________    ________
+
+    'striatum'    0.91024     0.43809     0.99194    0.68426    -0.0024734     -0.029041     -0.1137    -0.78589
+    'pallidum'    0.71171      0.8302     0.91689    0.97117     -0.013567    -0.0090226    -0.37308    -0.21633
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+    0.4959
+
+
+p =
+
+    0.4982
+
+
+ans =
+
+    0.0201
+
+masks/striatum.nii, N
+
+ans =
+
+   -0.6857
+
+
+p =
+
+    0.4982
+
+
+ans =
+
+   -0.0170
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    1.2049
+
+
+p =
+
+    0.3912
+
+
+ans =
+
+    0.0580
+
+masks/pallidum.nii, N
+
+ans =
+
+   -0.8700
+
+
+p =
+
+    0.3912
+
+
+ans =
+
+   -0.0285
+
+GLM 1008
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr       w_G          w_N         t_G        t_N   
+    __________    ________    ________    _______    _______    ________    _________    _______    ________
+
+    'striatum'    0.62357     0.49815      0.8583    0.74815    0.020149    -0.016955    0.49591    -0.68572
+    'pallidum'    0.23766     0.39121     0.41884    0.62937    0.057957    -0.028544     1.2049       -0.87
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/striatum.nii, G
+
+ans =
+
+    1.1548
+
+
+p =
+
+    0.1863
+
+
+ans =
+
+   9.1317e+03
+
+masks/striatum.nii, N
+
+ans =
+
+    1.3526
+
+
+p =
+
+    0.1863
+
+
+ans =
+
+  571.5525
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/pallidum.nii, G
+
+ans =
+
+    0.8596
+
+
+p =
+
+    0.7739
+
+
+ans =
+
+   9.8261e+03
+
+masks/pallidum.nii, N
+
+ans =
+
+    0.2898
+
+
+p =
+
+    0.7739
+
+
+ans =
+
+  197.4330
+
+GLM 1009
+
+ans =
+
+  2×9 table
+
+       Var1       G_uncorr    N_uncorr    G_corr     N_corr      w_G       w_N        t_G        t_N  
+    __________    ________    ________    _______    _______    ______    ______    _______    _______
+
+    'striatum'    0.25728      0.1863     0.44837    0.33789    9131.7    571.55     1.1548     1.3526
+    'pallidum'    0.39685     0.77395     0.63621     0.9489    9826.1    197.43    0.85956    0.28982
+

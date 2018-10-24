@@ -1,0 +1,827 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+
+outfile =
+
+    'residuals_analysis_TU_-_trial_glm21_sphere_10mm_max.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model21/con6/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2)
+  Columns 1 through 6
+
+    'Positive'    'Parietal_Inf_R'         [2042]    [7.5078]    [ 38]    [-46]
+            []    'Parietal_Inf_L'         [1521]    [7.2982]    [-46]    [-40]
+            []    'Location not in ...'    [ 468]    [6.2314]    [ 22]    [ -2]
+            []    'Precentral_L'           [ 282]    [5.7913]    [-42]    [  2]
+            []    'Precentral_R'           [ 258]    [4.8413]    [ 46]    [  8]
+            []    'Insula_L'               [ 268]    [4.8153]    [-30]    [ 22]
+
+  Column 7
+
+    [44]
+    [48]
+    [52]
+    [28]
+    [30]
+    [ 2]
+
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 1
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 2
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 3
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 4
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 5
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 6
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 7
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 8
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 9
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 10
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 11
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 12
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 13
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 14
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 15
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 16
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 17
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 18
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 19
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 20
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 21
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 22
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 23
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 24
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 25
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 26
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 27
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 28
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 29
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 30
+cor
+cor
+Computed residuals for subject 31
+cor
+cor
+Computed residuals for subject 31
+cor
+cor
+Computed residuals for subject 31
+cor
+cor
+Computed residuals for subject 31
+cor
+cor
+Computed residuals for subject 31
+cor
+cor
+Computed residuals for subject 31
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.0511
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+[Warning: Final linear predictor from PL iterations is not feasible.] 
+[> In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/checkFinalPLSolution (line 1507)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingPL (line 1724)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/fitUsingML (line 2018)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel/refit (line 4322)
+  In classreg.regr.lmeutils.StandardGeneralizedLinearMixedModel (line 4288)
+  In GeneralizedLinearMixedModel/fitStandardLMEModel (line 1317)
+  In GeneralizedLinearMixedModel/fitter (line 891)
+  In classreg.regr.FitObject/doFit (line 94)
+  In GeneralizedLinearMixedModel.fit (line 2411)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.1007
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.9399
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.7874
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.7512
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 150)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.9810
+
+
+ans =
+
+  6×8 table
+
+            region             extent     stat            mni           p_uncorr    p_corr     pears_rs      pears_ps 
+    _______________________    ______    ______    _________________    ________    _______    _________    __________
+
+    'Parietal_Inf_R'           2042      7.5078     38    -46     44    0.051074    0.26988     -0.04184     4.605e-05
+    'Parietal_Inf_L'           1521      7.2982    -46    -40     48     0.10067    0.47092    -0.050967    6.8809e-07
+    'Location not in atlas'     468      6.2314     22     -2     52     0.93986          1    -0.033868    0.00097421
+    'Precentral_L'              282      5.7913    -42      2     28      0.7874    0.99991    -0.037621    0.00024868
+    'Precentral_R'              258      4.8413     46      8     30     0.75124    0.99976     -0.04847    2.3443e-06
+    'Insula_L'                  268      4.8153    -30     22      2     0.98105          1    -0.033859    0.00097698
+

@@ -100,4 +100,4 @@ save(filename, '-v7.3');
 if exist('region', 'var')
     masknames = region';
 end
-table(masknames', p_uncorr, p_corr, r);
+table(masknames', p_uncorr, p_corr, r)

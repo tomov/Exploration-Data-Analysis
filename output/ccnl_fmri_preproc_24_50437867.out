@@ -1,0 +1,271 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+
+SPM12: spm_realign (v6070)                         18:38:44 - 09/08/2018
+========================================================================
+Completed                               :          19:26:11 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     19:26:11 - 09/08/2018
+========================================================================
+Completed                               :          20:01:14 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        20:01:14 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          20:09:46 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     20:09:46 - 09/08/2018
+========================================================================
+Completed                               :          20:45:11 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        20:45:11 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          20:53:43 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     20:53:43 - 09/08/2018
+========================================================================
+Completed                               :          21:22:08 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        21:22:08 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                                                      ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          21:30:50 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     21:30:50 - 09/08/2018
+========================================================================
+Completed                               :          21:59:46 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        21:59:46 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                               [Warning: Forcing deletion of MAT-file.] 
+[> In spm_create_vol>create_vol (line 176)
+  In spm_create_vol (line 13)
+  In spm_write_vol (line 83)
+  In spm_uw_apply (line 331)
+  In ccnl_fmri_preproc (line 38)] 
+                       ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          22:08:58 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     22:08:58 - 09/08/2018
+========================================================================
+Completed                               :          22:44:50 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        22:44:50 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                               [Warning: Forcing deletion of MAT-file.] 
+[> In spm_create_vol>create_vol (line 176)
+  In spm_create_vol (line 13)
+  In spm_write_vol (line 83)
+  In spm_uw_apply (line 331)
+  In ccnl_fmri_preproc (line 38)] 
+                       ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          22:53:44 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     22:53:44 - 09/08/2018
+========================================================================
+Completed                               :          23:29:42 - 09/08/2018
+
+SPM12: spm_uw_apply (v6301)                        23:29:42 - 09/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                               [Warning: Forcing deletion of MAT-file.] 
+[> In spm_create_vol>create_vol (line 176)
+  In spm_create_vol (line 13)
+  In spm_write_vol (line 83)
+  In spm_uw_apply (line 331)
+  In ccnl_fmri_preproc (line 38)] 
+                       ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          23:38:41 - 09/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     23:38:41 - 09/08/2018
+========================================================================
+Completed                               :          00:12:10 - 10/08/2018
+
+SPM12: spm_uw_apply (v6301)                        00:12:10 - 10/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                               [Warning: Forcing deletion of MAT-file.] 
+[> In spm_create_vol>create_vol (line 176)
+  In spm_create_vol (line 13)
+  In spm_write_vol (line 83)
+  In spm_uw_apply (line 331)
+  In ccnl_fmri_preproc (line 38)] 
+                       ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          00:20:46 - 10/08/2018
+
+SPM12: spm_uw_estimate (v6824)                     00:20:46 - 10/08/2018
+========================================================================
+Completed                               :          00:53:34 - 10/08/2018
+
+SPM12: spm_uw_apply (v6301)                        00:53:34 - 10/08/2018
+========================================================================
+Computing mask...                       :                                                      ...done
+Reslicing images...                     :                               [Warning: Forcing deletion of MAT-file.] 
+[> In spm_create_vol>create_vol (line 176)
+  In spm_create_vol (line 13)
+  In spm_write_vol (line 83)
+  In spm_uw_apply (line 331)
+  In ccnl_fmri_preproc (line 38)] 
+                       ...done
+Writing mean image...                   :                                                      ...done
+Completed                               :          01:02:14 - 10/08/2018
+
+SPM12: spm_preproc_run (v6365)                     01:02:14 - 10/08/2018
+========================================================================
+Segment /ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc/struct.nii
+Completed                               :          01:13:01 - 10/08/2018
+
+SPM12: spm_imcalc (v6124)                          01:13:01 - 10/08/2018
+========================================================================
+Coregistering structural and mean functional...
+
+SPM12: spm_coreg (v6435)                           01:13:06 - 10/08/2018
+========================================================================
+Completed                               :          01:13:29 - 10/08/2018
+Normalizing functionals...
+Smoothing functionals...
+Normalizing structural...
+[Warning: ImCalc should be preferred to spm_mean.] 
+[> In spm_mean (line 23)
+  In ccnl_fmri_preproc (line 107)] 
+
+SPM12: spm_mean (v6081)                            02:16:07 - 10/08/2018
+========================================================================
+Mean image written to file 'mean.nii' in current directory

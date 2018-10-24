@@ -1,0 +1,950 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+
+outfile =
+
+    'residuals_analysis_RU_glm19_sphere_4mm.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model19/con1/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2)
+[Warning: No voxels found after cluster FWE correction. Setting extent threshold
+= 5.] 
+[> In ccnl_extract_clusters>bspm_extract_clusters (line 146)
+  In ccnl_extract_clusters (line 85)
+  In residuals_analysis (line 45)] 
+  Columns 1 through 6
+
+    'Positive'    'Location not in ...'    [ 73]    [5.3515]    [-22]    [ 46]
+            []    'Location not in ...'    [  8]    [4.5067]    [-28]    [ 36]
+            []    'OFCant_R'               [ 84]    [4.4683]    [ 20]    [ 50]
+            []    'Location not in ...'    [104]    [4.3580]    [ 34]    [ 46]
+            []    'Frontal_Mid_2_R'        [ 85]    [4.0503]    [ 42]    [ 22]
+            []    'Parietal_Inf_R'         [ 15]    [4.0384]    [ 56]    [-56]
+            []    'Location not in ...'    [ 16]    [3.8811]    [-56]    [-58]
+            []    'Location not in ...'    [ 36]    [3.7088]    [ 28]    [ 26]
+            []    'Frontal_Sup_2_R'        [  8]    [3.4903]    [ 36]    [ 54]
+            []    'Frontal_Mid_2_L'        [  5]    [3.4861]    [-46]    [ 46]
+
+  Column 7
+
+    [ -6]
+    [  0]
+    [-14]
+    [ -8]
+    [ 36]
+    [ 46]
+    [ 42]
+    [ -2]
+    [ 12]
+    [ -8]
+
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 1
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 2
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 3
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 4
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 5
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 6
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 7
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 8
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 9
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 10
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 11
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 12
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 13
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 14
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 15
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 16
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 17
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 18
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 19
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 20
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 21
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 22
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 23
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 24
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 25
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 26
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 27
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 28
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 29
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 30
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+cor
+Computed residuals for subject 31
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.0759
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.7845
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.2705
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.9917
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.3871
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.3869
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.2471
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.4386
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.4000
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In residuals_analysis (line 149)] 
+
+ans =
+
+         0
+    0.0000
+         0
+    0.8185
+
+
+ans =
+
+  10×8 table
+
+            region             extent     stat            mni           p_uncorr    p_corr      pears_rs     pears_ps
+    _______________________    ______    ______    _________________    ________    _______    __________    ________
+
+    'Location not in atlas'     73       5.3515    -22     46     -6    0.075883    0.54578    -0.0066844     0.51523
+    'Location not in atlas'      8       4.5067    -28     36      0     0.78454          1     -0.013566     0.18661
+    'OFCant_R'                  84       4.4683     20     50    -14     0.27049    0.95731     -0.018193    0.076531
+    'Location not in atlas'    104        4.358     34     46     -8     0.99169          1     -0.016645     0.10514
+    'Frontal_Mid_2_R'           85       4.0503     42     22     36     0.38707    0.99252     -0.022024    0.032017
+    'Parietal_Inf_R'            15       4.0384     56    -56     46     0.38691     0.9925     -0.018556     0.07083
+    'Location not in atlas'     16       3.8811    -56    -58     42     0.24708    0.94146     -0.019863    0.053134
+    'Location not in atlas'     36       3.7088     28     26     -2     0.43863    0.99689     -0.026264    0.010554
+    'Frontal_Sup_2_R'            8       3.4903     36     54     12     0.39998    0.99395     -0.019677    0.055404
+    'Frontal_Mid_2_L'            5       3.4861    -46     46     -8     0.81854          1    -0.0013763     0.89342
+

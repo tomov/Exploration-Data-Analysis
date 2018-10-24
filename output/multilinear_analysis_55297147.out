@@ -1,0 +1,1482 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE multilinear_analysis.m-------------------
+% multilinear regression analysis 
+% try to decode |RU| or TU from multivariate ROI activity and see if it predicts
+% choices better than behavioral model alone
+% merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
+%
+
+function multilinear_analysis(glmodel, regressor, contrast, load_first_half)
+
+printcode;
+
+if ~exist('load_first_half', 'var')
+    load_first_half = false;
+end
+
+filename = ['multilinear_analysis_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '.mat'];
+filename
+
+
+if load_first_half
+    % optionally load pre-computed residuals (b/c the 2nd half doesn't work on the stupid cluster...)
+    load(filename);
+else
+
+    % group-level settings
+    p = 0.001;
+    alpha = 0.05;
+    Dis = 20;
+    Num = 1; % # peak voxels per cluster; default in bspmview is 3
+    direct = '+';
+
+    EXPT = exploration_expt();
+
+    data = load_data;
+
+    switch regressor
+        case 'RU'
+            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + decRU + VTU';
+        case 'TU'
+            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + RU + VdecTU';
+        otherwise
+            assert(false);
+    end
+
+    [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+
+    r = 10 / 1.5; % 10 mm radius
+
+    % create spherical masks around peak voxel of each cluster (intersected with cluster)
+    %
+    for c = 1:length(region)
+        masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
+        cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
+        ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
+    end
+
+    % extract trial_onset (raw, unsmoothed) betas
+    %
+    roi = extract_roi_betas(masks, 'trial_onset');
+
+    save(filename, '-v7.3');
+end
+
+
+[~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+% clean up betas
+%
+for c = 1:length(roi)
+    for s = 1:length(data)
+        B = roi(c).subj(s).betas;
+        runs = find(goodRuns{s});
+        data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+        which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+        B(:, which_nan) = [];
+        data(s).betas{c} = B;
+    end
+end
+
+% extract regressors
+%
+V_all = [];
+for s = 1:length(data)
+    which_all = logical(ones(length(data(s).run), 1));
+    switch regressor
+        case 'RU'
+            [~, absRU] =  get_latents(data, s, which_all, 'abs');
+            [~, RU] = get_latents(data, s, which_all, 'left');
+            data(s).y = absRU;
+            data(s).RU = RU; % for sign-correction
+        case 'TU'
+            [V, ~, TU] = get_latents(data, s, which_all, 'abs');
+            data(s).y = TU;
+            V_all = [V_all; V];
+        otherwise
+            assert(false);
+    end
+end
+
+save(filename, '-v7.3');
+
+for c = 1:numel(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+    disp(region{c});
+
+    dec = [];
+    exclude = [];
+    rmse = [];
+    for s = 1:length(data)
+        exclude = [exclude; data(s).exclude];
+        X = data(s).betas{c};
+        y = data(s).y;
+        mdl = fitlm(X, y, 'exclude', data(s).exclude, 'Intercept', true);
+        pred = predict(mdl, X);
+        if glmodel == 21 && strcmp(regressor, 'RU')
+            pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
+        end
+        dec = [dec; pred];
+        rmse(s) = mdl.RMSE;
+    end
+    exclude = logical(exclude);
+
+    tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
+
+    switch regressor
+        case 'RU'
+            decRU = dec;
+            tbl = [tbl table(decRU)];
+        case 'TU'
+            VdecTU = V_all ./ dec;
+            tbl = [tbl table(VdecTU)];
+        otherwise
+            assert(false);
+    end
+
+    % glm with both the model and decoded regressor
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    [w, names, stats] = fixedEffects(results_both{c});
+    ps(c,:) = stats.pValue';
+    results_both{c}
+    stats.pValue
+    w
+    names
+
+    % original glm (model only)
+    % do model comparison
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
+    comp{c}
+    p_comp(c,:) = comp{c}.pValue(2);
+    BIC(c,:) = comp{c}.BIC';
+
+    % glm with decoded regressor only
+    % do second model comparison
+    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
+    comp2{c}
+    p_comp2(c,:) = comp2{c}.pValue(2);
+    BIC2(c,:) = comp2{c}.BIC';
+
+    % correlate RMSE with behavioral weights across subjects
+    % => see if better decodeability is associated with more reliance on regressor in decision
+    %
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
+    switch regressor
+        case 'RU'
+            [r, p] = corr(w(:,2), rmse');
+        case 'TU'
+            [r, p] = corr(w(:,3), rmse');
+        otherwise
+            assert(false);
+    end
+    disp('rmse to w');
+    r
+    p
+    p_ax(c,:) = p;
+    r_ax(c,:) = r;
+end
+
+save(filename, '-v7.3');
+
+p_uncorr = ps(:,4);
+p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+BIC_orig = BIC(:,1);
+BIC_both = BIC(:,2);
+BIC_dec = BIC2(:,1);
+table(masknames', p_uncorr, p_corr, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+
+
+--------------------- END FILE multilinear_analysis.m-------------------
+
+filename =
+
+    'multilinear_analysis_TU_-_trial_glm21.mat'
+
+Parietal_Inf_R
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7484.2    7512.8    -3738.1          7476.2  
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate      SE            tStat     DF      pValue    
+    'RU'               0.08695     0.0044318     19.62    9475             0
+    'VTU'           0.00018119    2.7532e-05     6.581    9475    4.9202e-11
+    'V'                0.11911     0.0024794    48.039    9475             0
+    'VdecTU'        0.00011308     2.619e-05    4.3176    9475    1.5931e-05
+
+
+    Lower         Upper     
+      0.078262      0.095637
+    0.00012722    0.00023515
+       0.11425       0.12397
+    6.1742e-05    0.00016442
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0000
+         0
+    0.1593
+
+
+w =
+
+    0.0869
+    0.0002
+    0.1191
+    0.0001
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7484.2    7512.8    -3738.1    20.337    1      
+
+
+    pValue   
+             
+    6.494e-06
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7533.8    7555.3    -3763.9                     
+    ALTGLME    4     7484.2    7512.8    -3738.1    51.619    1      
+
+
+    pValue    
+              
+    6.7402e-13
+
+rmse to w
+
+r =
+
+   NaN
+
+
+p =
+
+   NaN
+
+Parietal_Inf_L
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7484.2    7512.8    -3738.1          7476.2  
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate      SE            tStat     DF      pValue    
+    'RU'               0.08695     0.0044318     19.62    9475             0
+    'VTU'           0.00018119    2.7532e-05     6.581    9475    4.9202e-11
+    'V'                0.11911     0.0024794    48.039    9475             0
+    'VdecTU'        0.00011308     2.619e-05    4.3176    9475    1.5931e-05
+
+
+    Lower         Upper     
+      0.078262      0.095637
+    0.00012722    0.00023515
+       0.11425       0.12397
+    6.1742e-05    0.00016442
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0000
+         0
+    0.1593
+
+
+w =
+
+    0.0869
+    0.0002
+    0.1191
+    0.0001
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7484.2    7512.8    -3738.1    20.337    1      
+
+
+    pValue   
+             
+    6.494e-06
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7533.8    7555.3    -3763.9                     
+    ALTGLME    4     7484.2    7512.8    -3738.1    51.619    1      
+
+
+    pValue    
+              
+    6.7402e-13
+
+rmse to w
+
+r =
+
+   NaN
+
+
+p =
+
+   NaN
+
+Location not in atlas
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7502.8    7531.4    -3747.4          7494.8  
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate      SE            tStat     DF      pValue   
+    'RU'              0.086956     0.0044319    19.621    9475            0
+    'VTU'            0.0001439    2.4494e-05    5.8751    9475    4.368e-09
+    'V'                0.11912     0.0024796    48.042    9475            0
+    'VdecTU'        1.6579e-05    1.1802e-05    1.4048    9475      0.16011
+
+
+    Lower          Upper     
+       0.078268      0.095643
+      9.589e-05    0.00019192
+        0.11426       0.12398
+    -6.5547e-06    3.9713e-05
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.1601
+
+
+w =
+
+    0.0870
+    0.0001
+    0.1191
+    0.0000
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue 
+    GLME       3     7502.5      7524    -3748.3                                
+    ALTGLME    4     7502.8    7531.4    -3747.4    1.7189    1          0.18983
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7539.7    7561.2    -3766.9                     
+    ALTGLME    4     7502.8    7531.4    -3747.4    38.903    1      
+
+
+    pValue    
+              
+    4.4546e-10
+
+rmse to w
+
+r =
+
+    0.1234
+
+
+p =
+
+    0.5083
+
+Precentral_L
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC     BIC       LogLikelihood    Deviance
+    7479    7507.6    -3735.5          7471    
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate      SE            tStat     DF      pValue    
+    'RU'              0.086893     0.0044312    19.609    9475             0
+    'VTU'           0.00017581    2.6705e-05    6.5836    9475     4.835e-11
+    'V'                0.11904     0.0024791    48.018    9475             0
+    'VdecTU'        0.00021447    4.2294e-05    5.0709    9475    4.0342e-07
+
+
+    Lower         Upper     
+      0.078207      0.095579
+    0.00012347    0.00022816
+       0.11418        0.1239
+    0.00013156    0.00029738
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-06 *
+
+         0
+    0.0000
+         0
+    0.4034
+
+
+w =
+
+    0.0869
+    0.0002
+    0.1190
+    0.0002
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4       7479    7507.6    -3735.5    25.559    1      
+
+
+    pValue    
+              
+    4.2916e-07
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7527.8    7549.3    -3760.9                     
+    ALTGLME    4       7479    7507.6    -3735.5    50.808    1      
+
+
+    pValue    
+              
+    1.0184e-12
+
+rmse to w
+
+r =
+
+    0.0855
+
+
+p =
+
+    0.6473
+
+Precentral_R
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC       BIC     LogLikelihood    Deviance
+    7504.4    7533    -3748.2          7496.4  
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate       SE            tStat       DF      pValue   
+    'RU'               0.086965      0.004432      19.622    9475            0
+    'VTU'            0.00014114    2.4281e-05      5.8128    9475    6.341e-09
+    'V'                 0.11914     0.0024797      48.045    9475            0
+    'VdecTU'        -1.3146e-05    2.8982e-05    -0.45359    9475      0.65014
+
+
+    Lower          Upper     
+       0.078277      0.095653
+     9.3546e-05    0.00018874
+        0.11428         0.124
+    -6.9957e-05    4.3665e-05
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.6501
+
+
+w =
+
+    0.0870
+    0.0001
+    0.1191
+   -0.0000
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC     LogLik     LRStat     deltaDF    pValue 
+    GLME       3     7502.5    7524    -3748.3                                 
+    ALTGLME    4     7504.4    7533    -3748.2    0.14666    1          0.70175
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7540.3    7561.8    -3767.2                     
+    ALTGLME    4     7504.4      7533    -3748.2    37.934    1      
+
+
+    pValue    
+              
+    7.3161e-10
+
+rmse to w
+
+r =
+
+   -0.0362
+
+
+p =
+
+    0.8466
+
+Insula_L
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Regression design matrix is rank deficient to within machine
+precision.] 
+[> In classreg.regr.CompactTermsRegression/checkDesignRank (line 35)
+  In LinearModel.fit (line 1224)
+  In fitlm (line 117)
+  In multilinear_analysis (line 117)] 
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + VdecTU
+
+Model fit statistics:
+    AIC     BIC       LogLikelihood    Deviance
+    7504    7532.7    -3748            7496    
+
+Fixed effects coefficients (95% CIs):
+    Name            Estimate       SE            tStat       DF      pValue    
+    'RU'               0.086962      0.004432      19.621    9475             0
+    'VTU'            0.00014168    2.4314e-05       5.827    9475    5.8271e-09
+    'V'                 0.11913     0.0024797      48.043    9475             0
+    'VdecTU'        -4.7929e-05    6.6483e-05    -0.72091    9475       0.47098
+
+
+    Lower          Upper     
+       0.078274       0.09565
+     9.4016e-05    0.00018934
+        0.11427       0.12399
+    -0.00017825    8.2393e-05
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.4710
+
+
+w =
+
+    0.0870
+    0.0001
+    0.1191
+   -0.0000
+
+
+names =
+
+  4×1 table
+
+      Name  
+    ________
+
+    'RU'    
+    'VTU'   
+    'V'     
+    'VdecTU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat     deltaDF
+    GLME       3     7502.5      7524    -3748.3                      
+    ALTGLME    4       7504    7532.7      -3748    0.49273    1      
+
+
+    pValue 
+           
+    0.48271
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7540.2    7561.7    -3767.1                     
+    ALTGLME    4       7504    7532.7      -3748    38.14     1      
+
+
+    pValue    
+              
+    6.5852e-10
+
+rmse to w
+
+r =
+
+    0.0366
+
+
+p =
+
+    0.8450
+
+
+ans =
+
+  6×10 table
+
+                       Var1                         p_uncorr       p_corr      BIC_orig    BIC_both      p_comp      BIC_dec     p_comp2       p_ax        r_ax   
+    ___________________________________________    __________    __________    ________    ________    __________    _______    __________    _______    _________
+
+    'sphere_glm21_TU_-_trial_38_-46_44_r=10mm'     1.5931e-05    9.5584e-05    7524        7512.8       6.494e-06    7555.3     6.7402e-13        NaN          NaN
+    'sphere_glm21_TU_-_trial_-46_-40_48_r=10mm'    1.5931e-05    9.5584e-05    7524        7512.8       6.494e-06    7555.3     6.7402e-13        NaN          NaN
+    'sphere_glm21_TU_-_trial_22_-2_52_r=10mm'         0.16011       0.64898    7524        7531.4         0.18983    7561.2     4.4546e-10    0.50834      0.12341
+    'sphere_glm21_TU_-_trial_-42_2_28_r=10mm'      4.0342e-07    2.4205e-06    7524        7507.6      4.2916e-07    7549.3     1.0184e-12    0.64731     0.085535
+    'sphere_glm21_TU_-_trial_46_8_30_r=10mm'          0.65014       0.99817    7524          7533         0.70175    7561.8     7.3161e-10    0.84657    -0.036231
+    'sphere_glm21_TU_-_trial_-30_22_2_r=10mm'         0.47098       0.97808    7524        7532.7         0.48271    7561.7     6.5852e-10    0.84498     0.036611
+

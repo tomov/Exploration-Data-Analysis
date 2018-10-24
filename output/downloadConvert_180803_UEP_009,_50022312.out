@@ -1,0 +1,108 @@
+Saving output to '/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects'
+ArcGet.py: WARNING: Unable to determine Age for DOB=""
+
+SUBJECT: 180803_UEP_009 (CBSCentral_S08723) AGE:       0                             
+GENDER:                                 HADEDNESS:                               
+RACE:                                   ETHNICITY:                               
+ENGLISH:                                LANGUAGE:                                
+WEIGHT:                                 HEIGHT:                                  
+SESSION: 180803_UEP_009 (Accession ID CBSCentral_E11412)
+
+downld  num quality  type         series                           note
+    no    1 usable   LOCALIZER    localizer_32ch_uncombined        
+    no    2 usable   localizer_32ch_uncombined localizer_32ch_uncombined        
+    no    3 usable   AAHead_Scout_32ch AAHead_Scout_32ch                
+    no    4 usable   AAScout      AAHead_Scout_32ch_MPR_sag        
+    no    5 usable   AAScout      AAHead_Scout_32ch_MPR_cor        
+    no    6 usable   AAScout      AAHead_Scout_32ch_MPR_tra        
+   YES    7 usable   MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS         
+    no    8 usable   HCP_SEFieldMap_1.5mm_84sl_p2_AP HCP_SEFieldMap_1.5mm_84sl_p2_AP  
+    no    9 usable   HCP_SEFieldMap_1.5mm_84sl_p2_PA HCP_SEFieldMap_1.5mm_84sl_p2_PA  
+    no   10 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   11 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   12 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   13 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   14 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   15 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   16 usable   LOCALIZER    localizer_32ch_uncombined        
+    no   17 usable   localizer_32ch_uncombined localizer_32ch_uncombined        
+    no   18 usable   AAHead_Scout_32ch AAHead_Scout_32ch                
+    no   19 usable   AAScout      AAHead_Scout_32ch_MPR_sag        
+    no   20 usable   AAScout      AAHead_Scout_32ch_MPR_cor        
+    no   21 usable   AAScout      AAHead_Scout_32ch_MPR_tra        
+    no   22 usable   HCP_SEFieldMap_1.5mm_84sl_p2_AP HCP_SEFieldMap_1.5mm_84sl_p2_AP  
+    no   23 usable   HCP_SEFieldMap_1.5mm_84sl_p2_PA HCP_SEFieldMap_1.5mm_84sl_p2_PA  
+    no   24 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   25 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   26 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   27 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   28 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   29 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   30 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   31 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   32 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   33 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   99 usable   PhoenixZIPReport PhoenixZIPReport                 
+
+Getting Data...
+Scan    7 MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS from '180803_UEP_009'
+################################################## 19.53 MB 3.23 MB/s
+################################################## 39.06 MB 4.38 MB/s
+#########                                          42.86 MB 4.52 MB/s Total
+Scan   11 Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task      from '180803_UEP_009'
+################################################## 19.53 MB 8.80 MB/s
+################################################## 39.06 MB 10.98 MB/s
+################################################## 58.59 MB 11.50 MB/s
+################################################## 78.12 MB 10.76 MB/s
+################################################## 97.66 MB 10.29 MB/s
+################################################## 117.19 MB 9.49 MB/s
+################################################## 136.72 MB 9.20 MB/s
+################################################## 156.25 MB 8.89 MB/s
+################################################## 175.78 MB 8.63 MB/s
+################################################## 195.31 MB 8.55 MB/s
+################################################## 214.84 MB 8.43 MB/s
+################################################## 234.38 MB 8.23 MB/s
+################################################## 253.91 MB 8.16 MB/s
+################################################## 273.44 MB 8.09 MB/s
+################################################## 292.97 MB 8.09 MB/s
+################################################## 312.50 MB 8.02 MB/s
+################################################## 332.03 MB 7.94 MB/s
+################################################## 351.56 MB 7.89 MB/s
+################################################## 371.09 MB 7.84 MB/s
+################################################## 390.62 MB 7.78 MB/s
+################################################## 410.16 MB 7.76 MB/s
+################################################## 429.69 MB 7.75 MB/s
+################################################## 449.22 MB 7.70 MB/s
+################################################## 468.75 MB 7.72 MB/s
+################################################## 488.28 MB 7.76 MB/s
+################################################## 507.81 MB 7.67 MB/s
+################################################## 527.34 MB 7.59 MB/s
+################################################## 546.88 MB 7.56 MB/s
+################################################## 566.41 MB 7.60 MB/s
+################################################## 585.94 MB 7.62 MB/s
+################################################## 605.47 MB 7.58 MB/s
+################################################## 625.00 MB 7.58 MB/s
+################################################## 644.53 MB 7.59 MB/s
+################################################## 664.06 MB 7.58 MB/s
+################################################## 683.59 MB 7.56 MB/s
+################################################## 703.12 MB 7.51 MB/s
+################################################## 722.66 MB 7.53 MB/s
+################################################## 742.19 MB 7.54 MB/s
+################################################## 761.72 MB 7.50 MB/s
+################################################## 781.25 MB 7.50 MB/s
+################################################## 800.78 MB 7.50 MB/s
+################################################## 820.31 MB 7.52 MB/s
+################################################## 839.84 MB 7.53 MB/s
+################################################## 859.38 MB 7.54 MB/s
+################################################## 878.91 MB 7.53 MB/s
+#################################################  898.19 MB 7.55 MB/s Total
+Scan   13 Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task      from '180803_UEP_009'
+################################################## 19.53 MB 6.98 MB/s
+################################################## 39.06 MB 9.16 MB/s
+################################################## 58.59 MB 7.05 MB/s
+################################################## 78.12 MB 7.98 MB/s
+################################################## 97.66 MB 8.82 MB/s
+################################################## 117.19 MB 9.45 MB/s
+################################################## 136.72 MB 9.97 MB/s
+################################################## 156.25 MB 10.35 MB/s
+##############################################

@@ -71,4 +71,4 @@ r = rs;
 
 save(outfile);
 
-table(region, p_uncorr, p_corr, r);
+table(region, p_uncorr, p_corr, r)

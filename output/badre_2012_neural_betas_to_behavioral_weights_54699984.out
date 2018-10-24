@@ -1,0 +1,766 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+badre_2012_b_to_w_glm25.mat
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_36_56_-8_r=10mm.nii
+
+r =
+
+    0.2133
+
+
+p =
+
+    0.2492
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_40_60_-10_r=10mm.nii
+
+r =
+
+    0.2177
+
+
+p =
+
+    0.2395
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_30_52_-14_r=10mm.nii
+
+r =
+
+    0.1671
+
+
+p =
+
+    0.3688
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_24_48_20_r=10mm.nii
+
+r =
+
+    0.0202
+
+
+p =
+
+    0.9142
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_30_52_16_r=10mm.nii
+
+r =
+
+    0.0498
+
+
+p =
+
+    0.7900
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_18_40_22_r=10mm.nii
+
+r =
+
+    0.0143
+
+
+p =
+
+    0.9390
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_24_46_20_r=10mm.nii
+
+r =
+
+    0.0473
+
+
+p =
+
+    0.8004
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_30_52_-14_r=10mm.nii
+
+r =
+
+    0.1671
+
+
+p =
+
+    0.3688
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_36_56_-10_r=10mm.nii
+
+r =
+
+    0.2149
+
+
+p =
+
+    0.2456
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_22_56_26_r=10mm.nii
+
+r =
+
+   -0.1389
+
+
+p =
+
+    0.4561
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_26_52_16_r=10mm.nii
+
+r =
+
+    0.0184
+
+
+p =
+
+    0.9218
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_44_42_28_r=10mm.nii
+
+r =
+
+    0.0539
+
+
+p =
+
+    0.7733
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_22_54_28_r=10mm.nii
+
+r =
+
+   -0.1497
+
+
+p =
+
+    0.4216
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_28_48_14_r=10mm.nii
+
+r =
+
+    0.1085
+
+
+p =
+
+    0.5611
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+masks/badre_rlpfc_22_46_20_r=10mm.nii
+
+r =
+
+    0.0342
+
+
+p =
+
+    0.8552
+
+>> 

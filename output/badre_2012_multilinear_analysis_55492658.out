@@ -1,0 +1,1501 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE badre_2012_multilinear_analysis.m-------------------
+% multilinear regression analysis for RU for Badre 2012 RLPFC ROI
+% try to decode |RU| from multivariate ROI activity and see if it predicts
+% choices better than RU from model
+%
+% TODO dedupe with badre_2012_activations_analysis.m
+
+function badre_2012_multilinear_analysis(method)
+
+    printcode;
+
+    EXPT = exploration_expt();
+
+    data = load_data;
+
+    formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+    formula_RU = 'C ~ -1 + V + RU + VTU';
+    formula_decRU = 'C ~ -1 + V + decRU + VTU';
+
+    filename = ['badre_2012_multilinear_analysis_', method, '.mat'];
+    disp(filename);
+
+    % clusters = masks from paper
+    masks = badre_2012_create_masks(false);
+    masks = masks(1); % TODO all masks
+
+    % extract trial_onset (raw, unsmoothed) betas
+    roi = extract_roi_betas(masks, 'trial_onset');
+    save(filename, '-v7.3');
+
+    load(filename, 'roi'); 
+
+    [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+    % clean up betas
+    %
+    for c = 1:length(roi)
+        for s = 1:length(data)
+            B = roi(c).subj(s).betas;
+            runs = find(goodRuns{s});
+            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
+            data(s).betas{c} = B;
+        end
+    end
+
+    % extract regressors
+    %
+    for s = 1:length(data)
+        which_all = logical(ones(length(data(s).run), 1));
+        [~, absRU] =  get_latents(data, s, which_all, 'abs');
+        [~, RU] = get_latents(data, s, which_all, 'left');
+        data(s).absRU = absRU;
+        data(s).RU = RU; % for sign-correction
+    end
+
+    save(filename, '-v7.3');
+
+    load(filename); 
+
+    for c = 1:numel(masks)
+        mask = masks{c};
+        [~, masknames{c}, ~] = fileparts(mask);
+        disp(mask);
+
+        decRU = [];
+        exclude = [];
+        mse = [];
+        for s = 1:length(data)
+            exclude = [exclude; data(s).exclude];
+            X = data(s).betas{c};
+            y = data(s).absRU;
+
+            % remove bad data points
+            X = X(~data(s).exclude, :);
+            y = y(~data(s).exclude);
+
+            % predict using full data set; we ignore bad trials later 
+            % also for CV, one run per fold
+            [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+
+            pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
+            decRU = [decRU; pred];
+        end
+        exclude = logical(exclude);
+
+        tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
+        tbl = [tbl table(decRU)];
+
+        
+        % glm with both RU and decRU
+        results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+        [w, names, stats] = fixedEffects(results_both{c});
+        ps(c,:) = stats.pValue';
+        results_both{c}
+        stats.pValue
+        w
+        names
+
+        % glm with RU only
+        % do model comparison
+        results_RU{c} = fitglme(tbl,formula_RU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+        comp{c} = compare(results_RU{c}, results_both{c}); % order is important -- see docs
+        comp{c}
+        p_comp(c,:) = comp{c}.pValue(2);
+        BIC(c,:) = comp{c}.BIC';
+
+        % glm with decRU only
+        % do second model comparison
+        results_decRU{c} = fitglme(tbl,formula_decRU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+        comp2{c} = compare(results_decRU{c}, results_both{c}); % order is important -- see docs
+        comp2{c}
+        p_comp2(c,:) = comp2{c}.pValue(2);
+        BIC2(c,:) = comp2{c}.BIC';
+
+        % correlate RMSE with behavioral weights across subjects
+        % => see if better decodeability is associated with more reliance on regressor in decision
+        %
+        load results_glme_fig3_nozscore.mat;
+        w = getEffects(results_VTURU, false);
+        [r, p] = corr(abs(w(:,2)), mse');
+        disp('mse to w');
+        r
+        p
+        p_ax(c,:) = p;
+        r_ax(c,:) = r;
+    end
+
+    save(filename, '-v7.3');
+
+    p_uncorr = ps(:,4);
+    p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+    BIC_RU = BIC(:,1);
+    BIC_both = BIC(:,2);
+    BIC_decRU = BIC2(:,1);
+    disp(method);
+    table(masknames', p_uncorr, p_corr, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2, p_ax, r_ax)
+
+end
+
+
+--------------------- END FILE badre_2012_multilinear_analysis.m-------------------
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+badre_2012_multilinear_analysis_ridge_CV.mat
+  betas_filename = betas_mask_subj=1_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=2_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=3_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=4_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=5_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=6_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=7_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=8_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=9_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=10_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=11_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=12_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=13_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=14_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=15_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=16_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=17_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=18_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=19_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=20_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=21_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=22_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=23_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=24_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=25_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=26_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=27_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=28_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=29_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=30_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=31_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+masks/badre_rlpfc_36_56_-8_r=10mm.nii
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   29.6380   29.6464   29.6461   29.6461   29.6461   29.6460   29.6459
+
+  Columns 8 through 14
+
+   29.6445   29.6302   29.4884   28.1925   21.2327   12.2138    9.5021
+
+  Columns 15 through 21
+
+    9.5583    9.7098    9.7342    9.7368    9.7370    9.7371    9.7371
+
+      min lambda = 14
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   31.8436   31.8306   31.8320   31.8320   31.8320   31.8320   31.8319
+
+  Columns 8 through 14
+
+   31.8310   31.8217   31.7292   30.8615   25.4843   16.1500   12.1574
+
+  Columns 15 through 21
+
+   11.7244   11.8415   11.8633   11.8656   11.8658   11.8658   11.8658
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   19.4845   19.4895   19.4891   19.4891   19.4891   19.4891   19.4890
+
+  Columns 8 through 14
+
+   19.4881   19.4791   19.3902   18.5958   14.8617   10.5633    8.4589
+
+  Columns 15 through 21
+
+    7.9975    7.9313    7.9218    7.9208    7.9207    7.9207    7.9207
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+    9.0504    9.0504    9.0504    9.0504    9.0504    9.0504    9.0504
+
+  Columns 8 through 14
+
+    9.0503    9.0499    9.0455    9.0028    8.6399    7.2894    6.4995
+
+  Columns 15 through 21
+
+    6.4270    6.4222    6.4218    6.4217    6.4217    6.4217    6.4217
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   21.1518   21.1536   21.1527   21.1527   21.1527   21.1527   21.1527
+
+  Columns 8 through 14
+
+   21.1522   21.1477   21.1030   20.6761   17.7292   11.3043    7.8293
+
+  Columns 15 through 21
+
+    7.3805    7.4650    7.4856    7.4879    7.4882    7.4882    7.4882
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   26.0188   26.0129   26.0123   26.0124   26.0124   26.0124   26.0123
+
+  Columns 8 through 14
+
+   26.0120   26.0082   25.9709   25.6168   23.2899   18.4849   15.1973
+
+  Columns 15 through 21
+
+   14.3073   14.0592   14.0256   14.0221   14.0217   14.0217   14.0217
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   15.3951   15.3925   15.3923   15.3923   15.3923   15.3923   15.3923
+
+  Columns 8 through 14
+
+   15.3920   15.3895   15.3642   15.1214   13.3852    9.0944    6.5880
+
+  Columns 15 through 21
+
+    6.1229    6.1103    6.1117    6.1118    6.1118    6.1119    6.1119
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   18.3924   18.3904   18.3907   18.3907   18.3907   18.3907   18.3907
+
+  Columns 8 through 14
+
+   18.3903   18.3864   18.3482   17.9826   15.4219    9.7497    7.1791
+
+  Columns 15 through 21
+
+    6.9432    6.9492    6.9508    6.9510    6.9510    6.9510    6.9510
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   25.2099   25.2123   25.2125   25.2125   25.2125   25.2125   25.2124
+
+  Columns 8 through 14
+
+   25.2112   25.1994   25.0828   24.0042   17.8923    9.5966    7.2109
+
+  Columns 15 through 21
+
+    7.0949    7.1658    7.1779    7.1792    7.1793    7.1793    7.1793
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   30.8982   30.9005   30.8996   30.8996   30.8996   30.8996   30.8995
+
+  Columns 8 through 14
+
+   30.8984   30.8879   30.7830   29.7952   23.5191   12.1741    8.4634
+
+  Columns 15 through 21
+
+    8.2137    8.2372    8.2421    8.2427    8.2427    8.2427    8.2427
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   26.9389   26.9411   26.9407   26.9407   26.9407   26.9407   26.9405
+
+  Columns 8 through 14
+
+   26.9394   26.9276   26.8109   25.7409   19.8054   10.9830    7.9185
+
+  Columns 15 through 21
+
+    7.3414    7.2673    7.2595    7.2587    7.2586    7.2586    7.2586
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   26.0638   26.0735   26.0729   26.0729   26.0729   26.0729   26.0729
+
+  Columns 8 through 14
+
+   26.0725   26.0688   26.0314   25.6708   22.9766   15.7259   11.6430
+
+  Columns 15 through 21
+
+   11.1024   11.0861   11.0861   11.0861   11.0861   11.0861   11.0861
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   23.9738   23.9763   23.9767   23.9767   23.9767   23.9767   23.9766
+
+  Columns 8 through 14
+
+   23.9755   23.9645   23.8556   22.8485   17.2565    9.7775    7.2470
+
+  Columns 15 through 21
+
+    7.1259    7.1469    7.1497    7.1500    7.1501    7.1501    7.1501
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   20.5675   20.5736   20.5742   20.5743   20.5743   20.5743   20.5743
+
+  Columns 8 through 14
+
+   20.5740   20.5709   20.5404   20.2459   18.0046   11.6076    8.2657
+
+  Columns 15 through 21
+
+    8.1048    8.1679    8.1771    8.1781    8.1782    8.1782    8.1782
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   19.5618   19.5647   19.5636   19.5636   19.5636   19.5636   19.5636
+
+  Columns 8 through 14
+
+   19.5631   19.5586   19.5143   19.0874   16.0066    8.9238    6.0324
+
+  Columns 15 through 21
+
+    5.8268    5.8346    5.8362    5.8363    5.8363    5.8363    5.8363
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   26.9363   26.9266   26.9262   26.9262   26.9262   26.9262   26.9261
+
+  Columns 8 through 14
+
+   26.9252   26.9163   26.8273   25.9936   20.9303   12.7274    9.4197
+
+  Columns 15 through 21
+
+    9.1167    9.1572    9.1652    9.1661    9.1662    9.1662    9.1662
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   31.9059   31.8891   31.8880   31.8881   31.8881   31.8881   31.8881
+
+  Columns 8 through 14
+
+   31.8877   31.8847   31.8538   31.5556   29.2765   22.4785   17.6554
+
+  Columns 15 through 21
+
+   16.7294   16.6979   16.6989   16.6991   16.6991   16.6991   16.6991
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   13.0615   13.0618   13.0620   13.0619   13.0619   13.0619   13.0619
+
+  Columns 8 through 14
+
+   13.0617   13.0602   13.0446   12.8946   11.7676    8.6941    7.0032
+
+  Columns 15 through 21
+
+    6.9791    7.0374    7.0452    7.0460    7.0461    7.0461    7.0461
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   19.4739   19.4618   19.4615   19.4615   19.4615   19.4615   19.4614
+
+  Columns 8 through 14
+
+   19.4610   19.4571   19.4177   19.0461   16.6678   12.2029   10.0626
+
+  Columns 15 through 21
+
+    9.8306    9.8298    9.8305    9.8306    9.8306    9.8306    9.8306
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   28.2450   28.2420   28.2433   28.2433   28.2433   28.2433   28.2432
+
+  Columns 8 through 14
+
+   28.2422   28.2321   28.1316   27.1952   21.6995   14.0028   12.1882
+
+  Columns 15 through 21
+
+   12.2011   12.2294   12.2328   12.2331   12.2331   12.2332   12.2332
+
+      min lambda = 14
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   39.8980   39.8969   39.8993   39.8994   39.8994   39.8994   39.8993
+
+  Columns 8 through 14
+
+   39.8983   39.8889   39.7953   38.9047   32.9022   20.5015   14.1276
+
+  Columns 15 through 21
+
+   12.4539   12.2011   12.1729   12.1700   12.1697   12.1697   12.1697
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   21.8418   21.8451   21.8444   21.8444   21.8444   21.8444   21.8443
+
+  Columns 8 through 14
+
+   21.8439   21.8393   21.7935   21.3617   18.5152   11.5401    7.9528
+
+  Columns 15 through 21
+
+    7.5407    7.4997    7.4953    7.4949    7.4948    7.4948    7.4948
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   20.8719   20.8674   20.8670   20.8670   20.8670   20.8670   20.8669
+
+  Columns 8 through 14
+
+   20.8665   20.8623   20.8206   20.4253   17.8130   12.5148    9.8276
+
+  Columns 15 through 21
+
+    9.3707    9.3308    9.3274    9.3271    9.3270    9.3270    9.3270
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   16.5081   16.5072   16.5071   16.5071   16.5071   16.5071   16.5070
+
+  Columns 8 through 14
+
+   16.5067   16.5034   16.4705   16.1575   13.9861    8.8268    6.5666
+
+  Columns 15 through 21
+
+    6.2862    6.2731    6.2729    6.2729    6.2729    6.2729    6.2729
+
+      min lambda = 17
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   16.3029   16.2999   16.3006   16.3005   16.3005   16.3005   16.3005
+
+  Columns 8 through 14
+
+   16.3003   16.2979   16.2742   16.0447   14.3171    9.6617    6.9917
+
+  Columns 15 through 21
+
+    6.6483    6.6530    6.6555    6.6558    6.6558    6.6558    6.6558
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   18.6512   18.6456   18.6454   18.6455   18.6455   18.6455   18.6455
+
+  Columns 8 through 14
+
+   18.6452   18.6422   18.6123   18.3254   16.2503   11.1769    8.4500
+
+  Columns 15 through 21
+
+    8.0676    8.0552    8.0552    8.0552    8.0552    8.0552    8.0552
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   19.6048   19.5946   19.5946   19.5947   19.5947   19.5947   19.5947
+
+  Columns 8 through 14
+
+   19.5945   19.5924   19.5715   19.3694   17.8453   13.8919   11.9321
+
+  Columns 15 through 21
+
+   11.5753   11.5696   11.5712   11.5713   11.5714   11.5714   11.5714
+
+      min lambda = 16
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   48.6563   48.6616   48.6605   48.6604   48.6604   48.6603   48.6599
+
+  Columns 8 through 14
+
+   48.6555   48.6114   48.1776   44.4218   29.9103   20.1505   16.1530
+
+  Columns 15 through 21
+
+   14.6822   14.4463   14.4210   14.4184   14.4182   14.4182   14.4182
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   13.9697   13.9648   13.9643   13.9643   13.9643   13.9643   13.9643
+
+  Columns 8 through 14
+
+   13.9641   13.9616   13.9372   13.7027   12.0128    7.9287    5.5689
+
+  Columns 15 through 21
+
+    5.1672    5.1906    5.1969    5.1976    5.1977    5.1977    5.1977
+
+      min lambda = 15
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   30.0617   30.0663   30.0661   30.0660   30.0660   30.0660   30.0659
+
+  Columns 8 through 14
+
+   30.0652   30.0585   29.9916   29.3556   25.1169   16.6373   12.2773
+
+  Columns 15 through 21
+
+   11.4274   11.3788   11.3768   11.3767   11.3767   11.3767   11.3767
+
+      min lambda = 21
+
+Lambda =
+
+   1.0e+10 *
+
+  Columns 1 through 7
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 8 through 14
+
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+
+  Columns 15 through 21
+
+    0.0000    0.0000    0.0001    0.0010    0.0100    0.1000    1.0000
+
+
+m =
+
+  Columns 1 through 7
+
+   19.3208   19.3256   19.3257   19.3257   19.3257   19.3257   19.3257
+
+  Columns 8 through 14
+
+   19.3254   19.3226   19.2951   19.0300   17.0854   12.6106   10.4901
+
+  Columns 15 through 21
+
+   10.1489   10.1567   10.1595   10.1598   10.1598   10.1598   10.1598
+
+      min lambda = 15
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 92)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7485.6    7514.3    -3738.8          7477.6  
+
+Fixed effects coefficients (95% CIs):
+    Name           Estimate      SE            tStat      DF      pValue    
+    'RU'              0.10418      0.005963     17.472    9475             0
+    'VTU'          0.00011644    2.4833e-05     4.6889    9475    2.7855e-06
+    'V'               0.11863     0.0024772     47.888    9475             0
+    'decRU'         -0.038653     0.0088853    -4.3502    9475    1.3743e-05
+
+
+    Lower        Upper     
+     0.092494       0.11587
+    6.776e-05    0.00016512
+      0.11377       0.12348
+     -0.05607     -0.021236
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0279
+         0
+    0.1374
+
+
+w =
+
+    0.1042
+    0.0001
+    0.1186
+   -0.0387
+
+
+names =
+
+  4×1 table
+
+     Name  
+    _______
+
+    'RU'   
+    'VTU'  
+    'V'    
+    'decRU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 102)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7485.6    7514.3    -3738.8    18.909    1      
+
+
+    pValue    
+              
+    1.3712e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 110)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7803.4    7824.8    -3898.7                               
+    ALTGLME    4     7485.6    7514.3    -3738.8    319.75    1          0     
+
+mse to w
+
+r =
+
+   -0.5695
+
+
+p =
+
+   8.2622e-04
+
+ridge_CV
+
+ans =
+
+  1×10 table
+
+                Var1                  p_uncorr       p_corr      BIC_RU    BIC_both      p_comp      BIC_decRU    p_comp2       p_ax        r_ax  
+    _____________________________    __________    __________    ______    ________    __________    _________    _______    __________    _______
+
+    'badre_rlpfc_36_56_-8_r=10mm'    1.3743e-05    1.3743e-05    7524      7514.3      1.3712e-05    7824.8       0          0.00082622    -0.5695
+

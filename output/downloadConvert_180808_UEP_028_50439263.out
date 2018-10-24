@@ -1,0 +1,49 @@
+Saving output to '/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects'
+ArcGet.py: WARNING: Unable to determine Age for DOB=""
+
+SUBJECT: 180808_UEP_028 (CBSCentral_S08754) AGE:       0                             
+GENDER:                                 HADEDNESS:                               
+RACE:                                   ETHNICITY:                               
+ENGLISH:                                LANGUAGE:                                
+WEIGHT:                                 HEIGHT:                                  
+SESSION: 180808_UEP_028 (Accession ID CBSCentral_E11449)
+
+downld  num quality  type         series                           note
+    no    1 usable   LOCALIZER    localizer_32ch_uncombined        
+    no    2 usable   localizer_32ch_uncombined localizer_32ch_uncombined        
+    no    3 usable   AAHead_Scout_32ch AAHead_Scout_32ch                
+    no    4 usable   AAScout      AAHead_Scout_32ch_MPR_sag        
+    no    5 usable   AAScout      AAHead_Scout_32ch_MPR_cor        
+    no    6 usable   AAScout      AAHead_Scout_32ch_MPR_tra        
+   YES    7 usable   MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS         
+    no    8 usable   HCP_SEFieldMap_1.5mm_84sl_p2_AP HCP_SEFieldMap_1.5mm_84sl_p2_AP  
+    no    9 usable   HCP_SEFieldMap_1.5mm_84sl_p2_PA HCP_SEFieldMap_1.5mm_84sl_p2_PA  
+    no   10 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   11 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   12 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   13 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   14 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   15 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   16 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   17 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   18 usable   LOCALIZER    localizer_32ch_uncombined        
+    no   19 usable   localizer_32ch_uncombined localizer_32ch_uncombined        
+    no   20 usable   AAHead_Scout_32ch AAHead_Scout_32ch                
+    no   21 usable   AAScout      AAHead_Scout_32ch_MPR_sag        
+    no   22 usable   AAScout      AAHead_Scout_32ch_MPR_cor        
+    no   23 usable   AAScout      AAHead_Scout_32ch_MPR_tra        
+    no   24 usable   HCP_SEFieldMap_1.5mm_84sl_p2_AP HCP_SEFieldMap_1.5mm_84sl_p2_AP  
+    no   25 usable   HCP_SEFieldMap_1.5mm_84sl_p2_PA HCP_SEFieldMap_1.5mm_84sl_p2_PA  
+    no   26 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   27 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   28 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   29 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   30 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   31 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   32 usable   Minn_HCP_1.5mm_Task_SBRef Minn_HCP_1.5mm_Task_SBRef        
+   YES   33 usable   Minn_HCP_1.5mm_Task Minn_HCP_1.5mm_Task              
+    no   99 usable   PhoenixZIPReport PhoenixZIPReport                 
+
+Getting Data...
+Scan    7 MEMPRAGE RMS T1_MEMPRAGE_1.0mm_p2 RMS from '180808_UEP_028'
+###################

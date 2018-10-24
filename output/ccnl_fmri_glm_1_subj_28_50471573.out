@@ -1,0 +1,200 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+glm 1, subj 28, run 1
+00000000run 1 
+320glm 1, subj 28, run 2
+00000000run 2 
+320glm 1, subj 28, run 3
+00000000run 3 
+320glm 1, subj 28, run 4
+00000000run 4 
+320glm 1, subj 28, run 5
+00000000run 5 
+320glm 1, subj 28, run 6
+00000000run 6 
+320glm 1, subj 28, run 7
+00000000run 7 
+320glm 1, subj 28, run 8
+00000000run 8 
+320
+SPM12: spm_fMRI_design (v5183)                     07:52:21 - 10/08/2018
+========================================================================
+Saving fMRI design                      :               ...SPM.mat saved
+
+SPM12: spm_fmri_spm_ui (v6088)                     07:52:22 - 10/08/2018
+========================================================================
+Mapping files                           :                        ...done
+Calculating globals                     :                        ...done
+Saving SPM configuration                :               ...SPM.mat saved
+Saving SPM configuration                :               ...SPM.mat saved
+Completed                               :          07:57:29 - 10/08/2018
+
+SPM12: spm_spm (v6842)                             07:57:30 - 10/08/2018
+========================================================================
+
+SPM12: spm_est_non_sphericity (v6913)              07:57:39 - 10/08/2018
+========================================================================
+Chunk   1/35                            :                  ...processing                       ...doneChunk   2/35                            :                  ...processing                       ...doneChunk   3/35                            :                  ...processing                       ...doneChunk   4/35                            :                  ...processing                       ...doneChunk   5/35                            :                  ...processing                       ...doneChunk   6/35                            :                  ...processing                       ...doneChunk   7/35                            :                  ...processing                       ...doneChunk   8/35                            :                  ...processing                       ...doneChunk   9/35                            :                  ...processing                       ...doneChunk  10/35                            :                  ...processing                       ...doneChunk  11/35                            :                  ...processing                       ...doneChunk  12/35                            :                  ...processing                       ...doneChunk  13/35                            :                  ...processing                       ...doneChunk  14/35                            :                  ...processing                       ...doneChunk  15/35                            :                  ...processing                       ...doneChunk  16/35                            :                  ...processing                       ...doneChunk  17/35                            :                  ...processing                       ...doneChunk  18/35                            :                  ...processing                       ...doneChunk  19/35                            :                  ...processing                       ...doneChunk  20/35                            :                  ...processing                       ...doneChunk  21/35                            :                  ...processing                       ...doneChunk  22/35                            :                  ...processing                       ...doneChunk  23/35                            :                  ...processing                       ...doneChunk  24/35                            :                  ...processing                       ...doneChunk  25/35                            :                  ...processing                       ...doneChunk  26/35                            :                  ...processing                       ...doneChunk  27/35                            :                  ...processing                       ...doneChunk  28/35                            :                  ...processing                       ...doneChunk  29/35                            :                  ...processing                       ...doneChunk  30/35                            :                  ...processing                       ...doneChunk  31/35                            :                  ...processing                       ...doneChunk  32/35                            :                  ...processing                       ...doneChunk  33/35                            :                  ...processing                       ...doneChunk  34/35                            :                  ...processing                       ...doneChunk  35/35                            :                  ...processing
+Temporal non-sphericity (250473 voxels) :             ...ReML estimation
+  ReML Block 1                
+  ReML Iteration 1                      :        ...3.500143e+01 [+4.25]
+  ReML Iteration 2                      :        ...2.066141e-01 [+4.50]
+  ReML Iteration 3                      :        ...4.857136e-03 [+4.75]
+  ReML Block 2                
+  ReML Iteration 1                      :        ...3.672481e+01 [+4.25]
+  ReML Iteration 2                      :        ...1.068822e-01 [+4.50]
+  ReML Iteration 3                      :        ...1.532077e-03 [+4.75]
+  ReML Block 3                
+  ReML Iteration 1                      :        ...3.076556e+01 [+4.25]
+  ReML Iteration 2                      :        ...1.977928e-01 [+4.50]
+  ReML Iteration 3                      :        ...3.086252e-03 [+4.75]
+  ReML Block 4                
+  ReML Iteration 1                      :        ...2.690284e+01 [+4.25]
+  ReML Iteration 2                      :        ...1.613462e-01 [+4.50]
+  ReML Iteration 3                      :        ...1.917372e-03 [+4.75]
+  ReML Block 5                
+  ReML Iteration 1                      :        ...3.003380e+01 [+4.25]
+  ReML Iteration 2                      :        ...9.458964e-02 [+4.50]
+  ReML Block 6                
+  ReML Iteration 1                      :        ...3.053880e+01 [+4.25]
+  ReML Iteration 2                      :        ...1.577870e-01 [+4.50]
+  ReML Iteration 3                      :        ...3.098225e-03 [+4.75]
+  ReML Block 7                
+  ReML Iteration 1                      :        ...2.685968e+01 [+4.25]
+  ReML Iteration 2                      :        ...5.990624e-01 [+4.50]
+  ReML Iteration 3                      :        ...1.760437e-02 [+4.75]
+  ReML Block 8                
+  ReML Iteration 1                      :        ...2.987690e+01 [+4.25]
+  ReML Iteration 2                      :        ...2.730683e-01 [+4.50]
+  ReML Iteration 3                      :        ...5.464203e-03 [+4.75]
+
+SPM12: spm_spm (v6842)                             08:03:54 - 10/08/2018
+========================================================================
+Chunk   1/35                            :                  ...processing                       ...doneChunk   2/35                            :                  ...processing                       ...doneChunk   3/35                            :                  ...processing                       ...doneChunk   4/35                            :                  ...processing                       ...doneChunk   5/35                            :                  ...processing                       ...doneChunk   6/35                            :                  ...processing                       ...doneChunk   7/35                            :                  ...processing                       ...doneChunk   8/35                            :                  ...processing                       ...doneChunk   9/35                            :                  ...processing                       ...doneChunk  10/35                            :                  ...processing                       ...doneChunk  11/35                            :                  ...processing                       ...doneChunk  12/35                            :                  ...processing                       ...doneChunk  13/35                            :                  ...processing                       ...doneChunk  14/35                            :                  ...processing                       ...doneChunk  15/35                            :                  ...processing                       ...doneChunk  16/35                            :                  ...processing                       ...doneChunk  17/35                            :                  ...processing                       ...doneChunk  18/35                            :                  ...processing                       ...doneChunk  19/35                            :                  ...processing                       ...doneChunk  20/35                            :                  ...processing                       ...doneChunk  21/35                            :                  ...processing                       ...doneChunk  22/35                            :                  ...processing                       ...doneChunk  23/35                            :                  ...processing                       ...doneChunk  24/35                            :                  ...processing                       ...doneChunk  25/35                            :                  ...processing                       ...doneChunk  26/35                            :                  ...processing                       ...doneChunk  27/35                            :                  ...processing                       ...doneChunk  28/35                            :                  ...processing                       ...doneChunk  29/35                            :                  ...processing                       ...doneChunk  30/35                            :                  ...processing                       ...doneChunk  31/35                            :                  ...processing                       ...doneChunk  32/35                            :                  ...processing                       ...doneChunk  33/35                            :                  ...processing                       ...doneChunk  34/35                            :                  ...processing                       ...doneChunk  35/35                            :                  ...processing                       ...done
+Spatial non-sphericity (over scans)     :      ...estimating derivatives ...writing resels/voxel image                       ...done
+Saving SPM.mat                          :                     ...writing                       ...done
+Completed                               :          08:10:22 - 10/08/2018

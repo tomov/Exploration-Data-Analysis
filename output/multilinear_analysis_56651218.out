@@ -1,0 +1,3003 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE multilinear_analysis.m-------------------
+% multilinear regression analysis 
+% try to decode |RU| or TU from multivariate ROI activity and see if it predicts
+% choices better than behavioral model alone
+% merge of residuals_analysis.m and badre_2012_multilinear_analysis.m TODO dedupe?
+%
+
+function multilinear_analysis(glmodel, regressor, contrast, method, get_null, do_orth, load_first_half)
+
+printcode;
+
+null_iters = 100;
+
+if ~exist('get_null', 'var')
+    get_null = false;
+end
+
+if ~exist('do_orth', 'var')
+    do_orth = true;
+end
+
+if ~exist('load_first_half', 'var')
+    load_first_half = false;
+end
+
+filename = ['multilinear_analysis_', regressor, '_', replace(contrast, ' ', '_'), '_glm', num2str(glmodel), '_', method, '_orth=', num2str(do_orth), '.mat'];
+filename
+
+if load_first_half
+    % optionally load pre-computed betas to speed things up
+    load(filename);
+else
+
+    EXPT = exploration_expt();
+
+    data = load_data;
+
+    % special case a priori ROIs; otherwise expect a glm & contrast
+    switch glmodel
+        case 'badre'
+            % clusters = masks from paper
+            masks = badre_2012_create_masks(false);
+            %masks = masks(1); % TODO all masks
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
+
+        case 'tommy'
+            % clusters = masks from paper
+            masks = tommy_2017_create_masks(false);
+            region = masks';
+
+            % extract trial_onset (raw, unsmoothed) betas
+            roi = extract_roi_betas(masks, 'trial_onset');
+
+        otherwise
+
+            % group-level settings
+            p = 0.001;
+            alpha = 0.05;
+            Dis = 20;
+            Num = 1; % # peak voxels per cluster; default in bspmview is 3
+            direct = '+';
+
+            [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+
+            r = 10 / 1.5; % 10 mm radius
+
+            % create spherical masks around peak voxel of each cluster (intersected with cluster)
+            %
+            for c = 1:length(region)
+                masks{c} = sprintf('sphere_glm%d_%s_%d_%d_%d_r=%dmm.nii', glmodel, replace(contrast, ' ', '_'), mni(c,1), mni(c,2), mni(c,3), round(r * 1.5));
+                cmask = CI == CI(cor(c,1), cor(c,2), cor(c,3));
+                ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), r, masks{c}, cmask);
+            end
+
+            % extract trial_onset (raw, unsmoothed) betas
+            %
+            roi = extract_roi_betas(masks, 'trial_onset');
+    end
+
+    [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+    % clean up betas
+    %
+    for c = 1:length(roi)
+        for s = 1:length(data)
+            B = roi(c).subj(s).betas;
+            runs = find(goodRuns{s});
+            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
+            data(s).betas{c} = B;
+        end
+    end
+
+
+    % define behavioral / hybrid GLM formulas
+    switch regressor
+        case 'RU'
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + decRU + VTU';
+
+        case 'TU'
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + RU + VdecTU';
+
+        otherwise
+            assert(false);
+    end
+
+    % extract regressors
+    %
+    V_all = [];
+    for s = 1:length(data)
+        which_all = logical(ones(length(data(s).run), 1));
+        switch regressor
+            case 'RU'
+                [~, absRU] =  get_latents(data, s, which_all, 'abs');
+                [~, RU] = get_latents(data, s, which_all, 'left');
+                data(s).y = absRU;
+                data(s).RU = RU; % for sign-correction
+            case 'TU'
+                [V, ~, TU] = get_latents(data, s, which_all, 'left');
+                data(s).y = TU;
+                V_all = [V_all; V];
+            otherwise
+                assert(false);
+        end
+    end
+
+    save(filename, '-v7.3');
+end
+
+rng default; % for reproducibility
+
+% run analysis
+%
+for c = 1:numel(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+    disp(region{c});
+
+    dec = [];
+    exclude = [];
+    mse = [];
+    for s = 1:length(data)
+        exclude = [exclude; data(s).exclude];
+        X = data(s).betas{c};
+        y = data(s).y;
+
+        % remove bad data points
+        X = X(~data(s).exclude, :);
+        y = y(~data(s).exclude);
+
+        % predict using full data set; we ignore bad trials later 
+        % also for CV, one run per fold
+        [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+        data(s).mse{c} = mse(s);
+
+        if strcmp(method, 'ridge_CV_CV')
+            tmp = pred;
+            pred = nan(length(data(s).run), 1);
+            pred(~data(s).exclude) = tmp;
+        end
+
+        if strcmp(regressor, 'RU')
+            pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
+        end
+        dec = [dec; pred];
+
+        % optionally generate null distribution
+        if get_null
+            null_mse = [];
+            for i = 1:null_iters
+                y = y(randperm(length(y)));
+                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                null_mse = [null_mse, m];
+            end
+            data(s).null_mse{c} = null_mse;
+
+            % calculate p-value based on null distribution
+            null_mse = [null_mse mse(s)];
+            null_mse = sort(null_mse);
+            idx = find(null_mse == mse(s));
+            p = idx / length(null_mse);
+            fprintf('                    subj %d null mse p = %.4f\n', s, p);
+            data(s).null_p{c} = p;
+        end
+    end
+    exclude = logical(exclude);
+
+    tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
+
+    switch regressor
+        case 'RU'
+            decRU = dec;
+            tbl = [tbl table(decRU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.RU(~exclude), decRU(~exclude)]);
+            decRU_orth = decRU;
+            decRU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(decRU_orth)];
+        case 'TU'
+            VdecTU = V_all ./ dec;
+            tbl = [tbl table(VdecTU)];
+            % orthogonalized version
+            tmp = spm_orth([tbl.VTU(~exclude), VdecTU(~exclude)]);
+            VdecTU_orth = VdecTU;
+            VdecTU_orth(~exclude) = tmp(:,2);
+            tbl = [tbl table(VdecTU_orth)];
+        otherwise
+            assert(false);
+    end
+
+    % glm with both the model and decoded regressor
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    [w, names, stats] = fixedEffects(results_both{c});
+    ps(c,:) = stats.pValue';
+    results_both{c}
+    stats.pValue
+    w
+    names
+
+    % original glm (model only)
+    % do model comparison
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
+    comp{c}
+    p_comp(c,:) = comp{c}.pValue(2);
+    BIC(c,:) = comp{c}.BIC';
+
+    % glm with decoded regressor only
+    % do second model comparison
+    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
+    comp2{c}
+    p_comp2(c,:) = comp2{c}.pValue(2);
+    BIC2(c,:) = comp2{c}.BIC';
+
+    % correlate MSE with behavioral weights across subjects
+    % => see if better decodeability is associated with more reliance on regressor in decision
+    %
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
+    switch regressor
+        case 'RU'
+            [r, p] = corr(abs(w(:,2)), mse');
+        case 'TU'
+            [r, p] = corr(abs(w(:,3)), mse');
+        otherwise
+            assert(false);
+    end
+    disp('mse to w');
+    r
+    p
+    p_ax(c,:) = p;
+    r_ax(c,:) = r;
+end
+
+save(filename, '-v7.3');
+
+p_uncorr = ps(:,4);
+p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+BIC_orig = BIC(:,1);
+BIC_both = BIC(:,2);
+BIC_dec = BIC2(:,1);
+table(region, p_uncorr, p_corr, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+
+
+--------------------- END FILE multilinear_analysis.m-------------------
+
+filename =
+
+    'multilinear_analysis_RU_RU_glmbadre_ridge_CV_orth=1.mat'
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+  betas_filename = betas_mask_subj=1_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=2_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=3_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=4_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=5_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=6_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=7_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=8_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=9_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=10_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=11_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=12_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=13_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=14_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=15_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=16_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=17_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=18_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=19_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=20_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=21_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=22_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=23_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=24_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=25_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=26_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=27_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=28_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=29_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=30_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+  betas_filename = betas_mask_subj=31_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+    mask masks/badre_rlpfc_40_60_-10_r=10mm.nii: 239 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_35_50_15_r=10mm.nii: 1138 voxels
+    mask masks/badre_rlpfc_24_48_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_16_r=10mm.nii: 1176 voxels
+    mask masks/badre_rlpfc_18_40_22_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_24_46_20_r=10mm.nii: 1237 voxels
+    mask masks/badre_rlpfc_30_52_-14_r=10mm.nii: 527 voxels
+    mask masks/badre_rlpfc_36_56_-10_r=10mm.nii: 482 voxels
+    mask masks/badre_rlpfc_22_56_26_r=10mm.nii: 998 voxels
+    mask masks/badre_rlpfc_26_52_16_r=10mm.nii: 1227 voxels
+    mask masks/badre_rlpfc_44_42_28_r=10mm.nii: 719 voxels
+    mask masks/badre_rlpfc_22_54_28_r=10mm.nii: 1030 voxels
+    mask masks/badre_rlpfc_28_48_14_r=10mm.nii: 1236 voxels
+    mask masks/badre_rlpfc_22_46_20_r=10mm.nii: 1237 voxels
+masks/badre_rlpfc_36_56_-8_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7485.6    7514.3    -3738.8          7477.6  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086032     0.0044382     19.384    9475
+    'VTU'               0.00011644    2.4833e-05     4.6889    9475
+    'V'                    0.11863     0.0024772     47.888    9475
+    'decRU_orth'         -0.038653     0.0088853    -4.3502    9475
+
+
+    pValue        Lower        Upper     
+             0     0.077332      0.094732
+    2.7855e-06    6.776e-05    0.00016512
+             0      0.11377       0.12348
+    1.3743e-05     -0.05607     -0.021236
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0279
+         0
+    0.1374
+
+
+w =
+
+    0.0860
+    0.0001
+    0.1186
+   -0.0387
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7485.6    7514.3    -3738.8    18.909    1      
+
+
+    pValue    
+              
+    1.3712e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7803.4    7824.8    -3898.7                               
+    ALTGLME    4     7485.6    7514.3    -3738.8    319.75    1          0     
+
+mse to w
+
+r =
+
+   -0.5695
+
+
+p =
+
+   8.2622e-04
+
+masks/badre_rlpfc_40_60_-10_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7489.2    7517.8    -3740.6          7481.2  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086058     0.0044367     19.397    9475
+    'VTU'               0.00011817    2.4882e-05     4.7493    9475
+    'V'                    0.11867     0.0024776     47.898    9475
+    'decRU_orth'         -0.034554     0.0088078    -3.9231    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077361      0.094755
+    2.0714e-06    6.9398e-05    0.00016695
+             0       0.11381       0.12353
+    8.8019e-05     -0.051819     -0.017289
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0207
+         0
+    0.8802
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1187
+   -0.0346
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7489.2    7517.8    -3740.6    15.376    1      
+
+
+    pValue    
+              
+    8.8079e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7805.3    7826.8    -3899.7                               
+    ALTGLME    4     7489.2    7517.8    -3740.6    318.15    1          0     
+
+mse to w
+
+r =
+
+   -0.6541
+
+
+p =
+
+   6.5842e-05
+
+masks/badre_rlpfc_30_52_-14_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC     BIC       LogLikelihood    Deviance
+    7491    7519.6    -3741.5          7483    
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086068     0.0044381     19.393    9475
+    'VTU'               0.00012029    2.4841e-05     4.8423    9475
+    'V'                    0.11867     0.0024785     47.878    9475
+    'decRU_orth'         -0.033084     0.0089812    -3.6837    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077368      0.094767
+    1.3038e-06    7.1595e-05    0.00016898
+             0       0.11381       0.12353
+    0.00023111     -0.050689     -0.015479
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-03 *
+
+         0
+    0.0013
+         0
+    0.2311
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1187
+   -0.0331
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4       7491    7519.6    -3741.5    13.558    1      
+
+
+    pValue    
+              
+    0.00023133
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC     BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7789    7810.5    -3891.5                               
+    ALTGLME    4     7491    7519.6    -3741.5    300.07    1          0     
+
+mse to w
+
+r =
+
+   -0.6941
+
+
+p =
+
+   1.4890e-05
+
+masks/badre_rlpfc_35_50_15_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7483.9    7512.5    -3737.9          7475.9  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086043     0.0044407     19.376    9475
+    'VTU'               0.00011595    2.4809e-05     4.6737    9475
+    'V'                    0.11859     0.0024767     47.883    9475
+    'decRU_orth'         -0.041694     0.0091728    -4.5454    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077338      0.094748
+    2.9992e-06    6.7319e-05    0.00016458
+             0       0.11374       0.12345
+    5.5523e-06     -0.059674     -0.023713
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.2999
+         0
+    0.5552
+
+
+w =
+
+    0.0860
+    0.0001
+    0.1186
+   -0.0417
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7483.9    7512.5    -3737.9    20.642    1      
+
+
+    pValue    
+              
+    5.5365e-06
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7791.5    7812.9    -3892.7                               
+    ALTGLME    4     7483.9    7512.5    -3737.9    309.57    1          0     
+
+mse to w
+
+r =
+
+   -0.5705
+
+
+p =
+
+   8.0404e-04
+
+masks/badre_rlpfc_24_48_20_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC     LogLikelihood    Deviance
+    7484.4    7513    -3738.2          7476.4  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.085934      0.004441      19.35    9475
+    'VTU'               0.00011555    2.4831e-05     4.6536    9475
+    'V'                    0.11855     0.0024771     47.861    9475
+    'decRU_orth'          -0.04042     0.0090069    -4.4877    9475
+
+
+    pValue        Lower        Upper     
+             0     0.077229      0.094639
+    3.3056e-06    6.688e-05    0.00016423
+             0       0.1137       0.12341
+    7.2849e-06    -0.058075     -0.022765
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.3306
+         0
+    0.7285
+
+
+w =
+
+    0.0859
+    0.0001
+    0.1186
+   -0.0404
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC     LogLik     LRStat    deltaDF
+    GLME       3     7502.5    7524    -3748.3                     
+    ALTGLME    4     7484.4    7513    -3738.2    20.118    1      
+
+
+    pValue    
+              
+    7.2792e-06
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3       7802    7823.5      -3898                               
+    ALTGLME    4     7484.4      7513    -3738.2    319.56    1          0     
+
+mse to w
+
+r =
+
+   -0.6487
+
+
+p =
+
+   7.9035e-05
+
+masks/badre_rlpfc_30_52_16_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7488.3    7516.9    -3740.2          7480.3  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                   0.08607      0.004438     19.394    9475
+    'VTU'               0.00011879    2.4806e-05     4.7889    9475
+    'V'                    0.11863     0.0024769     47.895    9475
+    'decRU_orth'         -0.036466     0.0090469    -4.0308    9475
+
+
+    pValue        Lower         Upper     
+             0       0.07737      0.094769
+    1.7027e-06    7.0168e-05    0.00016742
+             0       0.11378       0.12349
+    5.6014e-05       -0.0542     -0.018733
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0170
+         0
+    0.5601
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1186
+   -0.0365
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7488.3    7516.9    -3740.2    16.237    1      
+
+
+    pValue    
+              
+    5.5884e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7786.6    7808.1    -3890.3                               
+    ALTGLME    4     7488.3    7516.9    -3740.2    300.28    1          0     
+
+mse to w
+
+r =
+
+   -0.5859
+
+
+p =
+
+   5.3335e-04
+
+masks/badre_rlpfc_18_40_22_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7476.8    7505.4    -3734.4          7468.8  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE           tStat      DF      pValue    
+    'RU'                  0.085923    0.0044469     19.322    9475             0
+    'VTU'               0.00011177    2.478e-05     4.5103    9475    6.5516e-06
+    'V'                    0.11848    0.0024768     47.837    9475             0
+    'decRU_orth'         -0.047619    0.0090326    -5.2719    9475    1.3797e-07
+
+
+    Lower         Upper     
+      0.077207       0.09464
+    6.3192e-05    0.00016034
+       0.11363       0.12334
+     -0.065325     -0.029913
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.6552
+         0
+    0.0138
+
+
+w =
+
+    0.0859
+    0.0001
+    0.1185
+   -0.0476
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7476.8    7505.4    -3734.4    27.788    1      
+
+
+    pValue    
+              
+    1.3539e-07
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7805.3    7826.7    -3899.6                               
+    ALTGLME    4     7476.8    7505.4    -3734.4    330.52    1          0     
+
+mse to w
+
+r =
+
+   -0.4219
+
+
+p =
+
+    0.0181
+
+masks/badre_rlpfc_24_46_20_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7481.8    7510.4    -3736.9          7473.8  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat     DF      pValue    
+    'RU'                  0.085946     0.0044403    19.356    9475             0
+    'VTU'               0.00011378    2.4832e-05    4.5822    9475    4.6609e-06
+    'V'                    0.11855     0.0024765    47.872    9475             0
+    'decRU_orth'         -0.042566       0.00892    -4.772    9475    1.8511e-06
+
+
+    Lower         Upper     
+      0.077242       0.09465
+    6.5107e-05    0.00016246
+        0.1137       0.12341
+     -0.060052     -0.025081
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.4661
+         0
+    0.1851
+
+
+w =
+
+    0.0859
+    0.0001
+    0.1186
+   -0.0426
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7481.8    7510.4    -3736.9    22.753    1      
+
+
+    pValue    
+              
+    1.8422e-06
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3       7811    7832.5    -3902.5                               
+    ALTGLME    4     7481.8    7510.4    -3736.9    331.21    1          0     
+
+mse to w
+
+r =
+
+   -0.5733
+
+
+p =
+
+   7.4881e-04
+
+masks/badre_rlpfc_30_52_-14_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC     BIC       LogLikelihood    Deviance
+    7491    7519.6    -3741.5          7483    
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086068     0.0044381     19.393    9475
+    'VTU'               0.00012029    2.4841e-05     4.8423    9475
+    'V'                    0.11867     0.0024785     47.878    9475
+    'decRU_orth'         -0.033084     0.0089812    -3.6837    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077368      0.094767
+    1.3038e-06    7.1595e-05    0.00016898
+             0       0.11381       0.12353
+    0.00023111     -0.050689     -0.015479
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-03 *
+
+         0
+    0.0013
+         0
+    0.2311
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1187
+   -0.0331
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4       7491    7519.6    -3741.5    13.558    1      
+
+
+    pValue    
+              
+    0.00023133
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC     BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7789    7810.5    -3891.5                               
+    ALTGLME    4     7491    7519.6    -3741.5    300.07    1          0     
+
+mse to w
+
+r =
+
+   -0.6941
+
+
+p =
+
+   1.4890e-05
+
+masks/badre_rlpfc_36_56_-10_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC     BIC       LogLikelihood    Deviance
+    7488    7516.6    -3740            7480    
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086072     0.0044368     19.399    9475
+    'VTU'               0.00011741    2.4873e-05     4.7205    9475
+    'V'                    0.11865     0.0024772     47.898    9475
+    'decRU_orth'         -0.035774     0.0087976    -4.0663    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077375      0.094769
+    2.3861e-06    6.8657e-05    0.00016617
+             0        0.1138       0.12351
+    4.8149e-05     -0.053019     -0.018529
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0239
+         0
+    0.4815
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1187
+   -0.0358
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4       7488    7516.6      -3740    16.518    1      
+
+
+    pValue    
+              
+    4.8179e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik    LRStat    deltaDF    pValue
+    GLME       3     7808.1    7829.5    -3901                                
+    ALTGLME    4       7488    7516.6    -3740     322.04    1          0     
+
+mse to w
+
+r =
+
+   -0.6704
+
+
+p =
+
+   3.6843e-05
+
+masks/badre_rlpfc_22_56_26_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7473.2    7501.8    -3732.6          7465.2  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.085821     0.0044479     19.295    9475
+    'VTU'               0.00010935    2.4792e-05     4.4106    9475
+    'V'                     0.1185     0.0024764     47.853    9475
+    'decRU_orth'         -0.050658     0.0090476    -5.5991    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077103       0.09454
+    1.0422e-05    6.0751e-05    0.00015795
+             0       0.11365       0.12336
+    2.2147e-08     -0.068393     -0.032923
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.1042
+         0
+    0.0002
+
+
+w =
+
+    0.0858
+    0.0001
+    0.1185
+   -0.0507
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7473.2    7501.8    -3732.6    31.348    1      
+
+
+    pValue   
+             
+    2.157e-08
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7807.9    7829.4      -3901                               
+    ALTGLME    4     7473.2    7501.8    -3732.6    336.73    1          0     
+
+mse to w
+
+r =
+
+   -0.5112
+
+
+p =
+
+    0.0033
+
+masks/badre_rlpfc_26_52_16_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7488.5    7517.1    -3740.2          7480.5  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086042     0.0044384     19.386    9475
+    'VTU'               0.00011827    2.4851e-05     4.7593    9475
+    'V'                    0.11864     0.0024773     47.892    9475
+    'decRU_orth'         -0.036055     0.0089898    -4.0107    9475
+
+
+    pValue        Lower        Upper     
+             0     0.077342      0.094742
+    1.9712e-06    6.956e-05    0.00016698
+             0      0.11379        0.1235
+    6.1008e-05    -0.053677     -0.018433
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0197
+         0
+    0.6101
+
+
+w =
+
+    0.0860
+    0.0001
+    0.1186
+   -0.0361
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7488.5    7517.1    -3740.2    16.068    1      
+
+
+    pValue    
+              
+    6.1101e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7795.2    7816.7    -3894.6                               
+    ALTGLME    4     7488.5    7517.1    -3740.2    308.75    1          0     
+
+mse to w
+
+r =
+
+   -0.6663
+
+
+p =
+
+   4.2784e-05
+
+masks/badre_rlpfc_44_42_28_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7495.9    7524.5    -3743.9          7487.9  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086226     0.0044379     19.429    9475
+    'VTU'               0.00012472    2.4836e-05     5.0219    9475
+    'V'                    0.11873      0.002479     47.897    9475
+    'decRU_orth'         -0.026327     0.0089319    -2.9476    9475
+
+
+    pValue        Lower        Upper     
+             0     0.077526      0.094925
+    5.2087e-07    7.604e-05    0.00017341
+             0      0.11387       0.12359
+     0.0032106    -0.043836     -0.008819
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+         0
+    0.0000
+         0
+    0.0032
+
+
+w =
+
+    0.0862
+    0.0001
+    0.1187
+   -0.0263
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7495.9    7524.5    -3743.9    8.6815    1      
+
+
+    pValue   
+             
+    0.0032145
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7778.5    7799.9    -3886.2                               
+    ALTGLME    4     7495.9    7524.5    -3743.9    284.59    1          0     
+
+mse to w
+
+r =
+
+   -0.6420
+
+
+p =
+
+   9.8900e-05
+
+masks/badre_rlpfc_22_54_28_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7475.9    7504.5    -3733.9          7467.9  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                   0.08599     0.0044438     19.351    9475
+    'VTU'               0.00011189    2.4771e-05      4.517    9475
+    'V'                    0.11854      0.002476     47.876    9475
+    'decRU_orth'         -0.048593     0.0090712    -5.3568    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077279      0.094701
+    6.3472e-06    6.3335e-05    0.00016045
+             0       0.11369       0.12339
+    8.6689e-08     -0.066374     -0.030811
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.6347
+         0
+    0.0087
+
+
+w =
+
+    0.0860
+    0.0001
+    0.1185
+   -0.0486
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7475.9    7504.5    -3733.9    28.685    1      
+
+
+    pValue    
+              
+    8.5145e-08
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7804.8    7826.2    -3899.4                               
+    ALTGLME    4     7475.9    7504.5    -3733.9    330.92    1          0     
+
+mse to w
+
+r =
+
+   -0.4551
+
+
+p =
+
+    0.0101
+
+masks/badre_rlpfc_28_48_14_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7490.1    7518.7    -3741            7482.1  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat      DF  
+    'RU'                  0.086149     0.0044369     19.417    9475
+    'VTU'               0.00012012    2.4812e-05     4.8412    9475
+    'V'                    0.11866      0.002477     47.903    9475
+    'decRU_orth'         -0.034525     0.0090801    -3.8023    9475
+
+
+    pValue        Lower         Upper     
+             0      0.077452      0.094846
+    1.3109e-06    7.1484e-05    0.00016876
+             0        0.1138       0.12351
+    0.00014424     -0.052324     -0.016727
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-03 *
+
+         0
+    0.0013
+         0
+    0.1442
+
+
+w =
+
+    0.0861
+    0.0001
+    0.1187
+   -0.0345
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7490.1    7518.7      -3741    14.444    1      
+
+
+    pValue    
+              
+    0.00014437
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7782.4    7803.9    -3888.2                               
+    ALTGLME    4     7490.1    7518.7      -3741    294.29    1          0     
+
+mse to w
+
+r =
+
+   -0.6948
+
+
+p =
+
+   1.4441e-05
+
+masks/badre_rlpfc_22_46_20_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 227)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU_orth
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    7478.5    7507.1    -3735.2          7470.5  
+
+Fixed effects coefficients (95% CIs):
+    Name                Estimate      SE            tStat     DF      pValue    
+    'RU'                  0.085886     0.0044468    19.314    9475             0
+    'VTU'               0.00011268    2.4792e-05     4.545    9475    5.5614e-06
+    'V'                    0.11849     0.0024766    47.845    9475             0
+    'decRU_orth'         -0.046082     0.0090215    -5.108    9475     3.319e-07
+
+
+    Lower         Upper     
+      0.077169      0.094603
+    6.4082e-05    0.00016128
+       0.11364       0.12335
+     -0.063766     -0.028398
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-05 *
+
+         0
+    0.5561
+         0
+    0.0332
+
+
+w =
+
+    0.0859
+    0.0001
+    0.1185
+   -0.0461
+
+
+names =
+
+  4×1 table
+
+        Name    
+    ____________
+
+    'RU'        
+    'VTU'       
+    'V'         
+    'decRU_orth'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 237)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF
+    GLME       3     7502.5      7524    -3748.3                     
+    ALTGLME    4     7478.5    7507.1    -3735.2    26.082    1      
+
+
+    pValue    
+              
+    3.2725e-07
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In multilinear_analysis (line 245)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7805.1    7826.5    -3899.5                               
+    ALTGLME    4     7478.5    7507.1    -3735.2    328.6     1          0     
+
+mse to w
+
+r =
+
+   -0.6066
+
+
+p =
+
+   2.9764e-04
+
+
+ans =
+
+  16×10 table
+
+                     region                      p_uncorr       p_corr      BIC_orig    BIC_both      p_comp      BIC_dec    p_comp2       p_ax         r_ax  
+    ________________________________________    __________    __________    ________    ________    __________    _______    _______    __________    ________
+
+    'masks/badre_rlpfc_36_56_-8_r=10mm.nii'     1.3743e-05    0.00021987    7524        7514.3      1.3712e-05    7824.8     0          0.00082622     -0.5695
+    'masks/badre_rlpfc_40_60_-10_r=10mm.nii'    8.8019e-05     0.0014074    7524        7517.8      8.8079e-05    7826.8     0          6.5842e-05    -0.65408
+    'masks/badre_rlpfc_30_52_-14_r=10mm.nii'    0.00023111     0.0036914    7524        7519.6      0.00023133    7810.5     0           1.489e-05    -0.69405
+    'masks/badre_rlpfc_35_50_15_r=10mm.nii'     5.5523e-06    8.8833e-05    7524        7512.5      5.5365e-06    7812.9     0          0.00080404    -0.57054
+    'masks/badre_rlpfc_24_48_20_r=10mm.nii'     7.2849e-06    0.00011655    7524          7513      7.2792e-06    7823.5     0          7.9035e-05    -0.64873
+    'masks/badre_rlpfc_30_52_16_r=10mm.nii'     5.6014e-05    0.00089584    7524        7516.9      5.5884e-05    7808.1     0          0.00053335    -0.58594
+    'masks/badre_rlpfc_18_40_22_r=10mm.nii'     1.3797e-07    2.2074e-06    7524        7505.4      1.3539e-07    7826.7     0            0.018089    -0.42186
+    'masks/badre_rlpfc_24_46_20_r=10mm.nii'     1.8511e-06    2.9618e-05    7524        7510.4      1.8422e-06    7832.5     0          0.00074881    -0.57327
+    'masks/badre_rlpfc_30_52_-14_r=10mm.nii'    0.00023111     0.0036914    7524        7519.6      0.00023133    7810.5     0           1.489e-05    -0.69405
+    'masks/badre_rlpfc_36_56_-10_r=10mm.nii'    4.8149e-05     0.0007701    7524        7516.6      4.8179e-05    7829.5     0          3.6843e-05    -0.67041
+    'masks/badre_rlpfc_22_56_26_r=10mm.nii'     2.2147e-08    3.5435e-07    7524        7501.8       2.157e-08    7829.4     0           0.0032925     -0.5112
+    'masks/badre_rlpfc_26_52_16_r=10mm.nii'     6.1008e-05    0.00097568    7524        7517.1      6.1101e-05    7816.7     0          4.2784e-05     -0.6663
+    'masks/badre_rlpfc_44_42_28_r=10mm.nii'      0.0032106      0.050151    7524        7524.5       0.0032145    7799.9     0            9.89e-05    -0.64202
+    'masks/badre_rlpfc_22_54_28_r=10mm.nii'     8.6689e-08     1.387e-06    7524        7504.5      8.5145e-08    7826.2     0             0.01009    -0.45514
+    'masks/badre_rlpfc_28_48_14_r=10mm.nii'     0.00014424     0.0023054    7524        7518.7      0.00014437    7803.9     0          1.4441e-05    -0.69481
+    'masks/badre_rlpfc_22_46_20_r=10mm.nii'      3.319e-07    5.3104e-06    7524        7507.1      3.2725e-07    7826.5     0          0.00029764    -0.60657
+

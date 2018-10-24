@@ -1,0 +1,525 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+--------------------- BEGIN FILE badre_2012_multilinear_analysis.m-------------------
+% multilinear regression analysis for RU for Badre 2012 RLPFC ROI
+% try to decode |RU| from multivariate ROI activity and see if it predicts
+% choices better than RU from model
+%
+% TODO dedupe with badre_2012_activations_analysis.m
+
+function badre_2012_multilinear_analysis(method)
+
+printcode;
+
+EXPT = exploration_expt();
+
+data = load_data;
+
+formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+formula_RU = 'C ~ -1 + V + RU + VTU';
+formula_decRU = 'C ~ -1 + V + decRU + VTU';
+
+filename = ['badre_2012_multilinear_analysis_', method, '.mat'];
+disp(filename);
+
+% clusters = masks from paper
+masks = badre_2012_create_masks(false);
+masks = masks(1); % TODO all masks
+
+% extract trial_onset (raw, unsmoothed) betas
+roi = extract_roi_betas(masks, 'trial_onset');
+save(filename, '-v7.3');
+
+load(filename, 'roi'); 
+
+[~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
+
+% clean up betas
+%
+for c = 1:length(roi)
+    for s = 1:length(data)
+        B = roi(c).subj(s).betas;
+        runs = find(goodRuns{s});
+        data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+        which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+        B(:, which_nan) = [];
+        data(s).betas{c} = B;
+    end
+end
+
+% extract regressors
+%
+for s = 1:length(data)
+    which_all = logical(ones(length(data(s).run), 1));
+    [~, absRU] =  get_latents(data, s, which_all, 'abs');
+    [~, RU] = get_latents(data, s, which_all, 'left');
+    data(s).absRU = absRU;
+    data(s).RU = RU; % for sign-correction
+end
+
+save(filename, '-v7.3');
+
+load(filename); 
+
+for c = 1:numel(masks)
+    mask = masks{c};
+    [~, masknames{c}, ~] = fileparts(mask);
+    disp(mask);
+
+    decRU = [];
+    exclude = [];
+    mse = [];
+    for s = 1:length(data)
+        exclude = [exclude; data(s).exclude];
+        X = data(s).betas{c};
+        y = data(s).absRU;
+
+        % remove bad data points
+        X = X(~data(s).exclude, :);
+        y = y(~data(s).exclude);
+
+        switch method
+            case 'fitlm'
+                mdl = fitlm(X, y, 'Intercept', true);
+                pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
+                mse(s) = mdl.MSE;
+
+            case 'fitrlinear_ridge'
+                mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge');
+                mdl
+                pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
+                mse(s) = loss(mdl, X, y);
+
+            case 'fitrlinear_ridge_CV'
+                % find good lambda using CV
+                cv = cvpartition_from_folds(data(s).run(~data(s).exclude)); % one run per fold
+                Lambda = logspace(-5,-1,15);
+                cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
+                [l, idx] = min(kfoldLoss(cvmdl));
+                fprintf('      min lambda for %d = %f\n', s, l);
+
+                mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'Lambda', Lambda(idx));
+                pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
+                mse(s) = loss(mdl, X, y);
+
+            case 'fitrlinear_lasso'
+                mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso');
+                pred = predict(mdl, data(s).betas{c}); % predict using full data set; we ignore bad trials later
+                mse(s) = loss(mdl, X, y);
+
+            case 'ridge'
+                Lambda = 0.4; % TODO magic
+                coef = ridge(y, X, Lambda, 0);
+                pred = [ones(size(data(s).betas{c}, 1), 1), data(s).betas{c}] * coef; % include intercept term
+                mse(s) = immse(y, pred(~data(s).exclude));
+
+            case 'lasso'
+                [coef, FitInfo] = lasso(X, y, 'NumLambda', 1);
+                coef0 = FitInfo.Intercept;
+                pred = data(s).betas{c} * coef + coef0;
+                mse(s) = immse(y, pred(~data(s).exclude));
+
+            case 'lasso_CV'
+                [B, FitInfo] = lasso(X, y, 'CV', 10); % TODO CV by runs...
+                idx = FitInfo.IndexMinMSE;
+                coef = B(:, idx);
+                coef0 = FitInfo.Intercept(idx);
+                pred = data(s).betas{c} * coef + coef0;
+                mse(s) = immse(y, pred(~data(s).exclude));
+
+            otherwise
+                assert(false);
+        end
+
+        pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
+        decRU = [decRU; pred];
+    end
+    exclude = logical(exclude);
+
+    tbl = data2table(data, 0, 0); % include all trials; we exclude bad runs and timeouts manually
+    tbl = [tbl table(decRU)];
+
+    
+    % glm with both RU and decRU
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    [w, names, stats] = fixedEffects(results_both{c});
+    ps(c,:) = stats.pValue';
+    results_both{c}
+    stats.pValue
+    w
+    names
+
+    % glm with RU only
+    % do model comparison
+    results_RU{c} = fitglme(tbl,formula_RU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp{c} = compare(results_RU{c}, results_both{c}); % order is important -- see docs
+    comp{c}
+    p_comp(c,:) = comp{c}.pValue(2);
+    BIC(c,:) = comp{c}.BIC';
+
+    % glm with decRU only
+    % do second model comparison
+    results_decRU{c} = fitglme(tbl,formula_decRU,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    comp2{c} = compare(results_decRU{c}, results_both{c}); % order is important -- see docs
+    comp2{c}
+    p_comp2(c,:) = comp2{c}.pValue(2);
+    BIC2(c,:) = comp2{c}.BIC';
+
+    % correlate RMSE with behavioral weights across subjects
+    % => see if better decodeability is associated with more reliance on regressor in decision
+    %
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
+    [r, p] = corr(abs(w(:,2)), mse');
+    disp('mse to w');
+    r
+    p
+    p_ax(c,:) = p;
+    r_ax(c,:) = r;
+end
+
+save(filename, '-v7.3');
+
+p_uncorr = ps(:,4);
+p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+BIC_RU = BIC(:,1);
+BIC_both = BIC(:,2);
+BIC_decRU = BIC2(:,1);
+disp(method);
+table(masknames', p_uncorr, p_corr, BIC_RU, BIC_both, p_comp, BIC_decRU, p_comp2, p_ax, r_ax)
+
+
+--------------------- END FILE badre_2012_multilinear_analysis.m-------------------
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+badre_2012_multilinear_analysis_lasso.mat
+  betas_filename = betas_mask_subj=1_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=2_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=3_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=4_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=5_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=6_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=7_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=8_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=9_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=10_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=11_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=12_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=13_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=14_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=15_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=16_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=17_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=18_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=19_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=20_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=21_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=22_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=23_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=24_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=25_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=26_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=27_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=28_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=29_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=30_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+  betas_filename = betas_mask_subj=31_trial_onset.mat
+    mask masks/badre_rlpfc_36_56_-8_r=10mm.nii: 565 voxels
+masks/badre_rlpfc_36_56_-8_r=10mm.nii
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 141)] 
+
+ans = 
+
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations            9479
+    Fixed effects coefficients           4
+    Random effects coefficients          0
+    Covariance parameters                0
+    Distribution                    Binomial
+    Link                            Probit
+    FitMethod                       Laplace
+
+Formula:
+    C ~ RU + VTU + V + decRU
+
+Model fit statistics:
+    AIC       BIC     LogLikelihood    Deviance
+    7485.4    7514    -3738.7          7477.4  
+
+Fixed effects coefficients (95% CIs):
+    Name           Estimate      SE            tStat      DF      pValue    
+    'RU'              0.10268     0.0057248     17.937    9475             0
+    'VTU'          0.00011492    2.4901e-05     4.6149    9475    3.9838e-06
+    'V'               0.11864     0.0024769     47.899    9475             0
+    'decRU'         -0.037865     0.0086532    -4.3759    9475    1.2223e-05
+
+
+    Lower         Upper     
+      0.091461       0.11391
+    6.6106e-05    0.00016373
+       0.11378       0.12349
+     -0.054827     -0.020903
+
+Random effects covariance parameters:
+Group: Error
+    Name                      Estimate
+    'sqrt(Dispersion)'        1       
+
+
+ans =
+
+   1.0e-04 *
+
+         0
+    0.0398
+         0
+    0.1222
+
+
+w =
+
+    0.1027
+    0.0001
+    0.1186
+   -0.0379
+
+
+names =
+
+  4×1 table
+
+     Name  
+    _______
+
+    'RU'   
+    'VTU'  
+    'V'    
+    'decRU'
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 151)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC     LogLik     LRStat    deltaDF
+    GLME       3     7502.5    7524    -3748.3                     
+    ALTGLME    4     7485.4    7514    -3738.7    19.129    1      
+
+
+    pValue    
+              
+    1.2217e-05
+
+[Warning: Ignoring 'CovariancePattern' parameter since the model has no random
+effects.] 
+[> In classreg.regr.LinearLikeMixedModel/validateCovariancePattern (line 1615)
+  In GeneralizedLinearMixedModel.fit (line 2392)
+  In fitglme (line 389)
+  In badre_2012_multilinear_analysis (line 159)] 
+
+ans = 
+
+
+    THEORETICAL LIKELIHOOD RATIO TEST
+
+    Model      DF    AIC       BIC       LogLik     LRStat    deltaDF    pValue
+    GLME       3     7821.7    7843.2    -3907.8                               
+    ALTGLME    4     7485.4      7514    -3738.7    338.29    1          0     
+
+mse to w
+
+r =
+
+   -0.6541
+
+
+p =
+
+   6.5829e-05
+
+lasso
+
+ans =
+
+  1×10 table
+
+                Var1                  p_uncorr       p_corr      BIC_RU    BIC_both      p_comp      BIC_decRU    p_comp2       p_ax         r_ax  
+    _____________________________    __________    __________    ______    ________    __________    _________    _______    __________    ________
+
+    'badre_rlpfc_36_56_-8_r=10mm'    1.2223e-05    1.2223e-05    7524      7514        1.2217e-05    7843.2       0          6.5829e-05    -0.65408
+

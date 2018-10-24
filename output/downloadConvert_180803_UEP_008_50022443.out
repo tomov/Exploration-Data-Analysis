@@ -1,0 +1,141 @@
+------------------
+Run = 180803_UEP_008.MR.Investigators_Gershman.7.1.20180803.181409.at4l2.dcm
+count = 0
+filename = struct
+mri_convert -it siemens_dicom -ot nii -i 180803_UEP_008.MR.Investigators_Gershman.7.1.20180803.181409.at4l2.dcm -o /ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc/struct.nii 
+$Id: mri_convert.c,v 1.225 2015/10/19 18:48:26 fischl Exp $
+reading from 180803_UEP_008.MR.Investigators_Gershman.7.1.20180803.181409.at4l2.dcm...
+Getting Series No 
+Scanning Directory 
+INFO: loading series header info.
+INFO: sorting.
+INFO: (256 256 176), nframes = 1, ismosaic=0
+sdfi->UseSliceScaleFactor 0
+datatype = 4, short=4, float=3
+PE Dir ROW ROW
+AutoAlign matrix detected 
+AutoAlign Matrix --------------------- 
+ 1.00000   0.00000   0.00000   0.00000;
+ 0.00000   1.00000   0.00000   0.00000;
+ 0.00000   0.00000   1.00000   0.00000;
+ 0.00000   0.00000   0.00000   1.00000;
+
+FileName 		/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects/180803_UEP_008/RAW/180803_UEP_008.MR.Investigators_Gershman.7.1.20180803.181409.at4l2.dcm
+Identification
+	NumarisVer        syngo MR E11
+	ScannerModel      Prisma_fit
+	PatientName       180803_UEP_008
+Date and time
+	StudyDate         20180803
+	StudyTime         181409.615000 
+	SeriesTime        182349.147000 
+	AcqTime           181726.012500 
+Acquisition parameters
+	PulseSeq          tfl3d4_16ns 
+	Protocol          T1_MEMPRAGE_1.0mm_p2
+	PhEncDir          ROW
+	EchoNo            1
+	FlipAngle         7
+	EchoTime          1.69
+	InversionTime     1100
+	RepetitionTime    2530
+	PhEncFOV          256
+	ReadoutFOV        256
+Image information
+	RunNo             6
+	SeriesNo          7
+	ImageNo           1
+	NImageRows        256
+	NImageCols        256
+	NFrames           1
+	SliceArraylSize   1
+	IsMosaic          0
+	ImgPos             90.1740 138.7357 123.8835 
+	VolRes              1.0000   1.0000   1.0000 
+	VolDim            256      256      176 
+	Vc                 -0.0193  -0.9985  -0.0509 
+	Vr                 -0.0112   0.0512  -0.9986 
+	Vs                 -0.9998   0.0187   0.0122 
+	VolCenter          -1.7147  19.1217  -9.3867 
+	TransferSyntaxUID 1.2.840.10008.1.2.1
+UseSliceScaleFactor 0 (slice 0: 1)
+IsDWI = 0
+INFO: no Siemens slice order reversal detected (good!). 
+TR=2530.00, TE=1.69, TI=1100.00, flip angle=7.00
+i_ras = (-0.0193187, -0.998515, -0.0509378)
+j_ras = (-0.0112337, 0.0511609, -0.998627)
+k_ras = (-0.99975, 0.01872, 0.0122054)
+writing to /ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc/struct.nii...
+------------------
+Run = 180803_UEP_008.MR.Investigators_Gershman.11.1.20180803.181409.hai46a.dcm
+count = 0+1
+filename = run001
+mri_convert -it siemens_dicom -ot nii -i 180803_UEP_008.MR.Investigators_Gershman.11.1.20180803.181409.hai46a.dcm -o /ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc/run001.nii 
+$Id: mri_convert.c,v 1.225 2015/10/19 18:48:26 fischl Exp $
+reading from 180803_UEP_008.MR.Investigators_Gershman.11.1.20180803.181409.hai46a.dcm...
+Getting Series No 
+Scanning Directory 
+INFO: loading series header info.
+INFO: sorting.
+INFO: (136 136  84), nframes = 242, ismosaic=1
+sdfi->UseSliceScaleFactor 0
+datatype = 4, short=4, float=3
+Could not parse NUMARIS version string syngo MR E11
+found in dicom tag 18,1020 (len = 3 != 6)
+Repetition Time = 2000, TR = 2000 ms
+PE Dir COL COL
+AutoAlign matrix detected 
+AutoAlign Matrix --------------------- 
+ 1.00000   0.00000   0.00000   0.00000;
+ 0.00000   1.00000   0.00000   0.00000;
+ 0.00000   0.00000   1.00000   0.00000;
+ 0.00000   0.00000   0.00000   1.00000;
+
+FileName 		/net/rcss2/srv/export/gershman/share_root/Lab/Exploration/subjects/180803_UEP_008/RAW/180803_UEP_008.MR.Investigators_Gershman.11.1.20180803.181409.hai46a.dcm
+Identification
+	NumarisVer        syngo MR E11
+	ScannerModel      Prisma_fit
+	PatientName       180803_UEP_008
+Date and time
+	StudyDate         20180803
+	StudyTime         181409.615000 
+	SeriesTime        182709.167000 
+	AcqTime           182633.265000 
+Acquisition parameters
+	PulseSeq          epfid2d1_136
+	Protocol          Minn_HCP_1.5mm_Task 
+	PhEncDir          COL
+	EchoNo            1
+	FlipAngle         80
+	EchoTime          30
+	InversionTime     -1
+	RepetitionTime    2000
+	PhEncFOV          204
+	ReadoutFOV        204
+Image information
+	RunNo             10
+	SeriesNo          11
+	ImageNo           1
+	NImageRows        1360
+	NImageCols        1360
+	NFrames           242
+	SliceArraylSize   84
+	IsMosaic          1
+	ImgPos            102.7957 115.2521   5.0705 
+	VolRes              1.5000   1.5000   1.5000 
+	VolDim            136      136       84 
+	Vc                 -0.9997   0.0188   0.0122 
+	Vr                 -0.0223  -0.8833  -0.4683 
+	Vs                  0.0020  -0.4684   0.8835 
+	VolCenter          -1.3302  -2.4388  14.2165 
+	TransferSyntaxUID 1.2.840.10008.1.2.1
+UseSliceScaleFactor 0 (slice 0: 1)
+IsDWI = 0
+sagrev = 0, correv =0, trarev = 0
+Vs = 0.00201511 -0.468425 0.883501
+INFO: no Siemens slice order reversal detected (good!). 
+TR=2000.00, TE=30.00, TI=-1.00, flip angle=80.00
+i_ras = (-0.999748, 0.0187923, 0.0122438)
+j_ras = (-0.0223383, -0.883304, -0.468269)
+k_ras = (0.00201511, -0.468425, 0.883501)
+writing to /ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc/run001.nii...
