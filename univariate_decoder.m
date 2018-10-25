@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda)
+function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda, standardize)
 
 printcode;
 
@@ -18,8 +18,11 @@ end
 if ~exist('lambda', 'var')
     lambda = 1;
 end
+if ~exist('standardize', 'var')
+    standardize = 0;
+end
 
-filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda);
+filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f_standardize=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda, standardize);
 disp(filename);
 
 % get ROI masks
@@ -299,24 +302,42 @@ for c = 1:numel(masks)
     assert(all(isnan(act(bad_runs))));
     assert(all(~isnan(act(~bad_runs))));
 
-    tbl = data2table(data,0,1); % exclude timeouts for fitting
+    if standardize
+        tbl = data2table(data,1,1); % exclude timeouts for fitting
+    else
+        tbl = data2table(data,0,1); % exclude timeouts for fitting
+    end
 
     switch regressor
         case 'RU'
             decRU = act;
+            if standardize
+                decRU = zscore(decRU);
+            end
             tbl = [tbl table(decRU)];
+
             % orthogonalized version
             tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
             decRU_orth = decRU;
             decRU_orth(~bad_runs) = tmp(:,2);
+            if standardize
+                decRU_orth = zscore(decRU_orth);
+            end
             tbl = [tbl table(decRU_orth)];
         case 'TU'
             VdecTU = V_all ./ act;
+            if standardize
+                VdecTU = zscore(VdecTU);
+            end
             tbl = [tbl table(VdecTU)];
+
             % orthogonalized version
             tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
             VdecTU_orth = VdecTU;
             VdecTU_orth(~bad_runs) = tmp(:,2);
+            if standardize
+                VdecTU_orth = zscore(VdecTU_orth);
+            end
             tbl = [tbl table(VdecTU_orth)];
         otherwise
             assert(false);

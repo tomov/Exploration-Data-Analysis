@@ -41,4 +41,4 @@ r = rs;
 
 save(filename);
 
-table(masks', p_uncorr, p_corr, r);
+table(masks', p_uncorr, p_corr, r)
