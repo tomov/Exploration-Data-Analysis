@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda, standardize)
+function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda, standardize, mixed_effects)
 
 printcode;
 
@@ -19,10 +19,13 @@ if ~exist('lambda', 'var')
     lambda = 1;
 end
 if ~exist('standardize', 'var')
-    standardize = 0;
+    standardize = false;
+end
+if ~exist('mixed_effects', 'var')
+    mixed_effects = false;
 end
 
-filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f_standardize=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda, standardize);
+filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda, standardize, mixed_effects);
 disp(filename);
 
 % get ROI masks
@@ -102,22 +105,42 @@ end
 % define behavioral / hybrid GLM formulas
 switch regressor
     case 'RU'
-        if do_orth
-            formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth + (-1 + V + RU + VTU + decRU_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU + (-1 + V + RU + VTU + decRU|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+            formula_dec = 'C ~ -1 + V + decRU + VTU + (-1 + V + decRU + VTU|S)';
         else
-            formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + decRU + VTU';
         end
-        formula_orig = 'C ~ -1 + V + RU + VTU';
-        formula_dec = 'C ~ -1 + V + decRU + VTU';
 
     case 'TU'
-        if do_orth
-            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth + (-1 + V + RU + VTU + VdecTU_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU + (-1 + V + RU + VTU + VdecTU|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+            formula_dec = 'C ~ -1 + V + RU + VdecTU + (-1 + V + RU + VdecTU|S)';
         else
-            formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + V + RU + VdecTU';
         end
-        formula_orig = 'C ~ -1 + V + RU + VTU';
-        formula_dec = 'C ~ -1 + V + RU + VdecTU';
 
     otherwise
         assert(false);
@@ -312,7 +335,7 @@ for c = 1:numel(masks)
         case 'RU'
             decRU = act;
             if standardize
-                decRU = zscore(decRU);
+                decRU(~bad_runs) = zscore(decRU(~bad_runs));
             end
             tbl = [tbl table(decRU)];
 
@@ -321,13 +344,13 @@ for c = 1:numel(masks)
             decRU_orth = decRU;
             decRU_orth(~bad_runs) = tmp(:,2);
             if standardize
-                decRU_orth = zscore(decRU_orth);
+                decRU_orth(~bad_runs) = zscore(decRU_orth(~bad_runs));
             end
             tbl = [tbl table(decRU_orth)];
         case 'TU'
             VdecTU = V_all ./ act;
             if standardize
-                VdecTU = zscore(VdecTU);
+                VdecTU(~bad_runs) = zscore(VdecTU(~bad_runs));
             end
             tbl = [tbl table(VdecTU)];
 
@@ -336,7 +359,7 @@ for c = 1:numel(masks)
             VdecTU_orth = VdecTU;
             VdecTU_orth(~bad_runs) = tmp(:,2);
             if standardize
-                VdecTU_orth = zscore(VdecTU_orth);
+                VdecTU_orth(~bad_runs) = zscore(VdecTU_orth(~bad_runs));
             end
             tbl = [tbl table(VdecTU_orth)];
         otherwise
@@ -385,7 +408,11 @@ for c = 1:numel(masks)
     % correlate MSE with behavioral weights across subjects
     % => see if better decodeability is associated with more reliance on regressor in decision
     %
-    load results_glme_fig3_nozscore.mat;
+    if standardize
+        load results_glme_fig3.mat;
+    else
+        load results_glme_fig3_nozscore.mat;
+    end
     w = getEffects(results_VTURU, false);
     switch regressor
         case 'RU'

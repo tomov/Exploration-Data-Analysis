@@ -1,7 +1,11 @@
-function cross_subject(glmodel, regressor, contrast)
+function cross_subject(glmodel, regressor, contrast, standardize)
 
 % TODO dedupe with residuals_analysis.m
 % TODO support what = voxel, not just sphere
+
+if ~exist('standardize', 'var')
+    standardize = false;
+end
 
 what = 'sphere';
 
@@ -46,7 +50,11 @@ end
 
 
 
-load results_glme_fig3_nozscore.mat;
+if standardize
+    load results_glme_fig3_nozscore.mat;
+else
+    load results_glme_fig3.mat;
+end
 w = getEffects(results_VTURU, false);
 
 for c = 1:length(masks)
