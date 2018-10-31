@@ -325,17 +325,15 @@ for c = 1:numel(masks)
     assert(all(isnan(act(bad_runs))));
     assert(all(~isnan(act(~bad_runs))));
 
-    if standardize
-        tbl = data2table(data,1,1); % exclude timeouts for fitting
-    else
-        tbl = data2table(data,0,1); % exclude timeouts for fitting
-    end
+    tbl = data2table(data,standardize,1); % exclude timeouts for fitting
 
     switch regressor
         case 'RU'
             decRU = act;
-            if standardize
+            if standardize == 1
                 decRU(~bad_runs) = zscore(decRU(~bad_runs));
+            elseif standardize == 2
+                decRU(~bad_runs) = decRU(~bad_runs) / norm(decRU(~bad_runs));
             end
             tbl = [tbl table(decRU)];
 
@@ -343,23 +341,30 @@ for c = 1:numel(masks)
             tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
             decRU_orth = decRU;
             decRU_orth(~bad_runs) = tmp(:,2);
-            if standardize
+            if standardize == 1
                 decRU_orth(~bad_runs) = zscore(decRU_orth(~bad_runs));
+            elseif standardize == 2
+                decRU_orth(~bad_runs) = decRU_orth(~bad_runs) / norm(decRU_orth(~bad_runs));
             end
             tbl = [tbl table(decRU_orth)];
+
         case 'TU'
             VdecTU = V_all ./ act;
-            if standardize
+            if standardize == 1
                 VdecTU(~bad_runs) = zscore(VdecTU(~bad_runs));
+            elseif standardize == 2
+                VdecTU(~bad_runs) = VdecTU(~bad_runs) / norm(VdecTU(~bad_runs));
             end
             tbl = [tbl table(VdecTU)];
 
             % orthogonalized version
             tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
             VdecTU_orth = VdecTU;
-            VdecTU_orth(~bad_runs) = tmp(:,2);
-            if standardize
+            VdecTU_orth(~bad_runs) = tmp(:,2); 
+            if standardize == 1
                 VdecTU_orth(~bad_runs) = zscore(VdecTU_orth(~bad_runs));
+            elseif standardize == 2
+                VdecTU_orth(~bad_runs) = VdecTU_orth(~bad_runs) / norm(VdecTU_orth(~bad_runs));
             end
             tbl = [tbl table(VdecTU_orth)];
         otherwise
@@ -408,11 +413,14 @@ for c = 1:numel(masks)
     % correlate MSE with behavioral weights across subjects
     % => see if better decodeability is associated with more reliance on regressor in decision
     %
-    if standardize
+    if standardize == 1
         load results_glme_fig3.mat;
+    elseif standardize == 2
+        load results_glme_fig3_norm.mat;
     else
         load results_glme_fig3_nozscore.mat;
     end
+
     w = getEffects(results_VTURU, false);
     switch regressor
         case 'RU'

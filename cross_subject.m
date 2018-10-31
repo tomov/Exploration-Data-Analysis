@@ -13,7 +13,7 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-filename = sprintf('cross_subject_glm%d_%s_%s_%s.mat', glmodel, regressor, replace(contrast, ' ', '_'), what);
+filename = sprintf('cross_subject_glm%d_%s_%s_%s_standardize=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), what, standardize);
 disp(filename);
 
 % get ROI masks
@@ -50,11 +50,14 @@ end
 
 
 
-if standardize
-    load results_glme_fig3_nozscore.mat;
-else
+if standardize == 1
     load results_glme_fig3.mat;
+elseif standardize == 2
+    load results_glme_fig3_norm.mat;
+else
+    load results_glme_fig3_nozscore.mat;
 end
+
 w = getEffects(results_VTURU, false);
 
 for c = 1:length(masks)

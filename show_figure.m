@@ -224,7 +224,7 @@ function show_figure(fig)
             markersize = 6;
 
             % Probit analysis of computational variables
-            load results_glme_fig3
+            load results_glme_fig3_norm
             results = results_VTURU;
                         
             % plot results
@@ -232,7 +232,7 @@ function show_figure(fig)
             [beta,~,stats] = fixedEffects(results);
             errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTickLabel',{'V' 'RU' '$$(V/\hat{TU})^\perp$$'},'XLim',[0.5 3.5],'YLim',[0 3]);
+            set(gca,'FontSize',fontsize,'XTickLabel',{'V' 'RU' '$$(V/\hat{TU})^\perp$$'},'XLim',[0.5 3.5], 'Ylim', [0 900]);
             ylabel('Regression coefficient','FontSize',fontsize);
             
             
@@ -392,6 +392,20 @@ function show_figure(fig)
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
             set(gcf,'Position',[200 200 1000 400])
+
+        case 'Sam_Figure3'
+            
+            % Probit analysis of computational variables
+            
+            load results_glme_fig3
+            results = results_VTURU;
+                        
+            % plot results
+            [beta,~,stats] = fixedEffects(results);
+            errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',12,'MarkerFaceColor','k');
+            set(gca,'FontSize',25,'XTickLabel',{'V' 'RU' 'V/TU'},'XLim',[0.5 3.5],'YLim',[0 3]);
+            ylabel('Regression coefficient','FontSize',25);
+            set(gcf,'Position',[200 200 500 400])
 
         case 'Sam_Figure1'
             fontsize = 25;

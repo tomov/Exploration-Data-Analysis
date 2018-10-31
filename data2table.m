@@ -43,6 +43,10 @@ function tbl = data2table(data,standardize,no_timeouts)
         VTU = zscore(VTU);
         V = zscore(V);
         RU = zscore(RU);
+    elseif standardize == 2
+        VTU = VTU / norm(VTU);
+        V = V / norm(V);
+        RU = RU / norm(RU);
     end
     
     tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond);
