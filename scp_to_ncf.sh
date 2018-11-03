@@ -14,7 +14,7 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/ccnl_fmri_*_nosmooth* .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/john_roi_analysis.m .
 #scp -r  ../../libs/ccnl-fmri/*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
-#scp  ../../libs/ccnl-fmri/*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
+scp  ../../libs/ccnl-fmri/*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp  ../../libs/ccnl-fmri/ccnl_check_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/*.m  ../../libs/ccnl-fmri/
 #scp   ../../libs/ccnl-fmri/ccnl_roi_glm.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
@@ -44,6 +44,7 @@
 #scp  neural_betas_to_behavioral_weights.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  neural_ts_to_behavioral_weights.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  badre_2012_neural_betas_to_behavioral_weights.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  main_effect.m univariate_decoder.m cross_subject.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  badre_2012_activations_analysis.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  univariate_decoder.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  cross_subject.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
@@ -65,6 +66,8 @@
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/cross_subject_*.mat  .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/main_effect_*.mat  .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_*.mat  .
+#scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat  .
+#scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/jobs.txt .
 #scp  ../../libs/mfit/hfit*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  *OpAL*.sh *AU*.sh *ACU*.sh *OpAL*.m *AU*.m *ACU*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/

@@ -23,6 +23,10 @@ switch contrast
         masks = badre_2012_create_masks(false);
         %masks = masks(1); % TODO use all masks
 
+    case 'dlpfc'
+        % clusters = masks from paper
+        masks = dlpfc_2012_create_masks(false);
+
     case 'tommy'
         % clusters = masks from paper
         masks = tommy_2017_create_masks(false);
