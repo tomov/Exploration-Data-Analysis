@@ -68,6 +68,8 @@ for i = 1:length(masks)
     p
     t
     b
+    bs{i} = b;
+    cis{i} = ci;
     stat{i} = stats;
 end
 
