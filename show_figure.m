@@ -12,17 +12,24 @@ function show_figure(fig)
 
 
         case 'Figure1'
-            figure('pos', [10 10 560 700]);
+            figure('pos', [10 10 400 700]);
 
-            subplot(3,2,1);
+            h = subplot(4,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 0.6;
+            pos(2) = pos(2) * 0.96;
+            pos(3) = pos(3) * 1.2;
+            pos(4) = pos(4) * 1.2;
+            subplot(4,2, 1, 'position', pos);
             imshow('images/figure1Aleft.png'); %, 'InitialMagnification', 'fit');  
 
-            fontsize = 15;
+            fontsize = 12;
             linewidth = 3;
             markersize = 6;
 
             %% ------------------- Sam_Figure1
-            subplot(3,2,2);
+            subplot(4,2,2);
 
             x = linspace(-10,10,100);
             plot(x,normpdf(x,2,4),'-k','LineWidth',linewidth);
@@ -31,7 +38,7 @@ function show_figure(fig)
             plot([x x],[0 y],'-','LineWidth',linewidth,'Color',[0.5 0.5 0.5])
             text(2-0.4,y+0.01,'R','FontSize',fontsize);
             text(-1-0.4,y+0.01,'S','FontSize',fontsize);
-            set(gca,'FontSize',fontsize,'YLim',[0 0.12]);
+            set(gca,'FontSize',fontsize,'YLim',[0 0.12], 'YTick', [0 0.1]);
             ylabel('Probability density','FontSize',fontsize);
             xlabel('Reward','FontSize',fontsize);
 
@@ -70,9 +77,9 @@ function show_figure(fig)
             p(1,:) = 1-normcdf(0,mu+d,1);
             p(2,:) = 1-normcdf(0,mu,1+d);
             
-            T = {'Relative uncertainty: intercept shift' 'Total uncertainty: slope shift'};
+            T = {{'Relative uncertainty:','intercept shift'}, {'Total uncertainty:','slope shift'}};
             for i = 1:2
-                subplot(3,2,i+2);
+                subplot(4,2,i+2);
                 plot(mu,p(i,:),'-k','LineWidth',linewidth); hold on;
                 plot(mu,1-normcdf(0,mu,1),'-','LineWidth',linewidth,'Color',[0.5 0.5 0.5]);
                 if i==1
@@ -80,7 +87,7 @@ function show_figure(fig)
                 else
                     legend({'RR' 'SS'},'FontSize',fontsize,'Location','East');
                 end
-                set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05]);
+                set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05], 'YTick', [0 1]);
                 ylabel('Choice probability','FontSize',fontsize);
                 xlabel('Expected value difference (V)','FontSize',fontsize);
                 title(T{i},'FontSize',fontsize','FontWeight','Bold');
@@ -92,7 +99,7 @@ function show_figure(fig)
             mu_c = squeeze(nanmean(pc1));
             
             for i = 1:2
-                subplot(3,2,i+4);
+                subplot(4,2,i+4);
                 
                 if i==1
                     p1 = errorbar(x/10,mu(:,1),se(:,1),'ok','LineWidth',linewidth,'MarkerFaceColor','k','MarkerSize',markersize); hold on;
@@ -140,20 +147,39 @@ function show_figure(fig)
             
             % plot results
             [beta,~,stats] = fixedEffects(results);
-            subplot(3,2,5);
+            subplot(4,2,5);
             errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5],'YLim', [-1 1]);
             ylabel('Intercept','FontSize',fontsize);
             ylim([-0.5 0.5]);
 
-            subplot(3,2,6);
+            subplot(4,2,6);
             errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
             ylim([1 2.5]);
 
 
-        case 'Figure2'
+            subplot(4,1,4);
+
+            % Probit analysis of computational variables
+            load results_glme_fig3
+            results = results_VTURU;
+                        
+            % plot results
+            [beta,~,stats] = fixedEffects(results);
+            errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
+            ylabel('Regression coefficient','FontSize',fontsize);
+            
+
+
+
+
+
+
+        case 'Figure2_old'
             % RU - trial contrast 
             %
             figure('pos', [100 100 0.75*653 0.75*352]);
@@ -184,7 +210,7 @@ function show_figure(fig)
 
 
 
-        case 'Figure2_alt'
+        case 'Figure2'
             % RU - trial contrast 
             %
             figure('pos', [100 100 650 160]);
@@ -275,7 +301,7 @@ function show_figure(fig)
 
 
 
-        case 'Figure3'
+        case 'Figure3_old'
             % TU - trial contrast
             %
 
@@ -315,7 +341,7 @@ function show_figure(fig)
 
 
 
-        case 'Figure3_alt'
+        case 'Figure3'
             % TU - trial contrast
             %
 
@@ -326,7 +352,7 @@ function show_figure(fig)
             markersize = 6;
             linewidth = 2;
            
-            h = subplot(1,3,1);
+            h = subplot(1,2,1);
             PICpng = imread('images/TU-trial.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
@@ -348,7 +374,7 @@ function show_figure(fig)
             hold off;
 
 
-            subplot(1,5,3);
+            subplot(1,4,3);
 
             load('main_effect_glm21_RU_TU_-_trial.mat');
             beta(1) = m(end);
@@ -369,7 +395,7 @@ function show_figure(fig)
 
          
             
-            subplot(1,5,4);
+            subplot(1,4,4);
 
             %{
             load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
@@ -398,9 +424,18 @@ function show_figure(fig)
 
 
 
+
+
+        case 'Supp_Figure3'
+            figure;
+
+            fontsize = 12;
+            markersize = 6;
+            linewidth = 2;
+
             load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
 
-            h = subplot(1,5,5);
+            %h = subplot(1,5,5);
             %pos = get(h, 'position');
             %pos(3) = pos(3) * 0.6;
             %pos(1) = pos(1) * 0.9;
@@ -412,7 +447,7 @@ function show_figure(fig)
             title('Insula (L)', 'interpreter', 'none', 'FontSize', fontsize);
 
             str = sprintf('r = %.2f, p = %.3f', r(6), p_uncorr(6));
-            text(-0.15,0.004, str, 'FontSize', 9);
+            text(-0.14,0.004, str, 'FontSize', 9);
 
             %ax1 = axes('Position',[0 0 1 1],'Visible','off');
             %axes(ax1);
@@ -422,8 +457,7 @@ function show_figure(fig)
 
 
 
-
-        case 'Figure4'
+        case 'Figure4_old'
             %% ------------- Sam Figure 3
 
             figure('pos', [100 100 953 252]);
