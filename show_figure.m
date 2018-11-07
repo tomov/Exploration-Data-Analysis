@@ -12,24 +12,25 @@ function show_figure(fig)
 
 
         case 'Figure1'
-            figure('pos', [10 10 400 700]);
-
-            h = subplot(4,2,1);
-            pos = get(h, 'position');
-            pos
-            pos(1) = pos(1) * 0.6;
-            pos(2) = pos(2) * 0.96;
-            pos(3) = pos(3) * 1.2;
-            pos(4) = pos(4) * 1.2;
-            subplot(4,2, 1, 'position', pos);
-            imshow('images/figure1Aleft.png'); %, 'InitialMagnification', 'fit');  
+            figure('pos', [10 10 520 450]);
 
             fontsize = 12;
             linewidth = 3;
             markersize = 6;
 
+            h = subplot(2,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 0.6;
+            pos(2) = pos(2) * 0.93;
+            pos(3) = pos(3) * 1.2;
+            pos(4) = pos(4) * 1.2;
+            subplot(2,2, 1, 'position', pos);
+            imshow('images/figure1Aleft.png'); %, 'InitialMagnification', 'fit');  
+
+
             %% ------------------- Sam_Figure1
-            subplot(4,2,2);
+            subplot(2,2,2);
 
             x = linspace(-10,10,100);
             plot(x,normpdf(x,2,4),'-k','LineWidth',linewidth);
@@ -38,7 +39,7 @@ function show_figure(fig)
             plot([x x],[0 y],'-','LineWidth',linewidth,'Color',[0.5 0.5 0.5])
             text(2-0.4,y+0.01,'R','FontSize',fontsize);
             text(-1-0.4,y+0.01,'S','FontSize',fontsize);
-            set(gca,'FontSize',fontsize,'YLim',[0 0.12], 'YTick', [0 0.1]);
+            set(gca,'FontSize',fontsize,'YLim',[0 0.12]);
             ylabel('Probability density','FontSize',fontsize);
             xlabel('Reward','FontSize',fontsize);
 
@@ -77,17 +78,17 @@ function show_figure(fig)
             p(1,:) = 1-normcdf(0,mu+d,1);
             p(2,:) = 1-normcdf(0,mu,1+d);
             
-            T = {{'Relative uncertainty:','intercept shift'}, {'Total uncertainty:','slope shift'}};
+            T = {{'Relative uncertainty: intercept shift'}, {'Total uncertainty: slope shift'}};
             for i = 1:2
-                subplot(4,2,i+2);
+                subplot(2,2,i+2);
                 plot(mu,p(i,:),'-k','LineWidth',linewidth); hold on;
                 plot(mu,1-normcdf(0,mu,1),'-','LineWidth',linewidth,'Color',[0.5 0.5 0.5]);
                 if i==1
-                    legend({'RS' 'SR'},'FontSize',fontsize,'Location','East');
+                    legend({'RS' 'SR'},'FontSize',fontsize,'Location','southeast');
                 else
-                    legend({'RR' 'SS'},'FontSize',fontsize,'Location','East');
+                    legend({'RR' 'SS'},'FontSize',fontsize,'Location','southeast');
                 end
-                set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05], 'YTick', [0 1]);
+                set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05]);
                 ylabel('Choice probability','FontSize',fontsize);
                 xlabel('Expected value difference (V)','FontSize',fontsize);
                 title(T{i},'FontSize',fontsize','FontWeight','Bold');
@@ -121,6 +122,16 @@ function show_figure(fig)
             end
             %}
 
+            print('images/Figure1', '-dpdf');
+
+
+        case 'Figure2'
+            figure('pos', [10 10 700 200]);
+
+            fontsize = 12;
+            linewidth = 3;
+            markersize = 6;
+
             %% -------------------- Sam Figure 4
 
             % Probit analysis of conditions
@@ -145,22 +156,22 @@ function show_figure(fig)
             disp(['slope, RS vs. SR: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
             disp(['slope, RR vs. SS: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
             
-            % plot results
+            % elot results
             [beta,~,stats] = fixedEffects(results);
-            subplot(4,2,5);
+            subplot(1,3,1);
             errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5],'YLim', [-1 1]);
             ylabel('Intercept','FontSize',fontsize);
             ylim([-0.5 0.5]);
 
-            subplot(4,2,6);
+            subplot(1,3,2);
             errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
             ylim([1 2.5]);
 
 
-            subplot(4,1,4);
+            subplot(1,3,3);
 
             % Probit analysis of computational variables
             load results_glme_fig3
@@ -173,13 +184,14 @@ function show_figure(fig)
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
             
+            print('images/Figure2', '-dpdf');
 
 
 
 
 
 
-        case 'Figure2_old'
+        case 'Figure3_old'
             % RU - trial contrast 
             %
             figure('pos', [100 100 0.75*653 0.75*352]);
@@ -210,7 +222,7 @@ function show_figure(fig)
 
 
 
-        case 'Figure2'
+        case 'Figure3'
             % RU - trial contrast 
             %
             figure('pos', [100 100 650 160]);
@@ -220,7 +232,15 @@ function show_figure(fig)
             markersize = 6;
             linewidth = 2;
           
-            subplot(1,2,1);
+
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.93;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(1,2, 1, 'position', pos);
 
             %PICpng = imread('images/badre_ROI.png');   %  <-- to cross-check 
             PICpng = imread('images/RU-trial.png');
@@ -244,7 +264,7 @@ function show_figure(fig)
             pline_x = r * cos(theta) + centx;
             pline_y = r * sin(theta) + centy;
             k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [1 1 1]);
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
             title('RU - trial', 'FontSize', fontsize);
@@ -260,9 +280,9 @@ function show_figure(fig)
             beta(2) = m(2);
             err(2) = (cis{2}(2) - cis{2}(1)) / 2;
 
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold on;
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -288,9 +308,9 @@ function show_figure(fig)
 
             load Figure2C;
 
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold on;
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -298,10 +318,11 @@ function show_figure(fig)
             ylabel('Regression coefficient (w)','FontSize',fontsize);
             
 
+            print('images/Figure3', '-dpdf');
 
 
 
-        case 'Figure3_old'
+        case 'Figure4_old'
             % TU - trial contrast
             %
 
@@ -341,7 +362,7 @@ function show_figure(fig)
 
 
 
-        case 'Figure3'
+        case 'Figure4'
             % TU - trial contrast
             %
 
@@ -353,6 +374,14 @@ function show_figure(fig)
             linewidth = 2;
            
             h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.93;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+
+            subplot(1,2, 1, 'position', pos);
             PICpng = imread('images/TU-trial.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
@@ -370,7 +399,7 @@ function show_figure(fig)
             pline_x = r * cos(theta) + centx;
             pline_y = r * sin(theta) + centy;
             k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [1 1 1]);
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
 
@@ -384,9 +413,9 @@ function show_figure(fig)
             beta(2) = m(end);
             err(2) = (cis{end}(2) - cis{end}(1)) / 2;
 
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold on;
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
@@ -413,15 +442,16 @@ function show_figure(fig)
 
             load Figure3C;
 
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold on;
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
 
+            print('images/Figure4', '-dpdf');
 
 
 
