@@ -242,7 +242,7 @@ function show_figure(fig)
             pos(4) = pos(4) * 1.0;
             subplot(1,2, 1, 'position', pos);
 
-            %PICpng = imread('images/badre_ROI.png');   %  <-- to cross-check 
+            %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check 
             PICpng = imread('images/RU-trial.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
@@ -294,19 +294,21 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(1) = b(4);
             err(1) = s.SE(4);
 
             load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(2) = b(4);
             err(2) = s.SE(4);
 
-            save('Figure2C.mat', 'beta', 'err');
+            save('Figure3C.mat', 'beta', 'err');
             %}
 
-            load Figure2C;
+            load Figure3C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -428,19 +430,21 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(1) = b(4);
             err(1) = s.SE(4);
 
             load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(2) = b(4);
             err(2) = s.SE(4);
 
-            save('Figure3C.mat', 'beta', 'err');
+            save('Figure4C.mat', 'beta', 'err');
             %}
 
-            load Figure3C;
+            load Figure4C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -456,33 +460,207 @@ function show_figure(fig)
 
 
 
-        case 'Supp_Figure3'
-            figure;
+        case 'Supp_Figure1'
+            % Badre RLPFC 
+            % parallels Figure 3
+            %
+            
+            % EXPT = exploration_expt()
+            % struc = fullfile(EXPT.modeldir, 'mean.nii')
+            % masks = badre_2012_create_masks(false);
+            % bspmview(masks{1}, struc);
+            %
+
+            figure('pos', [100 100 650 160]);
+            %figure;
 
             fontsize = 12;
             markersize = 6;
             linewidth = 2;
+          
 
-            load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.93;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(1,2, 1, 'position', pos);
 
-            %h = subplot(1,5,5);
-            %pos = get(h, 'position');
-            %pos(3) = pos(3) * 0.6;
-            %pos(1) = pos(1) * 0.9;
-            %subplot(3,2, 4, 'position', pos);
-            scatter(all_b{6}', w(:,3));
-            lsline;
-            xlabel('\beta_{TU}');
-            ylabel('w_3');
-            title('Insula (L)', 'interpreter', 'none', 'FontSize', fontsize);
+            PICpng = imread('images/badre_RLPFC.png');
 
-            str = sprintf('r = %.2f, p = %.3f', r(6), p_uncorr(6));
-            text(-0.14,0.004, str, 'FontSize', 9);
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
 
-            %ax1 = axes('Position',[0 0 1 1],'Visible','off');
-            %axes(ax1);
-            %text(0.13, 0.65, 'A', 'FontSize', 20, 'FontWeight', 'bold');
-            %text(0.48, 0.65, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            centx = x * 0.81;
+            centy = y * 0.29;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            %plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            title('RU - trial', 'FontSize', fontsize);
+
+
+            subplot(1,4,3);
+
+            load('main_effect_glm21_RU_badre.mat');
+            beta(1) = m(1);
+            err(1) = (cis{1}(2) - cis{1}(1)) / 2;
+
+            load('main_effect_glm21_TU_badre.mat');
+            beta(2) = m(1);
+            err(2) = (cis{1}(2) - cis{1}(1)) / 2;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            title('RLPFC (R)');
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',fontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',fontsize);
+
+          
+            subplot(1,4,4);
+
+            %{
+            %load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{1});
+            beta(1) = b(4);
+            err(1) = s.SE(4);
+
+            %load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{1});
+            beta(2) = b(4);
+            err(2) = s.SE(4);
+
+            save('Supp_Figure1C.mat', 'beta', 'err');
+            %}
+
+            load Supp_Figure1C;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            title('RLPFC (R)');
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            ylabel('Regression coefficient (w)','FontSize',fontsize);
+            
+
+            print('images/Supp_Figure1', '-dpdf');
+
+
+
+        case 'Supp_Figure2'
+            % Badre DLPFC
+            % Parallels Figure 4
+            %
+
+            figure('pos', [100 100 650 160]);
+
+
+            fontsize = 12;
+            markersize = 6;
+            linewidth = 2;
+           
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.93;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+
+            subplot(1,2, 1, 'position', pos);
+            PICpng = imread('images/TU-trial.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('TU - trial', 'FontSize', fontsize);
+
+            centx = x * 0.13;
+            centy = y * 0.28;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+
+            subplot(1,4,3);
+
+            load('main_effect_glm21_RU_TU_-_trial.mat');
+            beta(1) = m(end);
+            err(1) = (cis{end}(2) - cis{end}(1)) / 2;
+
+            load('main_effect_glm21_TU_TU_-_trial.mat');
+            beta(2) = m(end);
+            err(2) = (cis{end}(2) - cis{end}(1)) / 2;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            title('Insula (L)');
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',fontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',fontsize);
+
+         
+            
+            subplot(1,4,4);
+
+            %{
+            load('univariate_decoder_glm21_RU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
+            [b,~,s] = fixedEffects(results_both{end});
+            beta(1) = b(4);
+            err(1) = s.SE(4);
+
+            load('univariate_decoder_glm21_TU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
+            [b,~,s] = fixedEffects(results_both{end});
+            beta(2) = b(4);
+            err(2) = s.SE(4);
+
+            save('Figure4C.mat', 'beta', 'err');
+            %}
+
+            load Figure4C;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            title('Insula (L)');
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
+            ylabel('Regression coefficient (w)','FontSize',fontsize);
+
+            print('images/Figure4', '-dpdf');
+
+
+
+
+
+
 
 
 
