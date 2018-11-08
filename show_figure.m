@@ -121,6 +121,12 @@ function show_figure(fig)
                 xlabel('Expected value difference','FontSize',fontsize);
             end
             %}
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.50, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.06, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.50, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
             print('images/Figure1', '-dpdf');
 
@@ -184,39 +190,17 @@ function show_figure(fig)
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
             
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.07, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.35, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.64, 0.95, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+
             print('images/Figure2', '-dpdf');
 
 
 
 
-
-
-        case 'Figure3_old'
-            % RU - trial contrast 
-            %
-            figure('pos', [100 100 0.75*653 0.75*352]);
-
-            fontsize = 12;
-           
-            %PICpng = imread('images/badre_ROI.png');   %  <-- to cross-check 
-            PICpng = imread('images/RU-trial.png');
-
-            [rows columns numberOfColorChannels] = size(PICpng);
-            x = columns;
-            y = rows;
-            imshow(PICpng, 'InitialMagnification', 'fit');  
-            centx = x * 0.81;
-            centy = y * 0.29;
-            r = 50;
-            hold on;
-            theta = 0 : (2 * pi / 10000) : (2 * pi);
-            pline_x = r * cos(theta) + centx;
-            pline_y = r * sin(theta) + centy;
-            k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [1 1 1]);
-            hold off;
-
-            title('RU - trial', 'FontSize', fontsize);
 
 
 
@@ -228,7 +212,7 @@ function show_figure(fig)
             figure('pos', [100 100 650 160]);
             %figure;
 
-            fontsize = 12;
+            fontsize = 11;
             markersize = 6;
             linewidth = 2;
           
@@ -320,43 +304,15 @@ function show_figure(fig)
             ylabel('Regression coefficient (w)','FontSize',fontsize);
             
 
-            print('images/Figure3', '-dpdf');
-
-
-
-        case 'Figure4_old'
-            % TU - trial contrast
-            %
-
-            load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
-
-            figure('pos', [100 100 1.5*653 1.5*552]);
-
-
-            fontsize = 12;
-           
-            h = subplot(1,2,1);
-            imshow('images/TU-trial.png'); %, 'InitialMagnification', 'fit');  
-            title('TU - trial', 'FontSize', fontsize);
-
-            h = subplot(3,2,4);
-            pos = get(h, 'position');
-            pos(3) = pos(3) * 0.6;
-            pos(1) = pos(1) * 0.9;
-            subplot(3,2, 4, 'position', pos);
-            scatter(all_b{6}', w(:,3));
-            lsline;
-            xlabel('\beta_{TU}');
-            ylabel('w_3');
-            title('Insula (L)', 'interpreter', 'none', 'FontSize', fontsize);
-
-            str = sprintf('r = %.2f, p = %.3f', r(6), p_uncorr(6));
-            text(-0.15,0.004, str, 'FontSize', 9);
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.13, 0.65, 'A', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.48, 0.65, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/Figure3', '-dpdf');
+
 
 
 
@@ -371,7 +327,7 @@ function show_figure(fig)
             figure('pos', [100 100 650 160]);
 
 
-            fontsize = 12;
+            fontsize = 11;
             markersize = 6;
             linewidth = 2;
            
@@ -455,6 +411,12 @@ function show_figure(fig)
             set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
 
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
             print('images/Figure4', '-dpdf');
 
 
@@ -474,7 +436,7 @@ function show_figure(fig)
             figure('pos', [100 100 650 160]);
             %figure;
 
-            fontsize = 12;
+            fontsize = 11;
             markersize = 6;
             linewidth = 2;
           
@@ -507,7 +469,7 @@ function show_figure(fig)
             %plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('RU - trial', 'FontSize', fontsize);
+            title('RU (Badre et al. 2012)', 'FontSize', fontsize);
 
 
             subplot(1,4,3);
@@ -556,12 +518,20 @@ function show_figure(fig)
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
             
 
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
             print('images/Supp_Figure1', '-dpdf');
 
+
+            
 
 
         case 'Supp_Figure2'
@@ -572,7 +542,7 @@ function show_figure(fig)
             figure('pos', [100 100 650 160]);
 
 
-            fontsize = 12;
+            fontsize = 11;
             markersize = 6;
             linewidth = 2;
            
@@ -585,13 +555,13 @@ function show_figure(fig)
             pos(4) = pos(4) * 1.0;
 
             subplot(1,2, 1, 'position', pos);
-            PICpng = imread('images/TU-trial.png');
+            PICpng = imread('images/badre_DLPFC.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU - trial', 'FontSize', fontsize);
+            title('TU (Badre et al. 2012)', 'FontSize', fontsize);
 
             centx = x * 0.13;
             centy = y * 0.28;
@@ -602,25 +572,25 @@ function show_figure(fig)
             pline_x = r * cos(theta) + centx;
             pline_y = r * sin(theta) + centy;
             k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            %plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
 
             subplot(1,4,3);
 
-            load('main_effect_glm21_RU_TU_-_trial.mat');
-            beta(1) = m(end);
-            err(1) = (cis{end}(2) - cis{end}(1)) / 2;
+            load('main_effect_glm21_RU_dlpfc.mat');
+            beta(1) = m(1);
+            err(1) = (cis{1}(2) - cis{1}(1)) / 2;
 
-            load('main_effect_glm21_TU_TU_-_trial.mat');
-            beta(2) = m(end);
-            err(2) = (cis{end}(2) - cis{end}(1)) / 2;
+            load('main_effect_glm21_TU_dlpfc.mat');
+            beta(2) = m(1);
+            err(2) = (cis{1}(2) - cis{1}(1)) / 2;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('Insula (L)');
+            title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',fontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
             ylabel('Neural coefficient (\beta)','FontSize',fontsize);
@@ -631,98 +601,104 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{end});
+            [b,~,s] = fixedEffects(results_both{1});
             beta(1) = b(4);
             err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{end});
+            [b,~,s] = fixedEffects(results_both{1});
             beta(2) = b(4);
             err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            save('Figure4C.mat', 'beta', 'err');
+            save('Supp_Figure2C.mat', 'beta', 'err');
             %}
 
-            load Figure4C;
+            load Supp_Figure2C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('Insula (L)');
+            title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
 
-            print('images/Figure4', '-dpdf');
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
+
+            print('images/Supp_Figure2', '-dpdf');
 
 
 
 
 
+        case 'Figure5'
+            % Cross-subject
+            %
+
+
+            figure('pos', [100 100 600 250]);
+
+
+            fontsize = 12;
+           
+            h = subplot(1,2,1);
+            load cross_subj_vbm_glm21_RU_RU_-_trial_sphere_standardize=0.mat;
+            %pos = get(h, 'position');
+            %pos(3) = pos(3) * 0.6;
+            %pos(1) = pos(1) * 0.9;
+            %subplot(3,2, 4, 'position', pos);
+            scatter(all_b{2}', w(:,2));
+            lsline;
+            xlabel('Grey matter density');
+            ylabel('w_2');
+            title('RLPFC (R)', 'interpreter', 'none', 'FontSize', fontsize);
+
+            str = sprintf('r = %.2f, p = %.3f', r(2), p_uncorr(2));
+            text(1.15,0.004, str, 'FontSize', 9);
 
 
 
 
+            h = subplot(1,2,2);
 
-        case 'Figure4_old'
-            %% ------------- Sam Figure 3
+            load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
+            %pos = get(h, 'position');
+            %pos(3) = pos(3) * 0.6;
+            %pos(1) = pos(1) * 0.9;
+            %subplot(3,2, 4, 'position', pos);
+            scatter(all_b{6}', w(:,3));
+            lsline;
+            xlabel('\beta_{TU}');
+            ylabel('w_3');
+            title('Insula (L)', 'interpreter', 'none', 'FontSize', fontsize);
 
-            figure('pos', [100 100 953 252]);
-            fontsize = 16;
-            markersize = 6;
+            str = sprintf('r = %.2f, p = %.3f', r(6), p_uncorr(6));
+            text(-0.13,0.004, str, 'FontSize', 9);
 
-            % Probit analysis of computational variables
-            load results_glme_fig3_norm
-            results = results_VTURU;
-                        
-            % plot results
-            subplot(1,3,1);
-            [beta,~,stats] = fixedEffects(results);
-            errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 900]);
-            ylabel('Regression coefficient','FontSize',fontsize);
-            title('Model');
-            
-            
-            subplot(1,3,2);
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            %text(0.13, 0.65, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            %text(0.48, 0.65, 'B', 'FontSize', 20, 'FontWeight', 'bold');
 
-            % Probit analysis of computational variables
-            %{
-            load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [beta,names,stats] = fixedEffects(results_both{2});
-            save('Figure4B.mat', 'names', 'beta', 'stats');
-            %}
-            load Figure4B
 
-            % plot results
-            errorbar(beta([3 1 2 4]),stats.SE([3 1 2 4]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTickLabel',{'$V$' '$RU$' '$V/TU$' '$\hat{RU}$'},'XLim',[0.5 4.5], 'Ylim', [0 200]);
-            ylabel('Regression coefficient','FontSize',fontsize);
-            title('Model + RLPFC (R)');
-            
-            
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.50, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
 
-            subplot(1,3,3);
+            print('images/Figure5', '-dpdf');
 
-            % Probit analysis of computational variables
-            %{
-            load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [beta,names,stats] = fixedEffects(results_both{end});
-            save('Figure4C.mat', 'names', 'beta', 'stats');
-            %}
-            load Figure4C
 
-            % plot results
-            errorbar(beta([3 1 2 4]),stats.SE([3 1 2 4]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTickLabel',{'$V$' '$RU$' '$V/TU$' '$V/\hat{TU}$'},'XLim',[0.5 4.5], 'Ylim', [-10 200]);
-            ylabel('Regression coefficient','FontSize',fontsize);
-            title('Model + Insula (L)');
-            
-            
+
+
 
 
 
