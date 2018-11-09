@@ -715,15 +715,22 @@ function show_figure(fig)
             load univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
             p_uncorr = p_comp;
             p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-            save('Supp_Table1.mat', 'p_uncorr', 'p_corr');
+            save('Supp_Table1.mat', 'p_uncorr', 'p_corr', 'comp');
             %}
 
             load('Supp_Table1.mat');
 
-            fprintf('RLPFC (R) p-value = %.4f\n', p_uncorr(2));
+            fprintf('\n\n\n');
+            fprintf('RLPFC (R) p-value = %.4f, loglik = -3748.3 (glm) vs. -3745.8 (altglm); BICs = 7524 vs. 7528.1; AICs = 7502.5 vs. 7499.5\n', p_uncorr(2));
+            fprintf('\n\n\n');
+
+            fprintf('Hybrid model       &  %d  &  %.2f  &  %.2f  &  %.2f  &         &  \\\\ \n', comp{2}.DF(1), comp{2}.AIC(1), comp{2}.BIC(1), comp{2}.LogLik(1));
+            fprintf('Augmented RU model &  %d  &  %.2f  &  %.2f  &  %.2f  &   %.2f  &  p = %.3f     \\\\ \n', comp{2}.DF(2), comp{2}.AIC(2), comp{2}.BIC(2), comp{2}.LogLik(2), comp{2}.LRStat(2), comp{2}.pValue(2));
+
+
 
         case 'Table2'
-            % TU - trial with p's
+            % TU - trial with univariate decoder p's
 
             ccnl_view(exploration_expt(), 21, 'TU - trial');
             ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
@@ -732,15 +739,17 @@ function show_figure(fig)
             load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
             p_uncorr = p_comp;
             p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
-            save('Table2.mat', 'p_uncorr', 'p_corr');
+            save('Table2.mat', 'p_uncorr', 'p_corr', 'comp');
             %}
 
             load('Table2.mat');
 
+            table(p_uncorr, p_corr)
             fprintf('\n\n\n');
-            %table(p_uncorr, p_corr)
 
             for i = 1:length(p_uncorr)
+                fprintf('%.2f & %.2f & %.2f & ', comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2));
+
                 p = p_uncorr(i);
                 if p > 0.0001
                     p_string = sprintf('p = %.4f', p);
@@ -748,6 +757,7 @@ function show_figure(fig)
                     p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
                 end
                 fprintf('$%s$', p_string);
+
 
                 p = p_corr(i);
                 if p > 0.0001
@@ -759,6 +769,30 @@ function show_figure(fig)
             end
 
 
+        case 'Table3'
+            % Cross-subject analysis for TU
+
+            load('Table2.mat');
+            idx = p_corr < 0.05; % which were significant for univariate decoder
+
+            load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
+
+            names = region(idx);
+            p_uncorr = ps(idx);
+            p_corr = 1 - (1 - p_uncorr) .^ length(p_uncorr);
+            r = rs(idx);
+            mni = mni(idx,:);
+
+            table(names, mni, r, p_uncorr, p_corr)
+
+            for i = 1:length(names)
+                fprintf('%s & %d %d %d & %.2f & p = %.3f & p = %.3f \\\\ \n', ...
+                    names{i}, ...
+                    mni(i,1), mni(i,2), mni(i,3), ...
+                    r(i), ...
+                    p_uncorr(i), ...
+                    p_corr(i));
+                end
 
 
 
