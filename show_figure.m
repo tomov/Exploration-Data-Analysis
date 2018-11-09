@@ -701,7 +701,7 @@ function show_figure(fig)
             %text(0.48, 0.65, 'B', 'FontSize', 20, 'FontWeight', 'bold');
 
 
-            print('images/Supp_Figure5', '-dpdf');
+            print('images/Supp_Figure3', '-dpdf');
 
 
 
@@ -711,14 +711,52 @@ function show_figure(fig)
             ccnl_view(exploration_expt(), 21, 'RU - trial');
             ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'RU - trial', 0.001, '+/-', 0.05, 20, 1);
 
+            %{
+            load univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            p_uncorr = p_comp;
+            p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+            save('Supp_Table1.mat', 'p_uncorr', 'p_corr');
+            %}
+
+            load('Supp_Table1.mat');
+
+            fprintf('RLPFC (R) p-value = %.4f\n', p_uncorr(2));
+
         case 'Table2'
             % TU - trial with p's
 
             ccnl_view(exploration_expt(), 21, 'TU - trial');
             ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
 
-           % load ...
+            %{
+            load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            p_uncorr = p_comp;
+            p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+            save('Table2.mat', 'p_uncorr', 'p_corr');
+            %}
 
+            load('Table2.mat');
+
+            fprintf('\n\n\n');
+            %table(p_uncorr, p_corr)
+
+            for i = 1:length(p_uncorr)
+                p = p_uncorr(i);
+                if p > 0.0001
+                    p_string = sprintf('p = %.4f', p);
+                else
+                    p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
+                end
+                fprintf('$%s$', p_string);
+
+                p = p_corr(i);
+                if p > 0.0001
+                    p_string = sprintf('p = %.4f', p);
+                else
+                    p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
+                end
+                fprintf('$%s$ \\\\ \n', p_string);
+            end
 
 
 
