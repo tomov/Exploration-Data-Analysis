@@ -165,13 +165,15 @@ function show_figure(fig)
             % elot results
             [beta,~,stats] = fixedEffects(results);
             subplot(1,3,1);
-            errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta(1:4),(stats.Upper(1:4) - stats.Lower(1:4))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5],'YLim', [-1 1]);
             ylabel('Intercept','FontSize',fontsize);
             ylim([-0.5 0.5]);
 
             subplot(1,3,2);
-            errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
             ylim([1 2.5]);
@@ -185,7 +187,8 @@ function show_figure(fig)
                         
             % plot results
             [beta,~,stats] = fixedEffects(results);
-            errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta([3 1 2]),(stats.Upper([3 1 2]) - stats.Lower([3 1 2]))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
@@ -258,15 +261,15 @@ function show_figure(fig)
 
             load('main_effect_glm21_RU_RU_-_trial.mat');
             beta(1) = m(2);
-            err(1) = (cis{2}(2) - cis{2}(1)) / 2;
+            ci(1) = (cis{2}(2) - cis{2}(1)) / 2;
 
             load('main_effect_glm21_TU_RU_-_trial.mat');
             beta(2) = m(2);
-            err(2) = (cis{2}(2) - cis{2}(1)) / 2;
+            ci(2) = (cis{2}(2) - cis{2}(1)) / 2;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -282,21 +285,23 @@ function show_figure(fig)
             [b,~,s] = fixedEffects(results_both{2});
             beta(1) = b(4);
             err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
             %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(2) = b(4);
             err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            save('Figure3C.mat', 'beta', 'err');
+            save('Figure3C.mat', 'beta', 'err', 'ci');
             %}
 
             load Figure3C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -390,21 +395,23 @@ function show_figure(fig)
             [b,~,s] = fixedEffects(results_both{end});
             beta(1) = b(4);
             err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
             %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(2) = b(4);
             err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            save('Figure4C.mat', 'beta', 'err');
+            save('Figure4C.mat', 'beta', 'err', 'ci');
             %}
 
             load Figure4C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
@@ -476,15 +483,15 @@ function show_figure(fig)
 
             load('main_effect_glm21_RU_badre.mat');
             beta(1) = m(1);
-            err(1) = (cis{1}(2) - cis{1}(1)) / 2;
+            ci(1) = (cis{1}(2) - cis{1}(1)) / 2;
 
             load('main_effect_glm21_TU_badre.mat');
             beta(2) = m(1);
-            err(2) = (cis{1}(2) - cis{1}(1)) / 2;
+            ci(2) = (cis{1}(2) - cis{1}(1)) / 2;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -500,21 +507,23 @@ function show_figure(fig)
             [b,~,s] = fixedEffects(results_both{1});
             beta(1) = b(4);
             err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             %load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
             load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{1});
             beta(2) = b(4);
             err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            save('Supp_Figure1C.mat', 'beta', 'err');
+            save('Supp_Figure1C.mat', 'beta', 'err', 'ci');
             %}
 
             load Supp_Figure1C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -612,14 +621,14 @@ function show_figure(fig)
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            save('Supp_Figure2C.mat', 'beta', 'err');
+            save('Supp_Figure2C.mat', 'beta', 'err', 'ci');
             %}
 
             load Supp_Figure2C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -639,16 +648,17 @@ function show_figure(fig)
 
 
 
-        case 'Figure5'
+        case 'Supp_Figure3'
             % Cross-subject
             %
 
 
-            figure('pos', [100 100 600 250]);
+            figure('pos', [100 100 300 250]);
 
 
             fontsize = 12;
-           
+
+            %{
             h = subplot(1,2,1);
             load cross_subj_vbm_glm21_RU_RU_-_trial_sphere_standardize=0.mat;
             %pos = get(h, 'position');
@@ -664,10 +674,12 @@ function show_figure(fig)
             str = sprintf('r = %.2f, p = %.3f', r(2), p_uncorr(2));
             text(1.15,0.004, str, 'FontSize', 9);
 
+            %}
 
 
 
-            h = subplot(1,2,2);
+
+            %h = subplot(1,2,2);
 
             load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
             %pos = get(h, 'position');
@@ -689,15 +701,23 @@ function show_figure(fig)
             %text(0.48, 0.65, 'B', 'FontSize', 20, 'FontWeight', 'bold');
 
 
-            ax1 = axes('Position',[0 0 1 1],'Visible','off');
-            axes(ax1);
-            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.50, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
-
-            print('images/Figure5', '-dpdf');
+            print('images/Supp_Figure5', '-dpdf');
 
 
 
+        case 'Supp_Table1'
+            % RU - trial
+
+            ccnl_view(exploration_expt(), 21, 'RU - trial');
+            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'RU - trial', 0.001, '+/-', 0.05, 20, 1);
+
+        case 'Table2'
+            % TU - trial with p's
+
+            ccnl_view(exploration_expt(), 21, 'TU - trial');
+            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
+
+           % load ...
 
 
 
