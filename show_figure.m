@@ -165,15 +165,15 @@ function show_figure(fig)
             % elot results
             [beta,~,stats] = fixedEffects(results);
             subplot(1,3,1);
-            %errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            errorbar(beta(1:4),(stats.Upper(1:4) - stats.Lower(1:4))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(1:4),(stats.Upper(1:4) - stats.Lower(1:4))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5],'YLim', [-1 1]);
             ylabel('Intercept','FontSize',fontsize);
             ylim([-0.5 0.5]);
 
             subplot(1,3,2);
-            %errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
             ylim([1 2.5]);
@@ -187,8 +187,8 @@ function show_figure(fig)
                         
             % plot results
             [beta,~,stats] = fixedEffects(results);
-            %errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            errorbar(beta([3 1 2]),(stats.Upper([3 1 2]) - stats.Lower([3 1 2]))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta([3 1 2]),stats.SE([3 1 2]),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta([3 1 2]),(stats.Upper([3 1 2]) - stats.Lower([3 1 2]))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
@@ -262,14 +262,17 @@ function show_figure(fig)
             load('main_effect_glm21_RU_RU_-_trial.mat');
             beta(1) = m(2);
             ci(1) = (cis{2}(2) - cis{2}(1)) / 2;
+            err(1) = stat{2}.sd / sqrt(stat{2}.df + 1);
 
             load('main_effect_glm21_TU_RU_-_trial.mat');
             beta(2) = m(2);
             ci(2) = (cis{2}(2) - cis{2}(1)) / 2;
+            err(2) = stat{2}.sd / sqrt(stat{2}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -297,11 +300,13 @@ function show_figure(fig)
             save('Figure3C.mat', 'beta', 'err', 'ci');
             %}
 
+            err = [];
             load Figure3C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -370,15 +375,18 @@ function show_figure(fig)
 
             load('main_effect_glm21_RU_TU_-_trial.mat');
             beta(1) = m(end);
-            err(1) = (cis{end}(2) - cis{end}(1)) / 2;
+            ci(1) = (cis{end}(2) - cis{end}(1)) / 2;
+            err(1) = stat{end}.sd / sqrt(stat{end}.df + 1);
 
             load('main_effect_glm21_TU_TU_-_trial.mat');
             beta(2) = m(end);
-            err(2) = (cis{end}(2) - cis{end}(1)) / 2;
+            ci(2) = (cis{end}(2) - cis{end}(1)) / 2;
+            err(2) = stat{end}.sd / sqrt(stat{end}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
@@ -407,11 +415,13 @@ function show_figure(fig)
             save('Figure4C.mat', 'beta', 'err', 'ci');
             %}
 
+            err = [];
             load Figure4C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
@@ -484,14 +494,17 @@ function show_figure(fig)
             load('main_effect_glm21_RU_badre.mat');
             beta(1) = m(1);
             ci(1) = (cis{1}(2) - cis{1}(1)) / 2;
+            err(1) = stat{1}.sd / sqrt(stat{1}.df + 1);
 
             load('main_effect_glm21_TU_badre.mat');
             beta(2) = m(1);
             ci(2) = (cis{1}(2) - cis{1}(1)) / 2;
+            err(2) = stat{1}.sd / sqrt(stat{1}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -519,11 +532,13 @@ function show_figure(fig)
             save('Supp_Figure1C.mat', 'beta', 'err', 'ci');
             %}
 
+            err = [];
             load Supp_Figure1C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -589,15 +604,18 @@ function show_figure(fig)
 
             load('main_effect_glm21_RU_dlpfc.mat');
             beta(1) = m(1);
-            err(1) = (cis{1}(2) - cis{1}(1)) / 2;
+            ci(1) = (cis{1}(2) - cis{1}(1)) / 2;
+            err(1) = stat{1}.sd / sqrt(stat{1}.df + 1);
 
             load('main_effect_glm21_TU_dlpfc.mat');
             beta(2) = m(1);
-            err(2) = (cis{1}(2) - cis{1}(1)) / 2;
+            ci(2) = (cis{1}(2) - cis{1}(1)) / 2;
+            err(2) = stat{1}.sd / sqrt(stat{1}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
@@ -624,11 +642,13 @@ function show_figure(fig)
             save('Supp_Figure2C.mat', 'beta', 'err', 'ci');
             %}
 
+            err = [];
             load Supp_Figure2C;
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
-            errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
