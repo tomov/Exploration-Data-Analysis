@@ -219,6 +219,257 @@ function show_figure(fig)
         case 'Figure3'
             % RU - trial contrast 
             %
+            figure('pos', [100 100 350 720]);
+            %figure;
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+          
+
+            h = subplot(2,1,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.85;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(2,1, 1, 'position', pos);
+
+            %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check 
+            PICpng = imread('images/RU-trial.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+
+            % Badre ROI
+            %centx = x * 0.81;
+            %centy = y * 0.29;
+
+            % our ROI
+            centx = x * 0.80;
+            centy = y * 0.30;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            title('RU - trial', 'FontSize', fontsize);
+
+
+            subplot(4,2,5);
+
+            load('main_effect_glm21_RU_RU_-_trial.mat');
+            beta(1) = m(2);
+            ci(1) = (cis{2}(2) - cis{2}(1)) / 2;
+            err(1) = stat{2}.sd / sqrt(stat{2}.df + 1);
+
+            load('main_effect_glm21_TU_RU_-_trial.mat');
+            beta(2) = m(2);
+            ci(2) = (cis{2}(2) - cis{2}(1)) / 2;
+            err(2) = stat{2}.sd / sqrt(stat{2}.df + 1);
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title('Main effect', 'FontSize', fontsize);
+
+          
+            subplot(4,2,6);
+
+            %{
+            load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{2});
+            beta(1) = b(4);
+            err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
+
+            load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{2});
+            beta(2) = b(4);
+            err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
+
+            save('Figure3C.mat', 'beta', 'err', 'ci');
+            %}
+
+            err = [];
+            load Figure3C;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            ylabel('Regression coefficient (w)','FontSize',axisfontsize);
+            title('Decoding', 'FontSize', fontsize);
+            
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.04, 0.80, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/Figure3', '-dpdf');
+
+
+
+
+        case 'Figure4'
+            % TU - trial contrast
+            %
+
+            figure('pos', [100 100 550 800]);
+
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+           
+            h = subplot(2,1,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1.9;
+            pos(2) = pos(2) * 0.92;
+            pos(3) = pos(3) * 1.0 * 2/3;
+            pos(4) = pos(4) * 1.0 * 2/3;
+
+            subplot(2,1, 1, 'position', pos);
+            PICpng = imread('images/TU-trial.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('TU - trial', 'FontSize', fontsize);
+
+            centx = x * 0.13;
+            centy = y * 0.28;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+
+            subplot(4,3,7);
+
+            load('main_effect_glm21_RU_TU_-_trial.mat');
+            beta(1) = m(end);
+            ci(1) = (cis{end}(2) - cis{end}(1)) / 2;
+            err(1) = stat{end}.sd / sqrt(stat{end}.df + 1);
+
+            load('main_effect_glm21_TU_TU_-_trial.mat');
+            beta(2) = m(end);
+            ci(2) = (cis{end}(2) - cis{end}(1)) / 2;
+            err(2) = stat{end}.sd / sqrt(stat{end}.df + 1);
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title('Main effect', 'FontSize', fontsize);
+
+         
+            
+            subplot(4,3,8);
+
+            %{
+            load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{end});
+            beta(1) = b(4);
+            err(1) = s.SE(4);
+            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
+
+            load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
+            [b,~,s] = fixedEffects(results_both{end});
+            beta(2) = b(4);
+            err(2) = s.SE(4);
+            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
+
+            save('Figure4C.mat', 'beta', 'err', 'ci');
+            %}
+
+            err = [];
+            load Figure4C;
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
+            ylabel('Regression coefficient (w)','FontSize',axisfontsize);
+            title('Decoding', 'FontSize', fontsize);
+
+
+            subplot(4,3,9);
+
+            load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
+            %pos = get(h, 'position');
+            %pos(3) = pos(3) * 0.6;
+            %pos(1) = pos(1) * 0.9;
+            %subplot(3,2, 4, 'position', pos);
+            scatter(all_b{6}', w(:,3), 15);
+            lsline;
+            xlabel('\beta_{TU}', 'FontSize', axisfontsize);
+            ylabel('w_3', 'FontSize', axisfontsize);
+            t = title({'Variability'}, 'interpreter', 'none', 'FontSize', fontsize);
+            set(t,'position',get(t,'position')+[0.03 0 0]);
+
+            str = sprintf('r = %.1f, p = %.2f', r(6), p_uncorr(6));
+            text(0.02,0.002, str, 'FontSize', 8);
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.08, 0.78, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.08, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.39, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.65, 0.52, 'D', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/Figure4', '-dpdf');
+
+
+
+
+
+
+
+
+        case 'Figure3_old'
+            % RU - trial contrast 
+            %
             figure('pos', [100 100 650 160]);
             %figure;
 
@@ -333,11 +584,7 @@ function show_figure(fig)
 
 
 
-
-
-
-
-        case 'Figure4'
+        case 'Figure4_old'
             % TU - trial contrast
             %
 
