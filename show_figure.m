@@ -162,6 +162,13 @@ function show_figure(fig)
             disp(['slope, RS vs. SR: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
             disp(['slope, RR vs. SS: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
             
+            H = [1 0 0 0 0 0 0 0; 0 1 0 0 0 0 0 0; 0 0 1 0 0 0 0 0; 0 0 0 1 0 0 0 0];   % contrast matrix
+            for i=1:4; [p(i),F(i),DF1(i),DF2(i)] = coefTest(results,H(i,:)); end
+            disp(['intercept, RS vs. 0: F(',num2str(DF1(1)),',',num2str(DF2(1)),') = ',num2str(F(1)),', p = ',num2str(p(1))]);
+            disp(['intercept, SR vs. 0: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
+            disp(['intercept, RR vs. 0: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
+            disp(['intercept, SS vs. 0: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
+            
             % elot results
             [beta,~,stats] = fixedEffects(results);
             subplot(1,3,1);
@@ -310,7 +317,7 @@ function show_figure(fig)
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
             
 
@@ -425,7 +432,7 @@ function show_figure(fig)
             hold off;
             title('Insula (L)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -542,7 +549,7 @@ function show_figure(fig)
             hold off;
             title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
             
 
@@ -652,7 +659,7 @@ function show_figure(fig)
             hold off;
             title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\hat{RU}$', '$V/\hat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',fontsize);
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -753,7 +760,7 @@ function show_figure(fig)
             % TU - trial with univariate decoder p's
 
             ccnl_view(exploration_expt(), 21, 'TU - trial');
-            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
 
             %{
             load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
@@ -768,7 +775,7 @@ function show_figure(fig)
             fprintf('\n\n\n');
 
             for i = 1:length(p_uncorr)
-                fprintf('%.2f & %.2f & %.2f & ', comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2));
+                fprintf('%.2f & %.2f & %.2f & %.2f &', comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2), comp{i}.LRStat(2));
 
                 p = p_uncorr(i);
                 if p > 0.0001
@@ -776,7 +783,7 @@ function show_figure(fig)
                 else
                     p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
                 end
-                fprintf('$%s$', p_string);
+                fprintf('$%s$ &', p_string);
 
 
                 p = p_corr(i);
@@ -953,7 +960,7 @@ function show_figure(fig)
             disp(['intercept, RR vs. SS: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
             disp(['slope, RS vs. SR: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
             disp(['slope, RR vs. SS: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
-            
+
             % plot results
             figure;
             [beta,~,stats] = fixedEffects(results);
