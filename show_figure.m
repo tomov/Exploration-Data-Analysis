@@ -1006,9 +1006,9 @@ function show_figure(fig)
         case 'Table2'
             % TU - trial with univariate decoder p's
 
-            ccnl_view(exploration_expt(), 21, 'TU - trial');
-            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
-            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false); % uncorrected
+            %ccnl_view(exploration_expt(), 21, 'TU - trial');
+            %tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+', 0.05, 20, 1);
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+', 0.05, 20, 1, false); % uncorrected
 
             %{
             load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
@@ -1020,15 +1020,20 @@ function show_figure(fig)
             % uncorrected
             % load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0.mat
 
-            load('Table2.mat');
+            %load('Table2.mat');
             load('Table2_uncorr.mat'); % uncorrected
 
             table(p_uncorr, p_corr)
             fprintf('\n\n\n');
 
-            %extent = 100; % manually apply correction
+            extent = 100; % manually apply correction with custom extent
+            which = [tab{:,4}] >= extent;
+            p_corr = 1 - (1 - p_uncorr) .^ sum(which);
 
             for i = 1:length(p_uncorr)
+                if ~which(i)
+                    continue;
+                end
                 fprintf('%s & %d %d %d & %.2f & %.2f & %.2f & %.2f &', tab{i,2}, tab{i,end-2}, tab{i,end-1}, tab{i,end}, comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2), comp{i}.LRStat(2));
 
                 p = p_uncorr(i);
@@ -1057,13 +1062,23 @@ function show_figure(fig)
         case 'Table3'
             % Cross-subject analysis for TU
 
-            load('Table2.mat');
+            %tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+', 0.05, 20, 1, false); % uncorrected
+
+            %load('Table2.mat');
             load('Table2_uncorr.mat'); % uncorrected
-            idx = p_corr < 0.05; % which were significant for univariate decoder
+
+            % manually apply correction with custom extent
+            extent = 100;
+            which = [tab{:,4}] >= extent;
+            p_corr = 1 - (1 - p_uncorr) .^ sum(which);
+
+            idx = which' & (p_corr < 0.05); % which were significant for univariate decoder
 
             load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
             load('cross_subject_glm21_TU_TU_-_trial_sphere_standardize=2_corr=0.mat'); % uncorr
-            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false); % uncorrected
+
+            save shit.mat
 
             names = region(idx);
             names = tab(idx,2);
@@ -1073,7 +1088,6 @@ function show_figure(fig)
             mni = mni(idx,:);
 
             table(names, mni, r, p_uncorr, p_corr)
-
 
             for i = 1:length(names)
                 if p_corr(i) < 0.05
