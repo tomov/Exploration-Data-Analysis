@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda, standardize, mixed_effects)
+function univariate_decoder(glmodel, regressor, contrast, normalize, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
 
 printcode;
 
@@ -24,8 +24,14 @@ end
 if ~exist('mixed_effects', 'var')
     mixed_effects = false;
 end
+if ~exist('clusterFWEcorrect', 'var')
+    clusterFWEcorrect = true;
+end
+if ~exist('extent', 'var')
+    extent = [];
+end
 
-filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda, standardize, mixed_effects);
+filename = sprintf('univariate_decoder_glm%d_%s_%s_norm=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), normalize, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
 disp(filename);
 
 % get ROI masks
@@ -71,7 +77,7 @@ switch contrast
         Num = 1; % # peak voxels per cluster; default in bspmview is 3
         direct = '+';
 
-        [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+        [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num, clusterFWEcorrect, extent);
 
         r = 10 / 1.5; % 10 mm radius
 

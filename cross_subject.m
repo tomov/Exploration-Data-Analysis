@@ -1,10 +1,16 @@
-function cross_subject(glmodel, regressor, contrast, standardize)
+function cross_subject(glmodel, regressor, contrast, standardize, clusterFWEcorrect, extent)
 
 % TODO dedupe with residuals_analysis.m
 % TODO support what = voxel, not just sphere
 
 if ~exist('standardize', 'var')
     standardize = false;
+end
+if ~exist('clusterFWEcorrect', 'var')
+    clusterFWEcorrect = true;
+end
+if ~exist('extent', 'var')
+    extent = [];
 end
 
 what = 'sphere';
@@ -13,7 +19,7 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-filename = sprintf('cross_subject_glm%d_%s_%s_%s_standardize=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), what, standardize);
+filename = sprintf('cross_subject_glm%d_%s_%s_%s_standardize=%d_corr=%d_extent=%d.mat', glmodel, regressor, replace(contrast, ' ', '_'), what, standardize, clusterFWEcorrect, extent);
 disp(filename);
 
 % get ROI masks
@@ -39,7 +45,7 @@ switch contrast
         Num = 1; % # peak voxels per cluster; default in bspmview is 3
         direct = '+';
 
-        [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num);
+        [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num, clusterFWEcorrect, extent);
 
         r = 10 / 1.5; % 10 mm radius
 

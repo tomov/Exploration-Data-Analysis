@@ -1008,6 +1008,7 @@ function show_figure(fig)
 
             ccnl_view(exploration_expt(), 21, 'TU - trial');
             tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false); % uncorrected
 
             %{
             load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
@@ -1016,21 +1017,26 @@ function show_figure(fig)
             save('Table2.mat', 'p_uncorr', 'p_corr', 'comp');
             %}
 
+            % uncorrected
+            % load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0.mat
+
             load('Table2.mat');
+            load('Table2_uncorr.mat'); % uncorrected
 
             table(p_uncorr, p_corr)
             fprintf('\n\n\n');
 
+            %extent = 100; % manually apply correction
+
             for i = 1:length(p_uncorr)
-                fprintf('%.2f & %.2f & %.2f & %.2f &', comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2), comp{i}.LRStat(2));
+                fprintf('%s & %d %d %d & %.2f & %.2f & %.2f & %.2f &', tab{i,2}, tab{i,end-2}, tab{i,end-1}, tab{i,end}, comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2), comp{i}.LRStat(2));
 
                 p = p_uncorr(i);
                 if p > 0.0001
-                    p_string = sprintf('p = %.4f', p);
+                    p_string1 = sprintf('p = %.4f', p);
                 else
-                    p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
+                    p_string1 = sprintf('p < 10^{%.0f}', ceil(log10(p)));
                 end
-                fprintf('$%s$ &', p_string);
 
 
                 p = p_corr(i);
@@ -1039,7 +1045,12 @@ function show_figure(fig)
                 else
                     p_string = sprintf('p < 10^{%.0f}', ceil(log10(p)));
                 end
-                fprintf('$%s$ \\\\ \n', p_string);
+
+                if p < 0.05
+                    p_string = ['*', p_string];
+                    p_string1 = ['*', p_string1];
+                end
+                fprintf('$%s$ & $%s$ \\\\ \\hline \n', p_string1, p_string);
             end
 
 
@@ -1047,11 +1058,15 @@ function show_figure(fig)
             % Cross-subject analysis for TU
 
             load('Table2.mat');
+            load('Table2_uncorr.mat'); % uncorrected
             idx = p_corr < 0.05; % which were significant for univariate decoder
 
             load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
+            load('cross_subject_glm21_TU_TU_-_trial_sphere_standardize=2_corr=0.mat'); % uncorr
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false); % uncorrected
 
             names = region(idx);
+            names = tab(idx,2);
             p_uncorr = ps(idx);
             p_corr = 1 - (1 - p_uncorr) .^ length(p_uncorr);
             r = rs(idx);
@@ -1059,13 +1074,19 @@ function show_figure(fig)
 
             table(names, mni, r, p_uncorr, p_corr)
 
+
             for i = 1:length(names)
-                fprintf('%s & %d %d %d & %.2f & p = %.3f & p = %.3f \\\\ \n', ...
+                if p_corr(i) < 0.05
+                    star = '*';
+                else
+                    star = '';
+                end
+                fprintf('%s & %d %d %d & %.2f & %sp = %.3f & %sp = %.3f \\\\ \\hline \n', ...
                     names{i}, ...
                     mni(i,1), mni(i,2), mni(i,3), ...
                     r(i), ...
-                    p_uncorr(i), ...
-                    p_corr(i));
+                    star, p_uncorr(i), ...
+                    star, p_corr(i));
                 end
 
 
