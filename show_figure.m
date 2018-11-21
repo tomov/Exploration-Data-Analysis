@@ -238,7 +238,8 @@ function show_figure(fig)
             subplot(2,1, 1, 'position', pos);
 
             %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check 
-            PICpng = imread('images/RU-trial.png');
+            %PICpng = imread('images/RU-trial.png');
+            PICpng = imread('images/RU-trial_100.png'); % extent >= 100
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
@@ -262,7 +263,7 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('RU - trial', 'FontSize', fontsize);
+            title('RU - trial (uncorr.)', 'FontSize', fontsize);
 
 
             subplot(4,2,5);
@@ -355,13 +356,14 @@ function show_figure(fig)
             pos(4) = pos(4) * 1.0 * 2/3;
 
             subplot(2,1, 1, 'position', pos);
-            PICpng = imread('images/TU-trial.png');
+            %PICpng = imread('images/TU-trial.png');
+            PICpng = imread('images/TU-trial_100.png'); % extent >= 100
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU - trial', 'FontSize', fontsize);
+            title('TU - trial (uncorr.)', 'FontSize', fontsize);
 
             centx = x * 0.13;
             centy = y * 0.28;
@@ -691,9 +693,51 @@ function show_figure(fig)
             print('images/Figure4', '-dpdf');
 
 
+        case 'FigureS1'
+            % TU - trial contrast, with correction
+            %
+
+            figure('pos', [100 100 550 800]);
 
 
-        case 'Supp_Figure1'
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+           
+            h = subplot(2,1,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1.9;
+            pos(2) = pos(2) * 0.92;
+            pos(3) = pos(3) * 1.0 * 2/3;
+            pos(4) = pos(4) * 1.0 * 2/3;
+
+            subplot(2,1, 1, 'position', pos);
+            PICpng = imread('images/TU-trial.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('TU - trial', 'FontSize', fontsize);
+
+            centx = x * 0.13;
+            centy = y * 0.28;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            print('images/FigureS1', '-dpdf');
+
+
+        case 'FigureS2'
             % Badre RLPFC 
             % parallels Figure 3
             %
@@ -704,22 +748,23 @@ function show_figure(fig)
             % bspmview(masks{1}, struc);
             %
 
-            figure('pos', [100 100 650 160]);
+            figure('pos', [100 100 350 720]);
             %figure;
 
-            fontsize = 11;
+            fontsize = 14;
+            axisfontsize = 11;
             markersize = 6;
             linewidth = 2;
           
 
-            h = subplot(1,2,1);
+            h = subplot(2,1,1);
             pos = get(h, 'position');
             pos
             pos(1) = pos(1) * 1;
-            pos(2) = pos(2) * 0.93;
+            pos(2) = pos(2) * 0.85;
             pos(3) = pos(3) * 1.0;
             pos(4) = pos(4) * 1.0;
-            subplot(1,2, 1, 'position', pos);
+            subplot(2,1, 1, 'position', pos);
 
             PICpng = imread('images/badre_RLPFC.png');
 
@@ -743,7 +788,7 @@ function show_figure(fig)
             title('RU (Badre et al. 2012)', 'FontSize', fontsize);
 
 
-            subplot(1,4,3);
+            subplot(4,2,5);
 
             load('main_effect_glm21_RU_badre.mat');
             beta(1) = m(1);
@@ -760,13 +805,13 @@ function show_figure(fig)
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
-            ylabel('Neural coefficient (\beta)','FontSize',fontsize);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title('Main effect', 'FontSize', fontsize);
 
           
-            subplot(1,4,4);
+            subplot(4,2,6);
 
             %{
             %load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
@@ -794,45 +839,46 @@ function show_figure(fig)
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('RLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
-            ylabel('Regression coefficient (w)','FontSize',fontsize);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
+            ylabel('Regression coefficient (w)','FontSize',axisfontsize);
+            title('Decoding', 'FontSize', fontsize);
             
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.80, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/Supp_Figure1', '-dpdf');
+            print('images/FigureS2', '-dpdf');
 
 
             
 
 
-        case 'Supp_Figure2'
+        case 'FigureS3'
             % Badre DLPFC
             % Parallels Figure 4
             %
 
-            figure('pos', [100 100 650 160]);
+            figure('pos', [100 100 350 720]);
+            %figure;
 
-
-            fontsize = 11;
+            fontsize = 14;
+            axisfontsize = 11;
             markersize = 6;
             linewidth = 2;
            
-            h = subplot(1,2,1);
+            h = subplot(2,1,1);
             pos = get(h, 'position');
             pos
             pos(1) = pos(1) * 1;
-            pos(2) = pos(2) * 0.93;
+            pos(2) = pos(2) * 0.85;
             pos(3) = pos(3) * 1.0;
             pos(4) = pos(4) * 1.0;
 
-            subplot(1,2, 1, 'position', pos);
+            subplot(2,1, 1, 'position', pos);
             PICpng = imread('images/badre_DLPFC.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
@@ -854,7 +900,7 @@ function show_figure(fig)
             hold off;
 
 
-            subplot(1,4,3);
+            subplot(4,2,5);
 
             load('main_effect_glm21_RU_dlpfc.mat');
             beta(1) = m(1);
@@ -871,14 +917,14 @@ function show_figure(fig)
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
-            ylabel('Neural coefficient (\beta)','FontSize',fontsize);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title('Main effect', 'FontSize', fontsize);
 
          
             
-            subplot(1,4,4);
+            subplot(4,2,6);
 
             %{
             load('univariate_decoder_glm21_RU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
@@ -904,25 +950,26 @@ function show_figure(fig)
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
-            title('DLPFC (R)');
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',fontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
-            ylabel('Regression coefficient (w)','FontSize',fontsize);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            ylabel('Regression coefficient (w)','FontSize',axisfontsize);
+            title('Decoding', 'FontSize', fontsize);
+
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.10, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.70, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.80, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
 
-            print('images/Supp_Figure2', '-dpdf');
+            print('images/FigureS3', '-dpdf');
 
 
 
 
 
-        case 'Supp_Figure3'
+        case 'Supp_Figure3_old'
             % Cross-subject
             %
 
@@ -979,11 +1026,19 @@ function show_figure(fig)
 
 
 
-        case 'Supp_Table1'
+        case 'TableS2'
             % RU - trial
 
-            ccnl_view(exploration_expt(), 21, 'RU - trial');
-            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'RU - trial', 0.001, '+/-', 0.05, 20, 1);
+            %ccnl_view(exploration_expt(), 21, 'RU - trial');
+            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'RU - trial', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
+
+        case 'TableS3'
+            % TU - trial
+
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
+
+        case 'TableS4'
+            % RU univaraite decoder
 
             %{
             load univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
@@ -1003,7 +1058,7 @@ function show_figure(fig)
 
 
 
-        case 'Table2'
+        case 'TableS5'
             % TU - trial with univariate decoder p's
 
             %ccnl_view(exploration_expt(), 21, 'TU - trial');
@@ -1059,7 +1114,7 @@ function show_figure(fig)
             end
 
 
-        case 'Table3'
+        case 'Table6'
             % Cross-subject analysis for TU
 
             %tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1);

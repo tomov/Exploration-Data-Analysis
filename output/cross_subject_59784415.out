@@ -1,0 +1,557 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2017 The MathWorks, Inc.
+                   R2017a (9.2.0.556344) 64-bit (glnxa64)
+                               March 27, 2017
+
+ 
+For online documentation, see http://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180725_UEP_001/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_002/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180727_UEP_003/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_004/preproc'
+    structural: 'struct.nii'
+    functional: {1×6 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180730_UEP_005/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180801_UEP_006/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180802_UEP_007/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_008/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180803_UEP_009/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP010/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_011/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_012/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_013/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_014/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180804_UEP_015/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_016/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_017/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_018_2/preproc'
+    structural: 'struct.nii'
+    functional: {1×7 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_019/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_020/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180805_UEP_021/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_022/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180806_UEP_023/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_024/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_025/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180807_UEP_026/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_027/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_028/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180808_UEP_029/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_030/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+       datadir: '/ncf/gershman/Lab/Exploration/subjects/180809_UEP_031/preproc'
+    structural: 'struct.nii'
+    functional: {1×8 cell}
+
+cross_subject_glm21_TU_TU_-_trial_sphere_standardize=2_corr=0_extent=100.mat
+bspm_extract_clusters(/ncf/gershman/Lab/Exploration/glmOutput/model21/con6/spmT_0001.nii, 0.001000, +, 0.050000, 20, 1, 30, /ncf/gershman/Lab/scripts/ccnl-fmri-2018/atlases, AAL2, 0, 100)
+extent threshold = 100
+  Columns 1 through 6
+
+    'Positive'    'Parietal_Inf_R'         [2042]    [7.5078]    [ 38]    [-46]
+            []    'Parietal_Inf_L'         [1521]    [7.2982]    [-46]    [-40]
+            []    'Location not in ...'    [ 468]    [6.2314]    [ 22]    [ -2]
+            []    'Location not in ...'    [ 179]    [5.7933]    [-26]    [ -4]
+            []    'Precentral_L'           [ 282]    [5.7913]    [-42]    [  2]
+            []    'Precentral_R'           [ 258]    [4.8413]    [ 46]    [  8]
+            []    'Insula_L'               [ 268]    [4.8153]    [-30]    [ 22]
+            []    'Frontal_Mid_2_R'        [ 183]    [4.7281]    [ 38]    [ 30]
+            []    'Frontal_Mid_2_L'        [ 137]    [4.1494]    [-44]    [ 30]
+
+  Column 7
+
+    [44]
+    [48]
+    [52]
+    [44]
+    [28]
+    [30]
+    [ 2]
+    [34]
+    [32]
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_38_-46_44_r=10mm.nii
+
+r =
+
+    0.2315
+
+
+p =
+
+    0.2102
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_-46_-40_48_r=10mm.nii
+
+r =
+
+    0.2933
+
+
+p =
+
+    0.1092
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_22_-2_52_r=10mm.nii
+
+r =
+
+    0.3354
+
+
+p =
+
+    0.0651
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_-26_-4_44_r=10mm.nii
+
+r =
+
+    0.3174
+
+
+p =
+
+    0.0819
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_-42_2_28_r=10mm.nii
+
+r =
+
+    0.3077
+
+
+p =
+
+    0.0922
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_46_8_30_r=10mm.nii
+
+r =
+
+    0.3041
+
+
+p =
+
+    0.0962
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_-30_22_2_r=10mm.nii
+
+r =
+
+    0.4287
+
+
+p =
+
+    0.0161
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_38_30_34_r=10mm.nii
+
+r =
+
+    0.0870
+
+
+p =
+
+    0.6416
+
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+mask
+sphere_glm21_TU_-_trial_-44_30_32_r=10mm.nii
+
+r =
+
+    0.4049
+
+
+p =
+
+    0.0238
+
+
+ans =
+
+  9×4 table
+
+             Var1              p_uncorr    p_corr        r    
+    _______________________    ________    _______    ________
+
+    'Parietal_Inf_R'             0.2102    0.88043     0.23149
+    'Parietal_Inf_L'            0.10924    0.64694     0.29335
+    'Location not in atlas'    0.065113    0.45445     0.33539
+    'Location not in atlas'     0.08189     0.5365     0.31739
+    'Precentral_L'             0.092227     0.5814     0.30767
+    'Precentral_R'              0.09622    0.59768     0.30414
+    'Insula_L'                  0.01612    0.13607     0.42868
+    'Frontal_Mid_2_R'           0.64157     0.9999    0.087024
+    'Frontal_Mid_2_L'          0.023847    0.19525     0.40492
+
