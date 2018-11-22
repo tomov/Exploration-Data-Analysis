@@ -293,14 +293,12 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(2) = b(4);
             err(2) = s.SE(4);
@@ -406,14 +404,12 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(2) = b(4);
             err(2) = s.SE(4);
@@ -544,14 +540,12 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{2});
             beta(2) = b(4);
             err(2) = s.SE(4);
@@ -655,14 +649,12 @@ function show_figure(fig)
 
             %{
             load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000.mat');
             [b,~,s] = fixedEffects(results_both{end});
             beta(2) = b(4);
             err(2) = s.SE(4);
