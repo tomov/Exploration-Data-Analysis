@@ -89,8 +89,8 @@ function show_figure(fig)
                     legend({'RR' 'SS'},'FontSize',fontsize,'Location','southeast');
                 end
                 set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05]);
-                ylabel('Choice probability','FontSize',fontsize);
-                xlabel('Expected value difference (V)','FontSize',fontsize);
+                ylabel('P(choose left)','FontSize',fontsize);
+                xlabel({'Expected value difference,', 'V = Q(left) - Q(right)'},'FontSize',fontsize);
                 title(T{i},'FontSize',fontsize','FontWeight','Bold');
             end
            
@@ -117,8 +117,8 @@ function show_figure(fig)
                 end
                 
                 set(gca,'FontSize',fontsize,'XLim',[-3 3],'YLim',[-0.05 1.05]);
-                ylabel('Choice probability','FontSize',fontsize);
-                xlabel('Expected value difference','FontSize',fontsize);
+                ylabel('P(choose left)','FontSize',fontsize);
+                xlabel({'Expected value difference', '(V = Q(left) - Q(right))'},'FontSize',fontsize);
             end
             %}
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -686,27 +686,54 @@ function show_figure(fig)
 
 
         case 'FigureS1'
-            % TU - trial contrast, with correction
+            % corrected contrasts
             %
 
-            figure('pos', [100 100 550 800]);
+            figure('pos', [100 100 520 450]);
 
 
             fontsize = 14;
             axisfontsize = 11;
             markersize = 6;
             linewidth = 2;
-           
-            h = subplot(2,1,1);
+            pos_scale = [1.0 1.0 1.2 1.2];
+          
+            % RU - trial
+            %
+            h = subplot(2,2,1);
             pos = get(h, 'position');
-            pos
-            pos(1) = pos(1) * 1.9;
-            pos(2) = pos(2) * 0.92;
-            pos(3) = pos(3) * 1.0 * 2/3;
-            pos(4) = pos(4) * 1.0 * 2/3;
+            pos = pos .* pos_scale;
+            pos(2) = pos(2) * 0.8;
+            subplot(2,2, 1, 'position', pos);
+            PICpng = imread('images/RU-trial_corr.png');
 
-            subplot(2,1, 1, 'position', pos);
-            PICpng = imread('images/TU-trial.png');
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('RU - trial', 'FontSize', fontsize);
+
+            centx = x * 0.80;
+            centy = y * 0.30;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+
+            % TU - trial
+            %
+            h = subplot(2,2,2);
+            pos = get(h, 'position');
+            pos(2) = pos(2) * 0.8;
+            pos = pos .* pos_scale;
+            subplot(2,2, 2, 'position', pos);
+            PICpng = imread('images/TU-trial_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
@@ -726,7 +753,70 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
+
+            % RU - TU
+            %
+            h = subplot(2,2,3);
+            pos = get(h, 'position');
+            pos = pos .* pos_scale;
+            subplot(2,2, 3, 'position', pos);
+            PICpng = imread('images/RU-TU.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('RU - TU', 'FontSize', fontsize);
+
+            centx = x * 0.80;
+            centy = y * 0.30;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+
+            % TU - RU
+            %
+            h = subplot(2,2,4);
+            pos = get(h, 'position');
+            pos = pos .* pos_scale;
+            subplot(2,2, 4, 'position', pos);
+            PICpng = imread('images/TU-RU.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('TU - RU', 'FontSize', fontsize);
+
+            centx = x * 0.13;
+            centy = y * 0.28;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.13, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.57, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.13, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
+
             print('images/FigureS1', '-dpdf');
+
+
 
 
         case 'FigureS2'
