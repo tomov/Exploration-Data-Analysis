@@ -223,6 +223,10 @@ results_TU = results_both{6};
 comp_RU = compare(results_RU, results_all);
 comp_TU = compare(results_TU, results_all);
 
+comp_RU
+
+comp_TU
+
 save(filename, '-v7.3');
 
 %{

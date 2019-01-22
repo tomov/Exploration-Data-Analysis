@@ -1242,7 +1242,10 @@ function show_figure(fig)
 
 
 
+        case 'TableS7'
 
+            % final augmented model TODO finish
+            load univariate_decoder_both_glm21_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100.mat;
 
 
 
