@@ -1317,9 +1317,16 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.pmod(1).param{1} = Q1';
            multi.pmod(1).poly{1} = 1; 
 
-           multi.pmod(1).name{2} = 'Q2';
-           multi.pmod(1).param{2} = Q2';
-           multi.pmod(1).poly{2} = 1; 
+           if subj == 17 && run == 3
+               % colinear regressors...
+               multi.pmod(1).name{2} = 'Q2';
+               multi.pmod(1).param{2} = Q2' + rand(size(Q2')) * 0.01;
+               multi.pmod(1).poly{2} = 1; 
+           else 
+               multi.pmod(1).name{2} = 'Q2';
+               multi.pmod(1).param{2} = Q2';
+               multi.pmod(1).poly{2} = 1; 
+           end
 
            multi.pmod(1).name{3} = 'std1';
            multi.pmod(1).param{3} = std1';
@@ -1403,6 +1410,51 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
+        % #Sam
+        % same as 11 but by condition
+        % see also 3
+        %
+        case 34
+           % condition @ trial onset
+           %
+           for cond = 1:4
+               which = which_trials & data(subj).cond == cond;
+               [V, RU, TU, VTU] = get_latents(data, subj, which, 'abs');
+
+               multi.names{cond} = conds{cond};
+               multi.onsets{cond} = data(subj).trial_onset(which)';
+               multi.durations{cond} = zeros(size(multi.onsets{cond}));
+
+               multi.orth{cond} = 0; % do not orthogonalise them  
+
+               multi.pmod(cond).name{1} = 'RU';
+               multi.pmod(cond).param{1} = RU';
+               multi.pmod(cond).poly{1} = 1;    
+
+               multi.pmod(cond).name{2} = 'TU';
+               multi.pmod(cond).param{2} = TU';
+               multi.pmod(cond).poly{2} = 1; 
+
+               multi.pmod(cond).name{3} = 'V';
+               multi.pmod(cond).param{3} = V';
+               multi.pmod(cond).poly{3} = 1; 
+
+               multi.pmod(cond).name{4} = 'VTU';
+               multi.pmod(cond).param{4} = VTU';
+               multi.pmod(cond).poly{4} = 1; 
+           end
+
+           multi.names{1 + cond} = 'choice_onset';
+           multi.onsets{1 + cond} = data(subj).choice_onset(which_trials);
+           multi.durations{1 + cond} = zeros(size(multi.onsets{1 + cond}));
+
+           multi.names{2 + cond} = 'feedback_onset';
+           multi.onsets{2 + cond} = data(subj).feedback_onset(which_trials);
+           multi.durations{2 + cond} = zeros(size(multi.onsets{2 + cond}));
+
+           multi.names{3 + cond} = 'trial_onset_L';
+           multi.onsets{3 + cond} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{3 + cond} = zeros(size(multi.onsets{3 + cond}));
 
 
 
