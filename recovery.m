@@ -3,7 +3,7 @@
 
 clear all;
 
-niters = 100;
+niters = 1;
 
 data = load_data;
 
@@ -12,12 +12,13 @@ V = tbl.V;
 RU = tbl.RU;
 VTU = tbl.VTU;
 
-formula = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+formula = 'C ~ -1 + V + RU + VTU'; % single subject
 w_orig = [];
 w_rec = [];
 
-for iter = 1:100
-    w = mvnrnd([0 0 0], 10 * eye(3));
+for iter = 1:niters
+    %w = mvnrnd([0 0 0], 10 * eye(3));
+    w = exprnd([10 10 10]);
 
     DV = w(1) * V + w(2) * RU + w(3) * VTU;
     pred = normcdf(DV); % manual prediction
@@ -25,11 +26,17 @@ for iter = 1:100
     C = pred > 0.5;
     tbl.C = C;
 
-    w_orig = [w_orig; w];
+    try
+        results_VTURU = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal');
 
-    results_VTURU = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal');
-    [w, names] = fixedEffects(results_VTURU);
-    w_rec = [w_rec; w(3) w(1) w(2)];
+        w_orig = [w_orig; w];
+        [w, names] = fixedEffects(results_VTURU);
+        w_rec = [w_rec; w(3) w(1) w(2)];
+    catch e
+        disp('got an error while fitting...');
+        disp(e);
+        % TODO might introduce correlations between parameters
+    end
 end
 
 save recovery.mat

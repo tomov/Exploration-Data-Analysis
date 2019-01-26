@@ -13,6 +13,26 @@ function show_figure(fig)
 
         case 'recovery'
 
+            figure('pos', [10 10 520 450]);
+
+            fontsize = 12;
+            linewidth = 3;
+            markersize = 6;
+
+
+            load recovery.mat
+
+            for i = 1:3
+                [r,p] = corr(w_orig(:,i), w_rec(:,i));
+                fprintf('recovery w_%d: r = %.4f, p = %e\n', i, r, p);
+
+                subplot(1,3,i);
+                scatter(w_orig(:,i), w_rec(:,i));
+                lsline;
+                title(sprintf('w_%d', i));
+                xlabel('simulated');
+                ylabel('fitted');
+            end
 
 
         case 'learning'
