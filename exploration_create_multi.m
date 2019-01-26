@@ -1435,13 +1435,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                multi.pmod(cond).param{2} = TU';
                multi.pmod(cond).poly{2} = 1; 
 
-               multi.pmod(cond).name{3} = 'V';
-               multi.pmod(cond).param{3} = V';
-               multi.pmod(cond).poly{3} = 1; 
-
-               multi.pmod(cond).name{4} = 'VTU';
-               multi.pmod(cond).param{4} = VTU';
-               multi.pmod(cond).poly{4} = 1; 
+               % VTU and V introduce colinearity
            end
 
            multi.names{1 + cond} = 'choice_onset';

@@ -11,6 +11,173 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'recovery'
+
+
+
+        case 'learning'
+
+            figure('pos', [10 10 520 450]);
+
+            fontsize = 12;
+            linewidth = 3;
+            markersize = 6;
+
+
+            conds = {'RS', 'SR', 'RR', 'SS'};
+
+            captions = {'human', 'model'};
+
+            %  learning curves
+            %
+            data = load_data;
+            tbl = data2table(data,1,1); % do standardize! that's how we analyze behavior
+            load results_glme_fig3.mat;
+            results = results_VTURU;
+            y = predict(results, tbl);
+
+            for human_or_model = 1:2
+                for cond = 1:4
+                    latents = kalman_filter(data(1));
+                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),8)';
+
+                    %b = [];
+                    for s = 1:length(data)
+                        latents = kalman_filter(data(s));
+
+                        which = ~data(s).timeout;
+
+                        if human_or_model == 1
+                            better = (data(s).mu2(which) > data(s).mu1(which)) + 1; 
+                            C = double(data(s).choice(which) == better); % human choices
+                        else
+                            better = data(s).mu1(which) > data(s).mu2(which); 
+                            C = double((y(tbl.S == s) > 0.5) == better); % model choices
+                        end
+
+                       
+                        for t = 1:max(data(s).trial)
+                            ix = data(s).trial(which) == t & data(s).cond(which) == cond;
+                            if ~any(ix)
+                                pc(s,t,cond) = nan;
+                            else
+                                pc(s,t,cond) = nanmean(C(ix));
+                            end
+                        end
+                    end
+                end
+
+                subplot(2,1, human_or_model);
+
+                [se,mu] = wse(pc);
+                x = 1:max(data(s).trial);
+                errorbar(x,mu(:,1),se(:,1),'-ok','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k'); hold on
+                errorbar(x,mu(:,2),se(:,2),'-o','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor',[0.5 0.5 0.5],'Color',[0.5 0.5 0.5]);
+                errorbar(x,mu(:,3),se(:,3),'-o','LineWidth',linewidth,'MarkerSize',markersize);
+                errorbar(x,mu(:,4),se(:,4),'-o','LineWidth',linewidth,'MarkerSize',markersize);
+                legend(conds,'FontSize',fontsize,'Location','East');
+                %set(gca,'FontSize',fontsize,'XLim',[min(v) max(v)],'YLim',[0 1]);
+                ylabel('P(better option)','FontSize',fontsize);
+                xlabel('trial','FontSize',fontsize);
+                title(captions{human_or_model});
+            end
+
+
+            tbl = data2table(data,0,1);
+            y = predict(results_VTURU, tbl);
+            %mu = [tbl.mu1 tbl.mu2];
+            r = [tbl.r1 tbl.r2];
+            c = (y < 0.5) + 1;
+
+            for cond = 1:4
+                r_cond = r(double(tbl.cond) == cond,:);
+                c_cond = c(double(tbl.cond) == cond,:);
+                ix = sub2ind(size(r_cond), 1:size(r_cond,1), c_cond'); % chosen r's
+
+                fprintf('%s -> avg model reward = %.3f\n', conds{cond}, mean(r_cond(ix)));
+            end
+
+
+
+        case 'psycho'
+
+            figure('pos', [10 10 520 450]);
+
+            fontsize = 12;
+            linewidth = 3;
+            markersize = 6;
+
+
+            conds = {[1 2], [3 4]};
+            legends = {{'RS', 'SR'}, {'RR', 'SS'}};
+
+            captions = {'human', 'model'};
+
+            %  psychometric curves
+            %
+
+            for human_or_model = 1:2
+                for curve = 1:2
+
+                    clear pc;
+                
+                    data = load_data;
+                    tbl = data2table(data,0,1);
+                    load results_glme_fig3.mat;
+                    results = results_VTURU;
+                    y = predict(results, tbl);
+
+                    latents = kalman_filter(data(1));
+                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),8)';
+
+                    %b = [];
+                    for s = 1:length(data)
+                        latents = kalman_filter(data(s));
+
+                        which = ~data(s).timeout;
+                        V = latents.m(which,1) - latents.m(which,2);
+
+                        if human_or_model == 1
+                            C = double(data(s).choice(which)==1); % human choices
+                        else
+                            C = double(y(tbl.S == s) > 0.5); % model choices
+                        end
+
+                        
+                        for j = 1:length(v)-1
+                            ix = V>v(j) & V<v(j+1) & data(s).cond(which) == conds{curve}(1);
+                            if ~any(ix)
+                                pc(s,j,1) = nan;
+                            else
+                                pc(s,j,1) = nanmean(C(ix));
+                            end
+                            
+                            ix = V>v(j) & V<v(j+1) & data(s).cond(which) == conds{curve}(2);
+                            if ~any(ix)
+                                pc(s,j,2) = nan;
+                            else
+                                pc(s,j,2) = nanmean(C(ix));
+                            end
+                        end
+                    end
+
+                    subplot(2,2, 1 + human_or_model - 1 + 2 * (curve - 1));
+
+                    [se,mu] = wse(pc);
+                    x = v(1:end-1) + diff(v)/2;
+                    errorbar(x,mu(:,1),se(:,1),'-ok','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k'); hold on
+                    errorbar(x,mu(:,2),se(:,2),'-o','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor',[0.5 0.5 0.5],'Color',[0.5 0.5 0.5]);
+                    legend(legends{curve},'FontSize',fontsize,'Location','East');
+                    set(gca,'FontSize',fontsize,'XLim',[min(v) max(v)],'YLim',[0 1]);
+                    ylabel('Choice probability','FontSize',fontsize);
+                    xlabel('Expected value difference','FontSize',fontsize);
+                    if curve == 1
+                        title(captions{human_or_model});
+                    end
+                end
+            end
+
+
         case 'Figure1'
             figure('pos', [10 10 520 450]);
 
