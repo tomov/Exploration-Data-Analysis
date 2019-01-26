@@ -7,8 +7,7 @@ echo ---------------- >> jobs.txt
 echo --- Running main_effect >> jobs.txt
 echo ---------------- >> jobs.txt
 
-echo -- RU -- >> jobs.txt
-
+# main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent)
 declare -a fn_calls=(
                      "main_effect(11, \'RU\', 35, \'RU\', false, 100)"
                      "main_effect(11, \'RU\', 35, \'TU\', false, 100)"

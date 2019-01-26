@@ -1491,3 +1491,8 @@ cross_subject.sh GLM 21, TU, badre: output/cross_subject_57205304.out -- Submitt
 cross_subject.sh GLM 21, TU, tommy: output/cross_subject_57205306.out -- Submitted batch job 57205306
 cross_subject.sh GLM 21, TU, RU - trial: output/cross_subject_57205307.out -- Submitted batch job 57205307
 cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57205308.out -- Submitted batch job 57205308
+----------------
+--- Running univariate_decoder
+----------------
+main_effect.sh univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
+main_effect.sh univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
