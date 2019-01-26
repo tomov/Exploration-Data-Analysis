@@ -31,6 +31,7 @@ disp(filename);
 
 
 if odd_runs
+    % behavioral weights from odd runs only
     if standardize == 1
         load results_glme_fig3_odd.mat;
     elseif standardize == 2
@@ -54,18 +55,6 @@ w = getEffects(results_VTURU, false);
 for c = 1:length(masks)
     mask = masks{c};
     [~, masknames{c}, ~] = fileparts(mask);
-
-    %{
-    [~, vox] = ccnl_create_spherical_mask(cor(c,1), cor(c,2), cor(c,3), radius);
-
-    % intersect with cluster
-    c_vox = [];
-    for i = 1:size(vox, 1)
-        if CI(vox(i,1), vox(i,2), vox(i,3)) == CI(cor(c,1), cor(c,2), cor(c,3)) % note cluster idx != c
-            c_vox = [c_vox; vox(i,:)];
-        end
-    end
-    %}
 
     clear b;
     for s = 1:length(data)
