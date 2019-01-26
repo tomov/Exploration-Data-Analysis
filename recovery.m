@@ -3,7 +3,7 @@
 
 clear all;
 
-niters = 1;
+niters = 1000;
 
 data = load_data;
 
@@ -17,13 +17,14 @@ w_orig = [];
 w_rec = [];
 
 for iter = 1:niters
-    %w = mvnrnd([0 0 0], 10 * eye(3));
-    w = exprnd([10 10 10]);
+    w = mvnrnd([0 0 0], 10 * eye(3));
+    %w = exprnd([10 10 10]);
+    disp(w);
 
     DV = w(1) * V + w(2) * RU + w(3) * VTU;
     pred = normcdf(DV); % manual prediction
 
-    C = pred > 0.5;
+    C = binornd(1, pred);
     tbl.C = C;
 
     try
@@ -39,4 +40,4 @@ for iter = 1:niters
     end
 end
 
-save recovery.mat
+save recovery_mvnrnd.mat

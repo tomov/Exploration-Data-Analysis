@@ -44,10 +44,16 @@ goodRuns = {logical([1 1 1 1 1 1 1 1]), logical([1 1 1 1 1 1 1 1]), logical([0 1
                 logical([1 1 1 1 1 1 1 1]) };
 
 % optionally, only use odd runs
-for s = 1:numel(goodRuns)
-    goodRuns{s}(2:2:end) = 0;
-end
+% see GLM 11
+%for s = 1:numel(goodRuns)
+%    goodRuns{s}(2:2:end) = 0;
+%end
 
+% optionally, only use even runs
+% see GLM 35
+for s = 1:numel(goodRuns)
+    goodRuns{s}(1:2:end) = 0;
+end
 
 
 % which subjects are good

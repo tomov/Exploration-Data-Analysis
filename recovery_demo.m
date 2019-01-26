@@ -1,7 +1,7 @@
 x = rand(100,1) - 0.5;
 w = 3;
 y = w * x;
-c = normcdf(y) > 0.5;
+c = binornd(1, normcdf(y));
 tbl = table(c, x);
 formula = 'c ~ -1 + x';
 
