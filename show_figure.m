@@ -83,7 +83,7 @@ function show_figure(fig)
             end
 
 
-            tbl = data2table(data,0,1);
+            tbl = data2table(data,1,1);
             y = predict(results_VTURU, tbl);
             %mu = [tbl.mu1 tbl.mu2];
             r = [tbl.r1 tbl.r2];
@@ -122,13 +122,14 @@ function show_figure(fig)
                     clear pc;
                 
                     data = load_data;
-                    tbl = data2table(data,0,1);
+                    tbl = data2table(data,1,1);
                     load results_glme_fig3.mat;
                     results = results_VTURU;
                     y = predict(results, tbl);
 
                     latents = kalman_filter(data(1));
-                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),8)';
+                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),11)';
+                    %v = linspace(-25, 25, 11)';
 
                     %b = [];
                     for s = 1:length(data)
