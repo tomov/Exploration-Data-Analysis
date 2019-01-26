@@ -449,6 +449,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         case 11
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
+           assert(mod(run, 2) == 1); % make sure we didn't fuck up in exploration_getSubjectsDirsAndRuns
+
            multi.names{1} = 'trial_onset';
            multi.onsets{1} = data(subj).trial_onset(which_trials);
            multi.durations{1} = zeros(size(multi.onsets{1}));
@@ -1459,6 +1461,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         %
         case 35
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           assert(mod(run, 2) == 0); % make sure we didn't fuck up in exploration_getSubjectsDirsAndRuns
 
            multi.names{1} = 'trial_onset';
            multi.onsets{1} = data(subj).trial_onset(which_trials);
