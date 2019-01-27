@@ -20,19 +20,38 @@ function show_figure(fig)
             markersize = 6;
 
 
-            load recovery.mat
+            %load recovery.mat % expo [0, infty]
+            load recovery_mvnrnd.mat % mvnrnd
 
             for i = 1:3
                 [r,p] = corr(w_orig(:,i), w_rec(:,i));
                 fprintf('recovery w_%d: r = %.4f, p = %e\n', i, r, p);
 
-                subplot(1,3,i);
+                subplot(2,3,i);
                 scatter(w_orig(:,i), w_rec(:,i));
                 lsline;
                 title(sprintf('w_%d', i));
                 xlabel('simulated');
                 ylabel('fitted');
             end
+
+            k = 0;
+            for i = 1:3
+                for j = i+1:3
+                    k = k + 1;
+
+                    [r,p] = corr(w_rec(:,i), w_rec(:,j));
+                    fprintf('recovery w_%d vs w_%d: r = %.4f, p = %f\n', i, j, r, p);
+
+                    subplot(2,3,k + 3);
+                    scatter(w_rec(:,i), w_rec(:,j));
+                    lsline;
+                    title(sprintf('w_%d vs. w_%d', i, j));
+                    xlabel(sprintf('fitted w_%d', i));
+                    ylabel(sprintf('fitted w_%d', j));
+                end
+            end
+
 
 
         case 'learning'
