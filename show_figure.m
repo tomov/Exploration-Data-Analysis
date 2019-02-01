@@ -482,15 +482,25 @@ function show_figure(fig)
             beta(1) = m(RU_roi_idx);
             ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{1} = bs{RU_roi_idx};
 
             %load('main_effect_glm21_TU_RU_-_trial.mat');
             load('main_effect_roiglm36_RU_glm36_TU_corr=0_extent=100_Num=1.mat');
             beta(2) = m(RU_roi_idx);
             ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{2} = bs{RU_roi_idx};
+            
+            % paired t-test = RU - TU contrast
+            [h, p, ci, stats] = ttest(betas{1}, betas{2});
+            fprintf('paired t-test RU - TU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
+            %for s = 1:length(betas{1})
+            %    plot([1 2], [betas{1}(s) betas{2}(s)], '-o', 'MarkerSize', 2,'MarkerFaceColor','k', 'Color', 'k');
+            %end
+            
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
@@ -503,14 +513,16 @@ function show_figure(fig)
             subplot(4,2,6);
 
             %{
-            load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{2});
+            %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+            [b,~,s] = fixedEffects(results_both{RU_roi_idx});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{2});
+            %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_roiglm36_RU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+            [b,~,s] = fixedEffects(results_both{RU_roi_idx});
             beta(2) = b(4);
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
@@ -530,6 +542,7 @@ function show_figure(fig)
             set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
             title('Decoding', 'FontSize', fontsize);
+            ylim([-20 25]);
             
 
 
@@ -596,12 +609,14 @@ function show_figure(fig)
             beta(1) = m(TU_roi_idx);
             ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
             err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{1} = bs{TU_roi_idx};
 
             %load('main_effect_glm21_TU_TU_-_trial.mat');
             load('main_effect_roiglm36_TU_glm36_TU_corr=0_extent=100_Num=1.mat');
             beta(2) = m(TU_roi_idx);
             ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
             err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{2} = bs{TU_roi_idx};
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -612,20 +627,26 @@ function show_figure(fig)
             set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
             title('Main effect', 'FontSize', fontsize);
+            ylim([-0.2 0.2]);
 
+            % paired t-test = RU - TU contrast
+            [h, p, ci, stats] = ttest(betas{2}, betas{1});
+            fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
          
             
             subplot(4,3,8);
 
             %{
-            load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{end});
+            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_roiglm36_TU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{end});
+            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+            load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
             beta(2) = b(4);
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
@@ -645,8 +666,11 @@ function show_figure(fig)
             set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
             title('Decoding', 'FontSize', fontsize);
+            ylim([-20 5]);
 
+            % TODO prettify
 
+            %{
             subplot(4,3,9);
 
             load cross_subject_glm21_TU_TU_-_trial_sphere.mat;
@@ -663,6 +687,7 @@ function show_figure(fig)
 
             str = sprintf('r = %.1f, p = %.2f', r(6), p_uncorr(6));
             text(0.02,0.002, str, 'FontSize', 8);
+            %}
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
