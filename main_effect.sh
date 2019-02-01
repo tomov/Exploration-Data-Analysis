@@ -9,11 +9,21 @@ echo ---------------- >> jobs.txt
 
 # main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent)
 declare -a fn_calls=(
-                     "main_effect(11, \'RU\', 35, \'RU\', false, 100)"
-                     "main_effect(11, \'RU\', 35, \'TU\', false, 100)"
-                     "main_effect(11, \'TU\', 35, \'RU\', false, 100)"
-                     "main_effect(11, \'TU\', 35, \'TU\', false, 100)"
+                     "main_effect(36, \'RU\', 36, \'RU\', false, 100, 3)"
+                     "main_effect(36, \'RU\', 36, \'TU\', false, 100, 3)"
+                     "main_effect(36, \'TU\', 36, \'RU\', false, 100, 3)"
+                     "main_effect(36, \'TU\', 36, \'TU\', false, 100, 3)"
+                     "main_effect(36, \'RU\', 36, \'RU - TU\', false, 100, 3)"
+                     "main_effect(36, \'RU\', 36, \'TU - RU\', false, 100, 3)"
+                     "main_effect(36, \'TU\', 36, \'RU - TU\', false, 100, 3)"
+                     "main_effect(36, \'TU\', 36, \'TU - RU\', false, 100, 3)"
                      )
+#declare -a fn_calls=(
+#                     "main_effect(11, \'RU\', 35, \'RU\', false, 100)"
+#                     "main_effect(11, \'RU\', 35, \'TU\', false, 100)"
+#                     "main_effect(11, \'TU\', 35, \'RU\', false, 100)"
+#                     "main_effect(11, \'TU\', 35, \'TU\', false, 100)"
+#                     )
 
 
 for fn_call in "${fn_calls[@]}"

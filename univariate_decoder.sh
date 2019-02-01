@@ -9,11 +9,21 @@ echo ---------------- >> jobs.txt
 
 #function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
 declare -a fn_calls=(
-                     "univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100)"
-                     "univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100)"
-                     "univariate_decoder(11, \'TU\', 35, \'RU\', true, 1, 2, false, false, 100)"
-                     "univariate_decoder(11, \'TU\', 35, \'TU\', true, 1, 2, false, false, 100)"
+                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'RU\', 36, \'RU - TU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'RU\', 36, \'TU - RU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'TU\', 36, \'RU - TU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'TU\', 36, \'TU - RU\', true, 1, 2, false, false, 100, 3)"
                      )
+#declare -a fn_calls=(
+#                     "univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100)"
+#                     "univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100)"
+#                     "univariate_decoder(11, \'TU\', 35, \'RU\', true, 1, 2, false, false, 100)"
+#                     "univariate_decoder(11, \'TU\', 35, \'TU\', true, 1, 2, false, false, 100)"
+#                     )
 
 
 for fn_call in "${fn_calls[@]}"

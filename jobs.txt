@@ -1496,3 +1496,10 @@ cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57205308.out -- Su
 ----------------
 main_effect.sh univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
 main_effect.sh univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(11, \'RU\', 11, \'RU\', false, 100, 3): output/main_effect_.out --
+main_effect.sh main_effect(11, \'RU\', 11, \'TU\', false, 100, 3): output/main_effect_.out --
+main_effect.sh main_effect(11, \'TU\', 11, \'RU\', false, 100, 3): output/main_effect_.out --
+main_effect.sh main_effect(11, \'TU\', 11, \'TU\', false, 100, 3): output/main_effect_.out --

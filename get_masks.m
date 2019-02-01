@@ -1,4 +1,4 @@
-function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, extent)
+function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, extent, Num)
 
 EXPT = exploration_expt();
 
@@ -42,7 +42,9 @@ switch contrast
         p = 0.001;
         alpha = 0.05;
         Dis = 20;
-        Num = 1; % # peak voxels per cluster; default in bspmview is 3
+        if ~exist('Num', 'var')
+            Num = 1; % # peak voxels per cluster; default in bspmview is 3
+        end
         direct = '+';
 
         [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num, clusterFWEcorrect, extent);

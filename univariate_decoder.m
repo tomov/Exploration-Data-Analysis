@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
+function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num)
 
 printcode;
 
@@ -32,12 +32,15 @@ end
 if ~exist('extent', 'var')
     extent = [];
 end
+if ~exist('Num', 'var')
+    Num = 1; % # peak voxels per cluster; default in bspmview is 3
+end
 
-filename = sprintf('univariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
+filename = sprintf('univariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num);
 disp(filename);
 
 % get ROIs
-[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
+[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
 
 
 % find closest TR to each trial onset (adjusted for HRF f'n)

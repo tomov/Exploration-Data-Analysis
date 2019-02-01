@@ -1,4 +1,4 @@
-function main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent)
+function main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent, Num)
 
 
 printcode;
@@ -14,13 +14,16 @@ end
 if ~exist('extent', 'var')
     extent = [];
 end
+if ~exist('Num', 'var')
+    Num = 1; % # peak voxels per cluster; default in bspmview is 3
+end
 
 
-filename = sprintf('main_effect_roiglm%d_%s_glm%d_%s.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor);
+filename = sprintf('main_effect_roiglm%d_%s_glm%d_%s_corr=%d_extent=%d_Num=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, clusterFWEcorrect, extent, Num);
 disp(filename);
 
 % get ROIs
-[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
+[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
 
 
 
