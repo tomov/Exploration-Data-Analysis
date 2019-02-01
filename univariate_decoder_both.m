@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder_both(glmodel, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
+function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
 
 printcode;
 
@@ -33,16 +33,16 @@ if ~exist('extent', 'var')
     extent = [];
 end
 
-filename = sprintf('univariate_decoder_both_glm%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', glmodel, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
+filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
 disp(filename);
 
 % get ROIs
-[masks_RU, region_RU] = get_masks(glmodel, 'RU - trial', clusterFWEcorrect, extent);
-[masks_TU, region_TU] = get_masks(glmodel, 'TU - trial', clusterFWEcorrect, extent);
-masks{1} = masks_RU{2};
-masks{2} = masks_TU{7};
-region{1,:} = region_RU{2};
-region{2,:} = region_TU{7};
+[masks_RU, region_RU] = get_masks(glmodel, 'RU', clusterFWEcorrect, extent);
+[masks_TU, region_TU] = get_masks(glmodel, 'TU', clusterFWEcorrect, extent);
+masks{1} = masks_RU{RU_roi_idx};
+masks{2} = masks_TU{TU_roi_idx};
+region{1,:} = region_RU{RU_roi_idx};
+region{2,:} = region_TU{TU_roi_idx};
 
 regressor = {'RU', 'TU'};
 
@@ -214,11 +214,13 @@ comp
 
 results_all = results_both;
 
-load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
-results_RU = results_both{2};
+%load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
+load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both');
+results_RU = results_both{RU_roi_idx};
 
-load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
-results_TU = results_both{6};
+%load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
+load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both');
+results_TU = results_both{TU_roi_idx};
 
 comp_RU = compare(results_RU, results_all);
 comp_TU = compare(results_TU, results_all);

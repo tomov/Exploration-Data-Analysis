@@ -424,7 +424,7 @@ function show_figure(fig)
 
 
         case 'Figure3'
-            % RU - trial contrast 
+            % RU contrast 
             %
             figure('pos', [100 100 350 720]);
             %figure;
@@ -475,15 +475,19 @@ function show_figure(fig)
 
             subplot(4,2,5);
 
-            load('main_effect_glm21_RU_RU_-_trial.mat');
-            beta(1) = m(2);
-            ci(1) = (cis{2}(2) - cis{2}(1)) / 2;
-            err(1) = stat{2}.sd / sqrt(stat{2}.df + 1);
+            RU_roi_idx = 1;
 
-            load('main_effect_glm21_TU_RU_-_trial.mat');
-            beta(2) = m(2);
-            ci(2) = (cis{2}(2) - cis{2}(1)) / 2;
-            err(2) = stat{2}.sd / sqrt(stat{2}.df + 1);
+            %load('main_effect_glm21_RU_RU_-_trial.mat');
+            load('main_effect_roiglm36_RU_glm36_RU_corr=0_extent=100_Num=1.mat');
+            beta(1) = m(RU_roi_idx);
+            ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+
+            %load('main_effect_glm21_TU_RU_-_trial.mat');
+            load('main_effect_roiglm36_RU_glm36_TU_corr=0_extent=100_Num=1.mat');
+            beta(2) = m(RU_roi_idx);
+            ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -541,7 +545,7 @@ function show_figure(fig)
 
 
         case 'Figure4'
-            % TU - trial contrast
+            % TU contrast
             %
 
             figure('pos', [100 100 550 800]);
@@ -585,15 +589,19 @@ function show_figure(fig)
 
             subplot(4,3,7);
 
-            load('main_effect_glm21_RU_TU_-_trial.mat');
-            beta(1) = m(end);
-            ci(1) = (cis{end}(2) - cis{end}(1)) / 2;
-            err(1) = stat{end}.sd / sqrt(stat{end}.df + 1);
+            TU_roi_idx = 1; % TODO determine
 
-            load('main_effect_glm21_TU_TU_-_trial.mat');
-            beta(2) = m(end);
-            ci(2) = (cis{end}(2) - cis{end}(1)) / 2;
-            err(2) = stat{end}.sd / sqrt(stat{end}.df + 1);
+            %load('main_effect_glm21_RU_TU_-_trial.mat');
+            load('main_effect_roiglm36_TU_glm36_RU_corr=0_extent=100_Num=1.mat');
+            beta(1) = m(TU_roi_idx);
+            ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+
+            %load('main_effect_glm21_TU_TU_-_trial.mat');
+            load('main_effect_roiglm36_TU_glm36_TU_corr=0_extent=100_Num=1.mat');
+            beta(2) = m(TU_roi_idx);
+            ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;

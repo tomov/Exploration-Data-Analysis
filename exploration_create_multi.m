@@ -1544,6 +1544,96 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
+        % exact copy of 36 but for ncf (Cent OS 6)
+        %
+        case 37
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
+        % copy of 36 but across conditions
+        %
+        case 38
+
+           for cond = 1:4
+               which = which_trials & data(subj).cond == cond;
+
+               [V, RU, TU, VTU] = get_latents(data, subj, which, 'abs');
+
+               multi.names{cond} = conds{cond};
+               multi.onsets{cond} = data(subj).trial_onset(which)';
+               multi.durations{cond} = zeros(size(multi.onsets{cond}));
+
+               multi.orth{cond} = 0; % do not orthogonalise them  
+
+               multi.pmod(cond).name{1} = 'RU';
+               multi.pmod(cond).param{1} = RU';
+               multi.pmod(cond).poly{1} = 1;    
+
+               multi.pmod(cond).name{2} = 'TU';
+               multi.pmod(cond).param{2} = TU';
+               multi.pmod(cond).poly{2} = 1; 
+
+               multi.pmod(cond).name{3} = 'V';
+               multi.pmod(cond).param{3} = V';
+               multi.pmod(cond).poly{3} = 1; 
+
+               multi.pmod(cond).name{4} = 'VTU';
+               multi.pmod(cond).param{4} = VTU';
+               multi.pmod(cond).poly{4} = 1; 
+
+           end
+
+           multi.names{5} = 'choice_onset';
+           multi.onsets{5} = data(subj).choice_onset(which_trials);
+           multi.durations{5} = zeros(size(multi.onsets{5}));
+
+           multi.names{6} = 'feedback_onset';
+           multi.onsets{6} = data(subj).feedback_onset(which_trials);
+           multi.durations{6} = zeros(size(multi.onsets{6}));
+
+           multi.names{7} = 'trial_onset_L';
+           multi.onsets{7} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{7} = zeros(size(multi.onsets{7}));
+
+
+
+
+
 
 
 
