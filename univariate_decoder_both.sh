@@ -9,7 +9,6 @@ echo ---------------- >> jobs.txt
 
 #function univariate_decoder_both(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
 declare -a fn_calls=(
-                     "univariate_decoder_both(36, 1, 1, true, 1, 2, false, false, 100)"
                      "univariate_decoder_both(36, 1, 2, true, 1, 2, false, false, 100)"
                      "univariate_decoder_both(36, 1, 8, true, 1, 2, false, false, 100)"
                      )

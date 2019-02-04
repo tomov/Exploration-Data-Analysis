@@ -19,6 +19,7 @@ switch contrast
     case 'dlpfc'
         % clusters = masks from paper
         masks = dlpfc_2012_create_masks(false);
+        %masks = masks(1); % TODO use all masks
 
         for c = 1:length(masks)
             mask = masks{c};

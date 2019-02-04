@@ -11,6 +11,67 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'vifs'
+
+            %{
+            EXPT = exploration_expt();
+            [vifs, names] = ccnl_vifs(EXPT, 36);
+
+            save vifs.mat;
+            %}
+
+            load vifs.mat;
+
+            figure;
+
+            % RU
+            %
+            for s = 1:length(vifs)
+                RU_vifs = vifs{s}(contains(names{s}, 'xRU'));
+
+                subplot(8, 4, s);
+                plot(RU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
+                hold on;
+                plot([0 length(RU_vifs)], [1 1], 'k');
+                %plot([0 length(RU_vifs)], [2 2], 'b--');
+                %plot([0 length(RU_vifs)], [4 4], 'r--');
+                %plot([0 length(RU_vifs)], [8 8], 'r-');
+                plot([0 length(RU_vifs)], [10 10], 'r-');
+                hold off;
+
+                if s == 2
+                    title('RU VIFs for each subject');
+                end
+                if s == 30
+                    xlabel('run');
+                end
+            end
+
+
+            % TU
+            %
+            for s = 1:length(vifs)
+                TU_vifs = vifs{s}(contains(names{s}, 'xTU'));
+
+                subplot(8, 4, s);
+                plot(TU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
+                hold on;
+                plot([0 length(TU_vifs)], [1 1], 'k');
+                %plot([0 length(TU_vifs)], [2 2], 'b--');
+                %plot([0 length(TU_vifs)], [4 4], 'r--');
+                %plot([0 length(TU_vifs)], [8 8], 'r-');
+                plot([0 length(TU_vifs)], [10 10], 'r-');
+                hold off;
+
+                if s == 2
+                    title('TU VIFs for each subject');
+                end
+                if s == 30
+                    xlabel('run');
+                end
+            end
+
+
         case 'recovery'
 
             figure('pos', [10 10 520 450]);
@@ -446,7 +507,8 @@ function show_figure(fig)
 
             %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check 
             %PICpng = imread('images/RU-trial.png');
-            PICpng = imread('images/RU-trial_100.png'); % extent >= 100
+            %PICpng = imread('images/RU-trial_100.png'); % extent >= 100
+            PICpng = imread('images/RU.png'); % extent >= 100
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
@@ -470,7 +532,7 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('RU - trial (uncorr.)', 'FontSize', fontsize);
+            title('RU (uncorr.)', 'FontSize', fontsize);
 
 
             subplot(4,2,5);
@@ -579,95 +641,110 @@ function show_figure(fig)
 
             subplot(2,1, 1, 'position', pos);
             %PICpng = imread('images/TU-trial.png');
-            PICpng = imread('images/TU-trial_100.png'); % extent >= 100
+            %PICpng = imread('images/TU-trial_100.png'); % extent >= 100
+            PICpng = imread('images/TU.png'); % extent >= 100
+
+
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU - trial (uncorr.)', 'FontSize', fontsize);
-
-            centx = x * 0.13;
-            centy = y * 0.28;
-
-            r = 50;
+            title('TU (uncorr.)', 'FontSize', fontsize);
             hold on;
-            theta = 0 : (2 * pi / 10000) : (2 * pi);
-            pline_x = r * cos(theta) + centx;
-            pline_y = r * sin(theta) + centy;
-            k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+
+            xs = [0.09, 0.16];
+            ys = [0.18, 0.17];
+            for i = 1:length(xs)
+                centx = x * xs(i);
+                centy = y * ys(i);
+
+                r = 50;
+                theta = 0 : (2 * pi / 10000) : (2 * pi);
+                pline_x = r * cos(theta) + centx;
+                pline_y = r * sin(theta) + centy;
+                k = ishold;
+                plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            end
             hold off;
 
 
-            subplot(4,3,7);
 
-            TU_roi_idx = 1; % TODO determine
+            TU_rois = [2, 8];
+            for ri = 1:length(TU_rois)
+                TU_roi_idx = TU_rois(ri); 
 
-            %load('main_effect_glm21_RU_TU_-_trial.mat');
-            load('main_effect_roiglm36_TU_glm36_RU_corr=0_extent=100_Num=1.mat');
-            beta(1) = m(TU_roi_idx);
-            ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
-            err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
-            betas{1} = bs{TU_roi_idx};
+                subplot(4,2,5 + 2 * (ri - 1));
 
-            %load('main_effect_glm21_TU_TU_-_trial.mat');
-            load('main_effect_roiglm36_TU_glm36_TU_corr=0_extent=100_Num=1.mat');
-            beta(2) = m(TU_roi_idx);
-            ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
-            err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
-            betas{2} = bs{TU_roi_idx};
+                %TU_roi_idx = 2; % TODO determine & re-render
 
-            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
-            hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold off;
-            set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
-            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
-            title('Main effect', 'FontSize', fontsize);
-            ylim([-0.2 0.2]);
+                %load('main_effect_glm21_RU_TU_-_trial.mat');
+                load('main_effect_roiglm36_TU_glm36_RU_corr=0_extent=100_Num=1.mat');
+                beta(1) = m(TU_roi_idx);
+                ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+                err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+                betas{1} = bs{TU_roi_idx};
 
-            % paired t-test = RU - TU contrast
-            [h, p, ci, stats] = ttest(betas{2}, betas{1});
-            fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
-         
-            
-            subplot(4,3,8);
+                %load('main_effect_glm21_TU_TU_-_trial.mat');
+                load('main_effect_roiglm36_TU_glm36_TU_corr=0_extent=100_Num=1.mat');
+                beta(2) = m(TU_roi_idx);
+                ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+                err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+                betas{2} = bs{TU_roi_idx};
 
-            %{
-            %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            load('univariate_decoder_roiglm36_TU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
-            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
-            beta(1) = b(4);
-            err(1) = s.SE(4);
-            ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
+                disp(region{TU_roi_idx});
 
-            %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
-            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
-            beta(2) = b(4);
-            err(2) = s.SE(4);
-            ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
+                plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+                hold on;
+                errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                hold off;
+                set(gca,'TickLabelInterpreter','latex');
+                set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+                ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+                title('Main effect', 'FontSize', fontsize);
+                ylim([-0.2 0.2]);
 
-            save('Figure4C.mat', 'beta', 'err', 'ci');
-            %}
+                % paired t-test = RU - TU contrast
+                [h, p, ci, stats] = ttest(betas{2}, betas{1});
+                fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+             
+                
+                subplot(4,2,6 + 2 * (ri - 1));
 
-            err = [];
-            load Figure4C;
+                %{
+                %load('univariate_decoder_glm21_RU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+                load('univariate_decoder_roiglm36_TU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+                [b,~,s] = fixedEffects(results_both{TU_roi_idx});
+                beta(1) = b(4);
+                err(1) = s.SE(4);
+                ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
-            hold on;
-            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
-            hold off;
-            set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
-            ylabel('Regression coefficient (w)','FontSize',axisfontsize);
-            title('Decoding', 'FontSize', fontsize);
-            ylim([-20 5]);
+                %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
+                load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
+                [b,~,s] = fixedEffects(results_both{TU_roi_idx});
+                beta(2) = b(4);
+                err(2) = s.SE(4);
+                ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
 
+                save('Figure4C.mat', 'beta', 'err', 'ci');
+                %}
+
+                err = [];
+                load Figure4C;
+
+                plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+                hold on;
+                errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                hold off;
+                set(gca,'TickLabelInterpreter','latex');
+                set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
+                ylabel('Regression coefficient (w)','FontSize',axisfontsize);
+                title('Decoding', 'FontSize', fontsize);
+                ylim([-20 5]);
+
+            end
             % TODO prettify
 
             %{
@@ -691,10 +768,10 @@ function show_figure(fig)
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.08, 0.78, 'A', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.08, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.39, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
-            text(0.65, 0.52, 'D', 'FontSize', 20, 'FontWeight', 'bold');
+            %text(0.08, 0.78, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            %text(0.08, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            %text(0.39, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+            %text(0.65, 0.52, 'D', 'FontSize', 20, 'FontWeight', 'bold');
 
             print('images/Figure4', '-dpdf');
 
