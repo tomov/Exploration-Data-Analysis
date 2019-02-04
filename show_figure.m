@@ -26,8 +26,10 @@ function show_figure(fig)
 
             % RU
             %
+            all = [];
             for s = 1:length(vifs)
                 RU_vifs = vifs{s}(contains(names{s}, 'xRU'));
+                all = [all RU_vifs];
 
                 subplot(8, 4, s);
                 plot(RU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
@@ -46,12 +48,16 @@ function show_figure(fig)
                     xlabel('run');
                 end
             end
+            fprintf('# of VIFs > 10 for RU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
 
+            figure;
 
             % TU
             %
+            all = [];
             for s = 1:length(vifs)
                 TU_vifs = vifs{s}(contains(names{s}, 'xTU'));
+                all = [all TU_vifs];
 
                 subplot(8, 4, s);
                 plot(TU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
@@ -70,6 +76,63 @@ function show_figure(fig)
                     xlabel('run');
                 end
             end
+            fprintf('# of VIFs > 10 for TU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
+
+            figure;
+
+            % V
+            %
+            all = [];
+            for s = 1:length(vifs)
+                V_vifs = vifs{s}(contains(names{s}, 'xV^'));
+                all = [all V_vifs];
+
+                subplot(8, 4, s);
+                plot(V_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
+                hold on;
+                plot([0 length(V_vifs)], [1 1], 'k');
+                %plot([0 length(RU_vifs)], [2 2], 'b--');
+                %plot([0 length(RU_vifs)], [4 4], 'r--');
+                %plot([0 length(RU_vifs)], [8 8], 'r-');
+                plot([0 length(V_vifs)], [10 10], 'r-');
+                hold off;
+
+                if s == 2
+                    title('V VIFs for each subject');
+                end
+                if s == 30
+                    xlabel('run');
+                end
+            end
+            fprintf('# of VIFs > 10 for V: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
+
+            figure;
+
+            % V/TU
+            %
+            all = [];
+            for s = 1:length(vifs)
+                VTU_vifs = vifs{s}(contains(names{s}, 'xVTU'));
+                all = [all VTU_vifs];
+
+                subplot(8, 4, s);
+                plot(VTU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
+                hold on;
+                plot([0 length(VTU_vifs)], [1 1], 'k');
+                %plot([0 length(TU_vifs)], [2 2], 'b--');
+                %plot([0 length(TU_vifs)], [4 4], 'r--');
+                %plot([0 length(TU_vifs)], [8 8], 'r-');
+                plot([0 length(VTU_vifs)], [10 10], 'r-');
+                hold off;
+
+                if s == 2
+                    title('V/TU VIFs for each subject');
+                end
+                if s == 30
+                    xlabel('run');
+                end
+            end
+            fprintf('# of VIFs > 10 for V/TU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
 
 
         case 'recovery'
