@@ -655,7 +655,7 @@ function show_figure(fig)
             %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check 
             %PICpng = imread('images/RU-trial.png');
             %PICpng = imread('images/RU-trial_100.png'); % extent >= 100
-            PICpng = imread('images/RU.png'); % extent >= 100
+            PICpng = imread('images/RU_100.png'); % extent >= 100
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
@@ -679,7 +679,7 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('RU (uncorr.)', 'FontSize', fontsize);
+            title('RU (uncorr.; extent >= 100)', 'FontSize', fontsize);
 
 
             subplot(4,2,5);
@@ -794,7 +794,7 @@ function show_figure(fig)
             subplot(2,1, 1, 'position', pos);
             %PICpng = imread('images/TU-trial.png');
             %PICpng = imread('images/TU-trial_100.png'); % extent >= 100
-            PICpng = imread('images/TU.png'); % extent >= 100
+            PICpng = imread('images/TU_100.png'); % extent >= 100
 
 
 
@@ -802,7 +802,7 @@ function show_figure(fig)
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU (uncorr.)', 'FontSize', fontsize);
+            title('TU (uncorr.; extent >= 100)', 'FontSize', fontsize);
             hold on;
 
             xs = [0.09, 0.16];
@@ -1172,22 +1172,24 @@ function show_figure(fig)
             linewidth = 2;
             pos_scale = [1.0 1.0 1.2 1.2];
           
-            % RU - trial
+            % RU
             %
             h = subplot(2,2,1);
             pos = get(h, 'position');
             pos = pos .* pos_scale;
             pos(2) = pos(2) * 0.8;
             subplot(2,2, 1, 'position', pos);
-            PICpng = imread('images/RU-trial_corr.png');
+            PICpng = imread('images/RU_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('RU - trial', 'FontSize', fontsize);
+            title('RU (corr.)', 'FontSize', fontsize);
 
-            centx = x * 0.80;
+            % TODO dedupe with Figure3
+            % our ROI
+            centx = x * 0.79;
             centy = y * 0.30;
 
             r = 50;
@@ -1200,36 +1202,44 @@ function show_figure(fig)
             hold off;
 
 
-            % TU - trial
+            % TU 
             %
             h = subplot(2,2,2);
             pos = get(h, 'position');
             pos(2) = pos(2) * 0.8;
             pos = pos .* pos_scale;
             subplot(2,2, 2, 'position', pos);
-            PICpng = imread('images/TU-trial_corr.png');
+            PICpng = imread('images/TU_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU - trial', 'FontSize', fontsize);
+            title('TU (corr.)', 'FontSize', fontsize);
 
-            centx = x * 0.13;
-            centy = y * 0.28;
-
-            r = 50;
+            % TODO dedupe with Figure4
             hold on;
-            theta = 0 : (2 * pi / 10000) : (2 * pi);
-            pline_x = r * cos(theta) + centx;
-            pline_y = r * sin(theta) + centy;
-            k = ishold;
-            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+
+            xs = [0.09, 0.16];
+            ys = [0.18, 0.17];
+            colors = {[0.99 0.99 0.99], [0.50 0.99 0.50]};
+            for i = 1:length(xs)
+                centx = x * xs(i);
+                centy = y * ys(i);
+
+                r = 50;
+                theta = 0 : (2 * pi / 10000) : (2 * pi);
+                pline_x = r * cos(theta) + centx;
+                pline_y = r * sin(theta) + centy;
+                k = ishold;
+                plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', colors{i});
+            end
             hold off;
 
 
             % RU - TU
             %
+            %{
             h = subplot(2,2,3);
             pos = get(h, 'position');
             pos = pos .* pos_scale;
@@ -1280,13 +1290,14 @@ function show_figure(fig)
             k = ishold;
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
+            %}
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
             text(0.13, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
             text(0.57, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.13, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
+            %text(0.13, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
             print('images/FigureS1', '-dpdf');
 
