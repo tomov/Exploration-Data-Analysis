@@ -13,6 +13,11 @@ function show_figure(fig)
 
         case 'vifs'
 
+            figure('pos', [10 10 600 600]);
+
+            fontsize = 12;
+            linewidth = 3;
+            markersize = 3;
             %{
             EXPT = exploration_expt();
             [vifs, names] = ccnl_vifs(EXPT, 36);
@@ -22,122 +27,74 @@ function show_figure(fig)
 
             load vifs.mat;
 
-            figure;
+            regs = {'RU', 'TU', 'V', 'V/TU'};
+            suffix = {'xRU', 'xTU', 'xV^', 'xVTU'};
 
-            % RU
-            %
-            all = [];
-            for s = 1:length(vifs)
-                RU_vifs = vifs{s}(contains(names{s}, 'xRU'));
-                all = [all RU_vifs];
+            grid = zeros(17, 9);
+            grid(1:8, 1:4) = reshape(1:32, [4 8])';
+            grid(1:8, 6:9) = reshape((1:32) + 32 * 1, [4 8])';
+            grid(10:17, 1:4) = reshape((1:32) + 32 * 2, [4 8])';
+            grid(10:17, 6:9) = reshape((1:32) + 32 * 3, [4 8])';
 
-                subplot(8, 4, s);
-                plot(RU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
-                hold on;
-                plot([0 length(RU_vifs)], [1 1], 'k');
-                %plot([0 length(RU_vifs)], [2 2], 'b--');
-                %plot([0 length(RU_vifs)], [4 4], 'r--');
-                %plot([0 length(RU_vifs)], [8 8], 'r-');
-                plot([0 length(RU_vifs)], [10 10], 'r-');
-                hold off;
+	        %[ha, pos] = tight_subplot(17,9,[.01 .03],[.1 .01],[.01 .01])
 
-                if s == 2
-                    title('RU VIFs for each subject');
+            for i = 1:length(regs)
+
+                all = [];
+                for s = 1:length(vifs)
+                    reg_vifs = vifs{s}(contains(names{s}, suffix{i}));
+                    all = [all reg_vifs];
+
+                    idx = s + 32 * (i - 1);
+                    idx = find(grid == idx);
+                    [r, c] = ind2sub(size(grid), idx);
+
+                    %axes(ha(c + (r - 1) * 9)); 
+                    ax = subplot(17, 9, c + (r - 1) * 9);
+                    ax.Position(2) = ax.Position(2) - 0.0001;
+
+                    hold on;
+                    for j  = 1:length(reg_vifs)
+                        if reg_vifs(j) > 10
+                            plot(j, reg_vifs(j), 'ko', 'MarkerFaceColor', [1 0.5 0], 'markersize', markersize);
+                        else
+                            plot(j, reg_vifs(j), 'ko', 'MarkerFaceColor', [0.5 1 0], 'markersize', markersize);
+                        end
+                    end
+                    plot([0 length(reg_vifs)], [1 1], 'k');
+                    %plot([0 length(reg_vifs)], [2 2], 'b--');
+                    %plot([0 length(reg_vifs)], [4 4], 'r--');
+                    %plot([0 length(reg_vifs)], [8 8], 'r-');
+                    plot([0 length(reg_vifs)], [10 10], 'r-');
+                    set(gca, 'xtick', []);
+                    set(gca, 'fontsize', 6);
+                    hold off;
+
+                    if s == 2
+                        title(['     ', regs{i}, ' VIFs for each subject'], 'fontsize', fontsize);
+                    end
+                    if s == 30
+                      %  xlabel('run');
+                    end
                 end
-                if s == 30
-                    xlabel('run');
-                end
+                fprintf('# of VIFs > 10 for %s: %d out of %d (%.3f %%)\n', regs{i}, sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
             end
-            fprintf('# of VIFs > 10 for RU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
 
-            figure;
 
-            % TU
-            %
-            all = [];
-            for s = 1:length(vifs)
-                TU_vifs = vifs{s}(contains(names{s}, 'xTU'));
-                all = [all TU_vifs];
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.50, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.06, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.50, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
-                subplot(8, 4, s);
-                plot(TU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
-                hold on;
-                plot([0 length(TU_vifs)], [1 1], 'k');
-                %plot([0 length(TU_vifs)], [2 2], 'b--');
-                %plot([0 length(TU_vifs)], [4 4], 'r--');
-                %plot([0 length(TU_vifs)], [8 8], 'r-');
-                plot([0 length(TU_vifs)], [10 10], 'r-');
-                hold off;
-
-                if s == 2
-                    title('TU VIFs for each subject');
-                end
-                if s == 30
-                    xlabel('run');
-                end
-            end
-            fprintf('# of VIFs > 10 for TU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
-
-            figure;
-
-            % V
-            %
-            all = [];
-            for s = 1:length(vifs)
-                V_vifs = vifs{s}(contains(names{s}, 'xV^'));
-                all = [all V_vifs];
-
-                subplot(8, 4, s);
-                plot(V_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
-                hold on;
-                plot([0 length(V_vifs)], [1 1], 'k');
-                %plot([0 length(RU_vifs)], [2 2], 'b--');
-                %plot([0 length(RU_vifs)], [4 4], 'r--');
-                %plot([0 length(RU_vifs)], [8 8], 'r-');
-                plot([0 length(V_vifs)], [10 10], 'r-');
-                hold off;
-
-                if s == 2
-                    title('V VIFs for each subject');
-                end
-                if s == 30
-                    xlabel('run');
-                end
-            end
-            fprintf('# of VIFs > 10 for V: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
-
-            figure;
-
-            % V/TU
-            %
-            all = [];
-            for s = 1:length(vifs)
-                VTU_vifs = vifs{s}(contains(names{s}, 'xVTU'));
-                all = [all VTU_vifs];
-
-                subplot(8, 4, s);
-                plot(VTU_vifs, 'ko', 'MarkerFaceColor', [1 0.5 0]);
-                hold on;
-                plot([0 length(VTU_vifs)], [1 1], 'k');
-                %plot([0 length(TU_vifs)], [2 2], 'b--');
-                %plot([0 length(TU_vifs)], [4 4], 'r--');
-                %plot([0 length(TU_vifs)], [8 8], 'r-');
-                plot([0 length(VTU_vifs)], [10 10], 'r-');
-                hold off;
-
-                if s == 2
-                    title('V/TU VIFs for each subject');
-                end
-                if s == 30
-                    xlabel('run');
-                end
-            end
-            fprintf('# of VIFs > 10 for V/TU: %d out of %d (%.3f %%)\n', sum(all > 10), numel(all), sum(all > 10) / numel(all) * 100);
-
+            h = gcf;
+            set(h,'PaperOrientation','landscape');
+            print('images/Figure_vifs', '-dpdf');
 
         case 'recovery'
 
-            figure('pos', [10 10 520 450]);
+            figure('pos', [10 10 520 350]);
 
             fontsize = 12;
             linewidth = 3;
@@ -176,11 +133,19 @@ function show_figure(fig)
                 end
             end
 
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.06, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+
+            print('images/Figure_recovery', '-dpdf');
 
 
         case 'learning'
 
-            figure('pos', [10 10 520 450]);
+            rng default;
+
+            figure('pos', [10 10 420 450]);
 
             fontsize = 12;
             linewidth = 3;
@@ -196,8 +161,7 @@ function show_figure(fig)
             data = load_data;
             tbl = data2table(data,1,1); % do standardize! that's how we analyze behavior
             load results_glme_fig3.mat;
-            results = results_VTURU;
-            y = predict(results, tbl);
+            y = predict(results_VTURU, tbl); % hybrid model predictions
 
             for human_or_model = 1:2
                 for cond = 1:4
@@ -215,7 +179,7 @@ function show_figure(fig)
                             C = double(data(s).choice(which) == better); % human choices
                         else
                             better = data(s).mu1(which) > data(s).mu2(which); 
-                            C = double((y(tbl.S == s) > 0.5) == better); % model choices
+                            C = double(binornd(1, y(tbl.S == s)) == better); % model choices
                         end
 
                        
@@ -238,12 +202,18 @@ function show_figure(fig)
                 errorbar(x,mu(:,2),se(:,2),'-o','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor',[0.5 0.5 0.5],'Color',[0.5 0.5 0.5]);
                 errorbar(x,mu(:,3),se(:,3),'-o','LineWidth',linewidth,'MarkerSize',markersize);
                 errorbar(x,mu(:,4),se(:,4),'-o','LineWidth',linewidth,'MarkerSize',markersize);
-                legend(conds,'FontSize',fontsize,'Location','East');
+                legend(conds,'FontSize',fontsize,'Location','SouthEast');
                 %set(gca,'FontSize',fontsize,'XLim',[min(v) max(v)],'YLim',[0 1]);
                 ylabel('P(better option)','FontSize',fontsize);
                 xlabel('trial','FontSize',fontsize);
-                title(captions{human_or_model});
+                title(captions{human_or_model}, 'fontsize', fontsize);
+
             end
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.06, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
 
 
             tbl = data2table(data,1,1);
@@ -260,15 +230,16 @@ function show_figure(fig)
                 fprintf('%s -> avg model reward = %.3f\n', conds{cond}, mean(r_cond(ix)));
             end
 
+            print('images/Figure_learning', '-dpdf');
 
 
         case 'psycho'
 
-            figure('pos', [10 10 520 450]);
+            figure('pos', [10 10 420 650]);
 
             fontsize = 12;
-            linewidth = 3;
-            markersize = 6;
+            linewidth = 1;
+            markersize = 5;
 
 
             conds = {[1 2], [3 4]};
@@ -283,15 +254,33 @@ function show_figure(fig)
                 for curve = 1:2
 
                     clear pc;
+                    clear pc_fit;
                 
                     data = load_data;
                     tbl = data2table(data,1,1);
+
                     load results_glme_fig3.mat;
-                    results = results_VTURU;
-                    y = predict(results, tbl);
+                    y = predict(results_VTURU, tbl); % hybrid model predictions
+
+                    load results_glme_fig4.mat
+                    yh_probit = predict(results, tbl); % probit for humans
+
+                    % same as Figure2 but for model
+                    Cm = binornd(1, y); % model choices
+                    tbl = [tbl table(Cm)];
+                    if ~exist('results_glme_learning.mat', 'file')
+                        formula = 'Cm ~ -1 + cond + cond:V + (-1 + cond + cond:V|S)';
+                        % note: Laplace method not used here because it doesn't seem to complete
+                        results = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','DummyVarCoding','Full');
+                        save results_glme_learning results
+                    else
+                        load results_glme_learning.mat;
+                    end
+                    ym_probit = predict(results, tbl); % probit for hybrid model
+
 
                     latents = kalman_filter(data(1));
-                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),11)';
+                    v = linspace(min(latents(1).m(:)),max(latents(1).m(:)),8)';
                     %v = linspace(-25, 25, 11)';
 
                     %b = [];
@@ -303,8 +292,10 @@ function show_figure(fig)
 
                         if human_or_model == 1
                             C = double(data(s).choice(which)==1); % human choices
+                            C_fit = yh_probit(tbl.S == s);
                         else
-                            C = double(y(tbl.S == s) > 0.5); % model choices
+                            C = binornd(1, y(tbl.S == s)); % model choices
+                            C_fit = ym_probit(tbl.S == s);
                         end
 
                         
@@ -312,26 +303,38 @@ function show_figure(fig)
                             ix = V>v(j) & V<v(j+1) & data(s).cond(which) == conds{curve}(1);
                             if ~any(ix)
                                 pc(s,j,1) = nan;
+                                pc_fit(s,j,1) = nan;
                             else
                                 pc(s,j,1) = nanmean(C(ix));
+                                pc_fit(s,j,1) = nanmean(C_fit(ix));
                             end
                             
                             ix = V>v(j) & V<v(j+1) & data(s).cond(which) == conds{curve}(2);
                             if ~any(ix)
                                 pc(s,j,2) = nan;
+                                pc_fit(s,j,2) = nan;
                             else
                                 pc(s,j,2) = nanmean(C(ix));
+                                pc_fit(s,j,2) = nanmean(C_fit(ix));
                             end
                         end
                     end
 
-                    subplot(2,2, 1 + human_or_model - 1 + 2 * (curve - 1));
+                    subplot(4,2, 1 + human_or_model - 1 + 2 * (curve - 1));
 
                     [se,mu] = wse(pc);
+                    [se_fit,mu_fit] = wse(pc_fit);
+
                     x = v(1:end-1) + diff(v)/2;
-                    errorbar(x,mu(:,1),se(:,1),'-ok','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k'); hold on
-                    errorbar(x,mu(:,2),se(:,2),'-o','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor',[0.5 0.5 0.5],'Color',[0.5 0.5 0.5]);
-                    legend(legends{curve},'FontSize',fontsize,'Location','East');
+
+                    hold on;
+                    p1 = plot(x,mu_fit(:,1),'LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k', 'Color', [0 0 0]);
+                    errorbar(x,mu(:,1),se(:,1),'ok','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k', 'Color', [0 0 0]);
+
+                    p2 = plot(x,mu_fit(:,2),'LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor','k', 'Color',[0.5 0.5 0.5]);
+                    errorbar(x,mu(:,2),se(:,2),'o','LineWidth',linewidth,'MarkerSize',markersize,'MarkerFaceColor',[0.5 0.5 0.5],'Color',[0.5 0.5 0.5]);
+
+                    legend([p1 p2], legends{curve},'FontSize',fontsize,'Location','SouthEast');
                     set(gca,'FontSize',fontsize,'XLim',[min(v) max(v)],'YLim',[0 1]);
                     ylabel('Choice probability','FontSize',fontsize);
                     xlabel('Expected value difference','FontSize',fontsize);
@@ -340,6 +343,87 @@ function show_figure(fig)
                     end
                 end
             end
+
+
+            % same as Figure 2 TODO dedupe
+            load results_glme_fig4.mat
+            
+            % hypothesis tests
+            H = [1 -1 0 0 0 0 0 0; 0 0 1 -1 0 0 0 0; 0 0 0 0 1 -1 0 0; 0 0 0 0 0 0 1 -1];   % contrast matrix
+            for i=1:4; [p(i),F(i),DF1(i),DF2(i)] = coefTest(results,H(i,:)); end
+            disp(['intercept, RS vs. SR: F(',num2str(DF1(1)),',',num2str(DF2(1)),') = ',num2str(F(1)),', p = ',num2str(p(1))]);
+            disp(['intercept, RR vs. SS: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
+            disp(['slope, RS vs. SR: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
+            disp(['slope, RR vs. SS: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
+            
+            H = [1 0 0 0 0 0 0 0; 0 1 0 0 0 0 0 0; 0 0 1 0 0 0 0 0; 0 0 0 1 0 0 0 0];   % contrast matrix
+            for i=1:4; [p(i),F(i),DF1(i),DF2(i)] = coefTest(results,H(i,:)); end
+            disp(['intercept, RS vs. 0: F(',num2str(DF1(1)),',',num2str(DF2(1)),') = ',num2str(F(1)),', p = ',num2str(p(1))]);
+            disp(['intercept, SR vs. 0: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
+            disp(['intercept, RR vs. 0: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
+            disp(['intercept, SS vs. 0: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
+            
+            % elot results
+            [beta,~,stats] = fixedEffects(results);
+            subplot(4,2,5);
+            errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(1:4),(stats.Upper(1:4) - stats.Lower(1:4))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5],'YLim', [-1 1]);
+            ylabel('Intercept','FontSize',fontsize);
+            ylim([-0.5 0.5]);
+
+            subplot(4,2,7);
+            errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
+            ylabel('Slope','FontSize',fontsize);
+            ylim([1 2.5]);
+
+
+
+
+            % same as Figure 2 but for model TODO dedupe
+            load results_glme_learning.mat;
+            
+            % hypothesis tests
+            H = [1 -1 0 0 0 0 0 0; 0 0 1 -1 0 0 0 0; 0 0 0 0 1 -1 0 0; 0 0 0 0 0 0 1 -1];   % contrast matrix
+            for i=1:4; [p(i),F(i),DF1(i),DF2(i)] = coefTest(results,H(i,:)); end
+            disp(['intercept, RS vs. SR: F(',num2str(DF1(1)),',',num2str(DF2(1)),') = ',num2str(F(1)),', p = ',num2str(p(1))]);
+            disp(['intercept, RR vs. SS: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
+            disp(['slope, RS vs. SR: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
+            disp(['slope, RR vs. SS: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
+            
+            H = [1 0 0 0 0 0 0 0; 0 1 0 0 0 0 0 0; 0 0 1 0 0 0 0 0; 0 0 0 1 0 0 0 0];   % contrast matrix
+            for i=1:4; [p(i),F(i),DF1(i),DF2(i)] = coefTest(results,H(i,:)); end
+            disp(['intercept, RS vs. 0: F(',num2str(DF1(1)),',',num2str(DF2(1)),') = ',num2str(F(1)),', p = ',num2str(p(1))]);
+            disp(['intercept, SR vs. 0: F(',num2str(DF1(2)),',',num2str(DF2(2)),') = ',num2str(F(2)),', p = ',num2str(p(2))]);
+            disp(['intercept, RR vs. 0: F(',num2str(DF1(3)),',',num2str(DF2(3)),') = ',num2str(F(3)),', p = ',num2str(p(3))]);
+            disp(['intercept, SS vs. 0: F(',num2str(DF1(4)),',',num2str(DF2(4)),') = ',num2str(F(4)),', p = ',num2str(p(4))]);
+            
+            % elot results
+            [beta,~,stats] = fixedEffects(results);
+            subplot(4,2,6);
+            errorbar(beta(1:4),stats.SE(1:4),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(1:4),(stats.Upper(1:4) - stats.Lower(1:4))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [-0.3 0.5]);
+            ylabel('Intercept','FontSize',fontsize); 
+            %ylim([-0.5 0.5]);
+
+            subplot(4,2,8);
+            errorbar(beta(5:8),stats.SE(5:8),'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [1.2 2.3]);
+            ylabel('Slope','FontSize',fontsize);
+            %ylim([1 2.5]);
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.03, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.03, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+
+
+            print('images/Figure_psycho', '-dpdf');
 
 
         case 'Figure1'
@@ -550,7 +634,7 @@ function show_figure(fig)
         case 'Figure3'
             % RU contrast 
             %
-            figure('pos', [100 100 350 720]);
+            figure('pos', [100 100 350 800]);
             %figure;
 
             fontsize = 14;
@@ -583,7 +667,7 @@ function show_figure(fig)
             %centy = y * 0.29;
 
             % our ROI
-            centx = x * 0.80;
+            centx = x * 0.79;
             centy = y * 0.30;
 
             r = 50;
@@ -632,7 +716,7 @@ function show_figure(fig)
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
-            title('Main effect', 'FontSize', fontsize);
+            title({'Main effect', 'RLPFC (R) [34 48 -8]'}, 'FontSize', axisfontsize);
 
           
             subplot(4,2,6);
@@ -666,7 +750,7 @@ function show_figure(fig)
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
-            title('Decoding', 'FontSize', fontsize);
+            title({'Decoding', 'RLPFC (R) [34 48 -8]'}, 'FontSize', axisfontsize);
             ylim([-20 25]);
             
 
@@ -686,7 +770,8 @@ function show_figure(fig)
             % TU contrast
             %
 
-            figure('pos', [100 100 550 800]);
+            figure('pos', [100 100 350 800]);
+            %figure('pos', [100 100 350 720]);
 
 
             fontsize = 14;
@@ -697,10 +782,14 @@ function show_figure(fig)
             h = subplot(2,1,1);
             pos = get(h, 'position');
             pos
-            pos(1) = pos(1) * 1.9;
-            pos(2) = pos(2) * 0.92;
-            pos(3) = pos(3) * 1.0 * 2/3;
-            pos(4) = pos(4) * 1.0 * 2/3;
+            %pos(1) = pos(1) * 1.9;
+            %pos(2) = pos(2) * 0.92;
+            %pos(3) = pos(3) * 1.0 * 2/3;
+            %pos(4) = pos(4) * 1.0 * 2/3;
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.85;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
 
             subplot(2,1, 1, 'position', pos);
             %PICpng = imread('images/TU-trial.png');
@@ -718,6 +807,7 @@ function show_figure(fig)
 
             xs = [0.09, 0.16];
             ys = [0.18, 0.17];
+            colors = {[0.99 0.99 0.99], [0.50 0.99 0.50]};
             for i = 1:length(xs)
                 centx = x * xs(i);
                 centy = y * ys(i);
@@ -727,19 +817,19 @@ function show_figure(fig)
                 pline_x = r * cos(theta) + centx;
                 pline_y = r * sin(theta) + centy;
                 k = ishold;
-                plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+                plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', colors{i});
             end
             hold off;
 
 
 
             TU_rois = [2, 8];
+            ROI_names = {'DLPFC (L) [-42 4 28]', 'DLPFC (L) [-38 36 34]'}
             for ri = 1:length(TU_rois)
                 TU_roi_idx = TU_rois(ri); 
 
                 subplot(4,2,5 + 2 * (ri - 1));
 
-                %TU_roi_idx = 2; % TODO determine & re-render
 
                 %load('main_effect_glm21_RU_TU_-_trial.mat');
                 load('main_effect_roiglm36_TU_glm36_RU_corr=0_extent=100_Num=1.mat');
@@ -765,7 +855,7 @@ function show_figure(fig)
                 set(gca,'TickLabelInterpreter','latex');
                 set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
                 ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
-                title('Main effect', 'FontSize', fontsize);
+                title({'Main effect', ROI_names{ri}}, 'FontSize', axisfontsize);
                 ylim([-0.2 0.2]);
 
                 % paired t-test = RU - TU contrast
@@ -804,11 +894,10 @@ function show_figure(fig)
                 set(gca,'TickLabelInterpreter','latex');
                 set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
                 ylabel('Regression coefficient (w)','FontSize',axisfontsize);
-                title('Decoding', 'FontSize', fontsize);
+                title({'Decoding', ROI_names{ri}}, 'FontSize', axisfontsize);
                 ylim([-20 5]);
 
             end
-            % TODO prettify
 
             %{
             subplot(4,3,9);
@@ -835,6 +924,11 @@ function show_figure(fig)
             %text(0.08, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
             %text(0.39, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
             %text(0.65, 0.52, 'D', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.78, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.04, 0.29, 'D', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.49, 0.29, 'E', 'FontSize', 20, 'FontWeight', 'bold');
 
             print('images/Figure4', '-dpdf');
 
