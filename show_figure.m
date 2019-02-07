@@ -1354,18 +1354,25 @@ function show_figure(fig)
 
             title('RU (Badre et al. 2012)', 'FontSize', fontsize);
 
+            RU_roi_idx = 1;
 
             subplot(4,2,5);
 
-            load('main_effect_glm21_RU_badre.mat');
-            beta(1) = m(1);
-            ci(1) = (cis{1}(2) - cis{1}(1)) / 2;
-            err(1) = stat{1}.sd / sqrt(stat{1}.df + 1);
+            load('main_effect_roiglm-1_badre_glm36_RU_corr=0_extent=100_Num=3.mat');
+            beta(1) = m(RU_roi_idx);
+            ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{1} = bs{RU_roi_idx};
 
-            load('main_effect_glm21_TU_badre.mat');
-            beta(2) = m(1);
-            ci(2) = (cis{1}(2) - cis{1}(1)) / 2;
-            err(2) = stat{1}.sd / sqrt(stat{1}.df + 1);
+            load('main_effect_roiglm-1_badre_glm36_TU_corr=0_extent=100_Num=3.mat');
+            beta(2) = m(RU_roi_idx);
+            ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{2} = bs{RU_roi_idx};
+
+            % paired t-test = RU - TU contrast
+            [h, p, ci, stats] = ttest(betas{1}, betas{2});
+            fprintf('paired t-test RU - TU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -1375,22 +1382,24 @@ function show_figure(fig)
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
-            title('Main effect', 'FontSize', fontsize);
+            title({'Main effect', 'RLPFC (R) [36 56 -8]'}, 'FontSize', axisfontsize);
 
           
             subplot(4,2,6);
 
             %{
             %load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000.mat');
-            [b,~,s] = fixedEffects(results_both{1});
+            %load('univariate_decoder_glm21_RU_badre_norm=4_orth=1_lambda=1.000000.mat');
+            load('univariate_decoder_roiglm-1_badre_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=3.mat');
+            [b,~,s] = fixedEffects(results_both{RU_roi_idx});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
             %load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
-            load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000.mat');
-            [b,~,s] = fixedEffects(results_both{1});
+            %load('univariate_decoder_glm21_TU_badre_norm=4_orth=1_lambda=1.000000.mat');
+            load('univariate_decoder_roiglm-1_badre_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=3.mat');
+            [b,~,s] = fixedEffects(results_both{RU_roi_idx});
             beta(2) = b(4);
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
@@ -1407,9 +1416,9 @@ function show_figure(fig)
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 16]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-7 4]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
-            title('Decoding', 'FontSize', fontsize);
+            title({'Decoding', 'RLPFC (R) [36 56 -8]'}, 'FontSize', axisfontsize);
             
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -1466,18 +1475,21 @@ function show_figure(fig)
             %plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
+            TU_roi_idx = 1;
 
             subplot(4,2,5);
 
-            load('main_effect_glm21_RU_dlpfc.mat');
-            beta(1) = m(1);
-            ci(1) = (cis{1}(2) - cis{1}(1)) / 2;
-            err(1) = stat{1}.sd / sqrt(stat{1}.df + 1);
+            load('main_effect_roiglm-1_dlpfc_glm36_RU_corr=0_extent=100_Num=3.mat');
+            beta(1) = m(TU_roi_idx);
+            ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{1} = bs{TU_roi_idx};
 
-            load('main_effect_glm21_TU_dlpfc.mat');
-            beta(2) = m(1);
-            ci(2) = (cis{1}(2) - cis{1}(1)) / 2;
-            err(2) = stat{1}.sd / sqrt(stat{1}.df + 1);
+            load('main_effect_roiglm-1_dlpfc_glm36_TU_corr=0_extent=100_Num=3.mat');
+            beta(2) = m(TU_roi_idx);
+            ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{2} = bs{TU_roi_idx};
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
@@ -1485,23 +1497,25 @@ function show_figure(fig)
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.05 0.1]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
-            title('Main effect', 'FontSize', fontsize);
+            title({'Main effect', 'DLPFC (R) [40 30 34]'}, 'FontSize', axisfontsize);
 
          
             
             subplot(4,2,6);
 
             %{
-            load('univariate_decoder_glm21_RU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{1});
+            %load('univariate_decoder_glm21_RU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
+            load('univariate_decoder_roiglm-1_dlpfc_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=3.mat');
+            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
 
-            load('univariate_decoder_glm21_TU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
-            [b,~,s] = fixedEffects(results_both{1});
+            %load('univariate_decoder_glm21_TU_dlpfc_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat');
+            load('univariate_decoder_roiglm-1_dlpfc_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=3.mat');
+            [b,~,s] = fixedEffects(results_both{TU_roi_idx});
             beta(2) = b(4);
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
@@ -1518,9 +1532,9 @@ function show_figure(fig)
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 10]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
-            title('Decoding', 'FontSize', fontsize);
+            title({'Decoding', 'DLPFC (R) [40 30 34]'}, 'FontSize', axisfontsize);
 
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -1593,22 +1607,24 @@ function show_figure(fig)
 
 
 
+
         case 'TableS2'
-            % RU - trial
+            % RU 
 
             %ccnl_view(exploration_expt(), 21, 'RU - trial');
-            ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'RU - trial', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
+            ccnl_results_table('AAL2', 'peak', exploration_expt(), 36, 'RU', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
 
         case 'TableS3'
-            % TU - trial
+            % TU trial
 
-            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 36, 'TU', 0.001, '+/-', 0.05, 20, 1, false, 100); % extent >= 100
 
         case 'TableS4'
             % RU univaraite decoder
 
             %{
-            load univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            %load univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
             p_uncorr = p_comp;
             p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
             save('Supp_Table1.mat', 'p_uncorr', 'p_corr', 'comp');
@@ -1616,24 +1632,27 @@ function show_figure(fig)
 
             load('Supp_Table1.mat');
 
+            ROI_idx = 1;
+
             fprintf('\n\n\n');
-            fprintf('RLPFC (R) p-value = %.4f, loglik = -3748.3 (glm) vs. -3745.8 (altglm); BICs = 7524 vs. 7528.1; AICs = 7502.5 vs. 7499.5\n', p_uncorr(2));
+            fprintf('RLPFC (R) p-value = %.4f, loglik = -3748.3 (glm) vs. -3745.8 (altglm); BICs = 7524 vs. 7528.1; AICs = 7502.5 vs. 7499.5\n', p_uncorr(ROI_idx));
             fprintf('\n\n\n');
 
-            fprintf('Hybrid model       &  %d  &  %.2f  &  %.2f  &  %.2f  &         &  \\\\ \n', comp{2}.DF(1), comp{2}.AIC(1), comp{2}.BIC(1), comp{2}.LogLik(1));
-            fprintf('Augmented RU model &  %d  &  %.2f  &  %.2f  &  %.2f  &   %.2f  &  p = %.3f     \\\\ \n', comp{2}.DF(2), comp{2}.AIC(2), comp{2}.BIC(2), comp{2}.LogLik(2), comp{2}.LRStat(2), comp{2}.pValue(2));
+            fprintf('Hybrid model       &  %d  &  %.2f  &  %.2f  &  %.2f  &         &  \\\\ \n', comp{ROI_idx}.DF(1), comp{ROI_idx}.AIC(1), comp{ROI_idx}.BIC(1), comp{ROI_idx}.LogLik(1));
+            fprintf('Augmented RU model &  %d  &  %.2f  &  %.2f  &  %.2f  &   %.2f  &  p = %.3f     \\\\ \n', comp{ROI_idx}.DF(2), comp{ROI_idx}.AIC(2), comp{ROI_idx}.BIC(2), comp{ROI_idx}.LogLik(2), comp{ROI_idx}.LRStat(2), comp{ROI_idx}.pValue(2));
 
 
 
         case 'TableS5'
-            % TU - trial with univariate decoder p's
+            % TU with univariate decoder p's
 
             %ccnl_view(exploration_expt(), 21, 'TU - trial');
             %tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+', 0.05, 20, 1);
-            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 21, 'TU - trial', 0.001, '+', 0.05, 20, 1, false); % uncorrected
+            tab = ccnl_results_table('AAL2', 'peak', exploration_expt(), 36, 'TU', 0.001, '+', 0.05, 20, 1, false, 100);
 
             %{
-            load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            %load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=0_mixed=0.mat;
+            load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
             p_uncorr = p_comp;
             p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
             save('Table2.mat', 'p_uncorr', 'p_corr', 'comp');
@@ -1643,19 +1662,20 @@ function show_figure(fig)
             % load univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0.mat
 
             %load('Table2.mat');
-            load('Table2_uncorr.mat'); % uncorrected
+            %load('Table2_uncorr.mat'); % uncorrected
+            load('Supp_Table2.mat');
 
             table(p_uncorr, p_corr)
             fprintf('\n\n\n');
 
-            extent = 100; % manually apply correction with custom extent
-            which = [tab{:,4}] >= extent;
-            p_corr = 1 - (1 - p_uncorr) .^ sum(which);
+            %extent = 100; % manually apply correction with custom extent
+            %which = [tab{:,4}] >= extent;
+            p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 
             for i = 1:length(p_uncorr)
-                if ~which(i)
-                    continue;
-                end
+                %if ~which(i)
+                %    continue;
+                %end
                 fprintf('%s & %d %d %d & %.2f & %.2f & %.2f & %.2f &', tab{i,2}, tab{i,end-2}, tab{i,end-1}, tab{i,end}, comp{i}.AIC(2), comp{i}.BIC(2), comp{i}.LogLik(2), comp{i}.LRStat(2));
 
                 p = p_uncorr(i);
