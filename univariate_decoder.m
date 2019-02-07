@@ -80,6 +80,7 @@ for s = 1:length(data)
     [V, RU, TU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
     data(s).TU = TU;
+    data(s).V = V;
     V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(masks)
@@ -91,8 +92,13 @@ for s = 1:length(data)
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
         % adjust for fact that the regressor was |RU|
-        if glmodel == 21 && strcmp(regressor, 'RU')
+        if strcmp(regressor, 'RU')
             data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+        end
+
+        % adjust for fact that the regressor was |V|
+        if strcmp(regressor, 'V')
+            data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
         end
     end
 end
@@ -117,6 +123,8 @@ for c = 1:numel(masks)
                 mse(s) = immse(data(s).RU(which), data(s).act(which, c));
             case 'TU'
                 mse(s) = immse(data(s).TU(which), data(s).act(which, c));
+            case 'V'
+                mse(s) = immse(data(s).V(which), data(s).act(which, c));
         end
     end
     assert(all(isnan(act(bad_runs))));
@@ -124,6 +132,7 @@ for c = 1:numel(masks)
 
     tbl = data2table(data,standardize,1); % exclude timeouts for fitting
 
+    % TODO dedupe with univariate_decoder_both and three
     switch regressor
         case 'RU'
             decRU = act;
@@ -164,6 +173,28 @@ for c = 1:numel(masks)
                 VdecTU_orth(~bad_runs) = VdecTU_orth(~bad_runs) / norm(VdecTU_orth(~bad_runs));
             end
             tbl = [tbl table(VdecTU_orth)];
+
+        case 'V'
+            decV = act;
+            if standardize == 1
+                decV(~bad_runs) = zscore(decV(~bad_runs));
+            elseif standardize == 2
+                decV(~bad_runs) = decV(~bad_runs) / norm(decV(~bad_runs));
+            end
+            tbl = [tbl table(decV)];
+
+            % orthogonalized version
+            tmp = spm_orth([tbl.V(~bad_runs), decV(~bad_runs)]);
+            decV_orth = decV;
+            decV_orth(~bad_runs) = tmp(:,2);
+            if standardize == 1
+                decV_orth(~bad_runs) = zscore(decV_orth(~bad_runs));
+            elseif standardize == 2
+                decV_orth(~bad_runs) = decV_orth(~bad_runs) / norm(decV_orth(~bad_runs));
+            end
+            tbl = [tbl table(decV_orth)];
+
+
         otherwise
             assert(false);
     end
@@ -201,6 +232,9 @@ for c = 1:numel(masks)
         case 'TU'
             TU = table2array(tbl(:,'TU'));
             [r,p] = corr(TU(~bad_runs), act(~bad_runs));
+        case 'V'
+            V = table2array(tbl(:,'V'));
+            [r,p] = corr(V(~bad_runs), act(~bad_runs));
     end
 
 
@@ -224,6 +258,8 @@ for c = 1:numel(masks)
             [r, p] = corr(abs(w(:,2)), mse');
         case 'TU'
             [r, p] = corr(abs(w(:,3)), mse');
+        case 'V'
+            [r, p] = corr(abs(w(:,1)), mse');
         otherwise
             assert(false);
     end

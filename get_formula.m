@@ -20,6 +20,25 @@ switch regressor
             formula_dec = 'C ~ -1 + V + decRU + VTU';
         end
 
+    case 'V'
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + (-1 + V + RU + VTU + decV_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decV + (-1 + V + RU + VTU + decV|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+            formula_dec = 'C ~ -1 + decV + RU + VTU + (-1 + decV + RU + VTU|S)';
+        else
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decV';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + decV + RU + VTU';
+        end
+
     case 'TU'
         if mixed_effects
             if do_orth
@@ -56,6 +75,25 @@ switch regressor
             end
             formula_orig = 'C ~ -1 + V + RU + VTU';
             formula_dec = 'C ~ -1 + V + decRU + VdecTU';
+        end
+
+    case 'three'
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth + (-1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decV + decRU + VdecTU + (-1 + V + RU + VTU + decV + decRU + VdecTU|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+            formula_dec = 'C ~ -1 + decV + decRU + VdecTU + (-1 + decV + decRU + VdecTU|S)';
+        else
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decV + decRU + VdecTU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + decV + decRU + VdecTU';
         end
 
     otherwise

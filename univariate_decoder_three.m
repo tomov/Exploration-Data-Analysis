@@ -1,10 +1,9 @@
 % univariate decoder analysis for both RU & TU
 % see if activation in ROI predicts choices better than regressor from model
 %
-% TODO dedupe with activations_analysis.m
-% TODO dedupe with badre_2012_residuals_analysis_glm.m
+% TODO dedupe with univariate_decoder_both.m
 
-function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
+function univariate_decoder_three(RUTU_glmodel, RU_roi_idx, TU_roi_idx, V_glmodel, V_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
 
 printcode;
 
@@ -33,18 +32,22 @@ if ~exist('extent', 'var')
     extent = [];
 end
 
-filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
+filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_glm%d_Vroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', RUTU_glmodel, RU_roi_idx, TU_roi_idx, V_glmodel, V_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
 disp(filename);
 
 % get ROIs
-[masks_RU, region_RU] = get_masks(glmodel, 'RU', clusterFWEcorrect, extent);
-[masks_TU, region_TU] = get_masks(glmodel, 'TU', clusterFWEcorrect, extent);
+[masks_RU, region_RU] = get_masks(RUTU_glmodel, 'RU', clusterFWEcorrect, extent);
+[masks_TU, region_TU] = get_masks(RUTU_glmodel, 'TU', clusterFWEcorrect, extent);
+[masks_V, region_V] = get_masks(V_glmodel, 'V', clusterFWEcorrect, extent);
 masks{1} = masks_RU{RU_roi_idx};
 masks{2} = masks_TU{TU_roi_idx};
+masks{3} = masks_V{V_roi_idx};
 region{1,:} = region_RU{RU_roi_idx};
 region{2,:} = region_TU{TU_roi_idx};
+region{3,:} = region_V{V_roi_idx};
 
-regressor = {'RU', 'TU'};
+regressor = {'RU', 'TU', 'V'};
+glmodels = [RUTU_glmodel, RUTU_glmodel, V_glmodel];
 
 
 % find closest TR to each trial onset (adjusted for HRF f'n)
@@ -60,13 +63,13 @@ end
 
 
 % define behavioral / hybrid GLM formulas
-[formula_both, formula_orig, formula_dec] = get_formula('both', do_orth, mixed_effects);
+[formula_three, formula_orig, formula_dec] = get_formula('three', do_orth, mixed_effects);
 
 
 % decode regressor 
 for c = 1:length(masks)
     for s = 1:length(data)
-        dec = ccnl_decode_regressor(EXPT, glmodel, regressor{c}, masks{c}, lambda, s);
+        dec = ccnl_decode_regressor(EXPT, glmodels(c), regressor{c}, masks{c}, lambda, s);
         data(s).all_act{c} = dec{1};
     end
 end
@@ -77,16 +80,17 @@ end
 %
 V_all = [];
 for s = 1:length(data)
-    modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
-    load(fullfile(modeldir,'SPM.mat'));
-
     data(s).act = nan(length(data(s).run), length(masks));
     [V, RU, TU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
     data(s).TU = TU;
+    data(s).V = V;
     V_all = [V_all; V(~data(s).timeout)];
 
     for c = 1:length(masks)
+        modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodels(c))],['subj',num2str(s)]);
+        load(fullfile(modeldir,'SPM.mat'));
+
         % not all runs were used in the GLMs
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
         act{c} = data(s).all_act{c}(which_act,:); % only consider 1 activation for each trial
@@ -97,6 +101,11 @@ for s = 1:length(data)
         % adjust for fact that the regressor was |RU|
         if strcmp(regressor{c}, 'RU')
             data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+        end
+
+        % adjust for fact that the regressor was |V|
+        if strcmp(regressor{c}, 'V')
+            data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
         end
     end
 end
@@ -119,6 +128,8 @@ for c = 1:numel(masks)
                 mse{c}(s) = immse(data(s).RU(which), data(s).act(which, c));
             case 'TU'
                 mse{c}(s) = immse(data(s).TU(which), data(s).act(which, c));
+            case 'V'
+                mse{c}(s) = immse(data(s).V(which), data(s).act(which, c));
         end
     end
     assert(all(isnan(act{c}(bad_runs))));
@@ -153,6 +164,7 @@ for c = 1:numel(masks)
             end
             tbl = [tbl table(decRU_orth)];
 
+
         case 'TU'
             VdecTU = V_all ./ act{c};
             if standardize == 1
@@ -172,6 +184,28 @@ for c = 1:numel(masks)
                 VdecTU_orth(~bad_runs) = VdecTU_orth(~bad_runs) / norm(VdecTU_orth(~bad_runs));
             end
             tbl = [tbl table(VdecTU_orth)];
+
+
+        case 'V'
+            decV = act{c};
+            if standardize == 1
+                decV(~bad_runs) = zscore(decV(~bad_runs));
+            elseif standardize == 2
+                decV(~bad_runs) = decV(~bad_runs) / norm(decV(~bad_runs));
+            end
+            tbl = [tbl table(decV)];
+
+            % orthogonalized version
+            tmp = spm_orth([tbl.V(~bad_runs), decV(~bad_runs)]);
+            decV_orth = decV;
+            decV_orth(~bad_runs) = tmp(:,2);
+            if standardize == 1
+                decV_orth(~bad_runs) = zscore(decV_orth(~bad_runs));
+            elseif standardize == 2
+                decV_orth(~bad_runs) = decV_orth(~bad_runs) / norm(decV_orth(~bad_runs));
+            end
+            tbl = [tbl table(decV_orth)];
+
         otherwise
             assert(false);
     end
@@ -184,6 +218,9 @@ for c = 1:numel(masks)
         case 'TU'
             TU = table2array(tbl(:,'TU'));
             [r,p] = corr(TU(~bad_runs), act{c}(~bad_runs));
+        case 'V'
+            V = table2array(tbl(:,'V'));
+            [r,p] = corr(V(~bad_runs), act{c}(~bad_runs));
     end
 
     pears_rs(c,:) = r;
@@ -196,7 +233,7 @@ end
 ps = [];
 
 % glm with both RU/TU and actRU/actTU
-results_both = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+results_both = fitglme(tbl,formula_three,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
 [w, names, stats] = fixedEffects(results_both);
 results_both
 stats.pValue
