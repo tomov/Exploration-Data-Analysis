@@ -1,4 +1,4 @@
-function [formula_both, formula_orig, formula_dec] = get_formula(regressor, do_orth, mixed_effects)
+function [formula_both, formula_orig, formula_dec] = get_formula(regressor, do_orth, mixed_effects, intercept)
 
 switch regressor
     case 'RU'
@@ -101,3 +101,8 @@ switch regressor
 end
 
 
+if intercept
+    formula_both = strrep(formula_both, '-1', '1');
+    formula_orig = strrep(formula_orig, '-1', '1');
+    formula_dec = strrep(formula_dec, '-1', '1');
+end

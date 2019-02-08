@@ -20,6 +20,7 @@ function tbl = data2table(data,standardize,no_timeouts)
     
     RS = []; SS = []; C = []; V = []; S = []; RU = []; TU = []; rt = []; risky = []; cond = []; 
     r1 = []; r2 = [];    run = [];
+    trial = []; block = [];
     for s = 1:length(data)
         latents = kalman_filter(data(s));
         V = [V; latents.m(:,1) - latents.m(:,2)];
@@ -37,6 +38,8 @@ function tbl = data2table(data,standardize,no_timeouts)
         r1 = [r1; data(s).r1];
         r2 = [r2; data(s).r2];
         run = [run; data(s).run];
+        trial = [trial; data(s).trial];
+        block = [block; data(s).block];
     end
     
     SSV = SS.*V;
@@ -54,4 +57,4 @@ function tbl = data2table(data,standardize,no_timeouts)
         RU = RU / norm(RU);
     end
     
-    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond,r1,r2,run);
+    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond,r1,r2,run,block,trial);

@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num)
+function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept)
 
 printcode;
 
@@ -35,8 +35,11 @@ end
 if ~exist('Num', 'var')
     Num = 1; % # peak voxels per cluster; default in bspmview is 3
 end
+if ~exist('intercept', 'var')
+    intercept = false; 
+end
 
-filename = sprintf('univariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num);
+filename = sprintf('univariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept);
 disp(filename);
 
 % get ROIs
@@ -56,7 +59,10 @@ end
 
 
 % define behavioral / hybrid GLM formulas
-[formula_both, formula_orig, formula_dec] = get_formula(regressor, do_orth, mixed_effects);
+[formula_both, formula_orig, formula_dec] = get_formula(regressor, do_orth, mixed_effects, intercept);
+formula_both
+formula_orig
+formula_dec
 
 
 % decode regressor 
