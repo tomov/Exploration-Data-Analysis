@@ -692,6 +692,7 @@ function show_figure(fig)
             ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
             betas{1} = bs{RU_roi_idx};
+            pp(1) = p_uncorr(RU_roi_idx);
 
             %load('main_effect_glm21_TU_RU_-_trial.mat');
             load('main_effect_roiglm36_RU_glm36_TU_corr=0_extent=100_Num=1.mat');
@@ -699,6 +700,7 @@ function show_figure(fig)
             ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
             betas{2} = bs{RU_roi_idx};
+            pp(2) = p_uncorr(RU_roi_idx);
             
             % paired t-test = RU - TU contrast
             [h, p, ci, stats] = ttest(betas{1}, betas{2});
@@ -709,12 +711,18 @@ function show_figure(fig)
             %for s = 1:length(betas{1})
             %    plot([1 2], [betas{1}(s) betas{2}(s)], '-o', 'MarkerSize', 2,'MarkerFaceColor','k', 'Color', 'k');
             %end
-            
+
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+            end
+            y = max(beta + err + 0.06);
+            line([1 2], [y y], 'color', 'black');
+            text(1.45, y + 0.02, significance(p));
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.05 0.25]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
             title({'Main effect', 'RLPFC (R) [34 48 -8]'}, 'FontSize', axisfontsize);
 
@@ -728,6 +736,9 @@ function show_figure(fig)
             beta(1) = b(4);
             err(1) = s.SE(4);
             ci(1) = (s.Upper(4) - s.Lower(4)) / 2;
+            p_uncorr = p_comp;
+            p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+            pp(1) = p_corr(RU_roi_idx);
 
             %load('univariate_decoder_glm21_TU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat');
             load('univariate_decoder_roiglm36_RU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat');
@@ -735,9 +746,14 @@ function show_figure(fig)
             beta(2) = b(4);
             err(2) = s.SE(4);
             ci(2) = (s.Upper(4) - s.Lower(4)) / 2;
+            p_uncorr = p_comp;
+            p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
+            pp(2) = p_corr(RU_roi_idx);
 
             save('Figure3C.mat', 'beta', 'err', 'ci');
             %}
+            pp(1) = 0.04; % TODO get from paper; re-run stuff on cluster then recalc properly & save shit... (rename .mat files on cluster)
+            pp(2) = 0.9;
 
             err = [];
             load Figure3C;
@@ -746,12 +762,16 @@ function show_figure(fig)
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 5, significance(pp(i)));
+            end
             hold off;
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 6]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
             title({'Decoding', 'RLPFC (R) [34 48 -8]'}, 'FontSize', axisfontsize);
-            ylim([-20 25]);
+            ylim([-20 30]);
+
             
 
 
@@ -824,6 +844,8 @@ function show_figure(fig)
 
 
             TU_rois = [2, 8];
+            dec_p_RU = [0.2 0.2];
+            dec_p_TU = [0.006 0.006];
             ROI_names = {'DLPFC (L) [-42 4 28]', 'DLPFC (L) [-38 36 34]'}
             for ri = 1:length(TU_rois)
                 TU_roi_idx = TU_rois(ri); 
@@ -837,6 +859,7 @@ function show_figure(fig)
                 ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
                 err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
                 betas{1} = bs{TU_roi_idx};
+                pp(1) = p_uncorr(TU_roi_idx);
 
                 %load('main_effect_glm21_TU_TU_-_trial.mat');
                 load('main_effect_roiglm36_TU_glm36_TU_corr=0_extent=100_Num=1.mat');
@@ -844,23 +867,31 @@ function show_figure(fig)
                 ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
                 err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
                 betas{2} = bs{TU_roi_idx};
+                pp(2) = p_uncorr(TU_roi_idx);
 
                 disp(region{TU_roi_idx});
+
+                % paired t-test = RU - TU contrast
+                [h, p, ci, stats] = ttest(betas{2}, betas{1});
+                fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
 
                 plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
                 hold on;
                 errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
                 %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                for i = 1:2
+                    text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+                end
+                y = max(beta + err + 0.06);
+                line([1 2], [y y], 'color', 'black');
+                text(1.45, y + 0.02, significance(p));
                 hold off;
                 set(gca,'TickLabelInterpreter','latex');
                 set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
                 ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
                 title({'Main effect', ROI_names{ri}}, 'FontSize', axisfontsize);
-                ylim([-0.2 0.2]);
+                ylim([-0.2 0.25]);
 
-                % paired t-test = RU - TU contrast
-                [h, p, ci, stats] = ttest(betas{2}, betas{1});
-                fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
              
                 
                 subplot(4,2,6 + 2 * (ri - 1));
@@ -882,6 +913,8 @@ function show_figure(fig)
 
                 save('Figure4C.mat', 'beta', 'err', 'ci');
                 %}
+                pp(1) = dec_p_RU(ri); % TODO get from paper; re-run stuff on cluster then recalc properly & save shit... (rename .mat files on cluster)
+                pp(2) = dec_p_TU(ri);
 
                 err = [];
                 load Figure4C;
@@ -890,6 +923,9 @@ function show_figure(fig)
                 hold on;
                 errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
                 %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+                for i = 1:2
+                    text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 2, significance(pp(i)));
+                end
                 hold off;
                 set(gca,'TickLabelInterpreter','latex');
                 set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-11 4]);
@@ -1363,12 +1399,14 @@ function show_figure(fig)
             ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
             betas{1} = bs{RU_roi_idx};
+            pp(1) = p_uncorr(RU_roi_idx);
 
             load('main_effect_roiglm-1_badre_glm36_TU_corr=0_extent=100_Num=3.mat');
             beta(2) = m(RU_roi_idx);
             ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
             err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
             betas{2} = bs{RU_roi_idx};
+            pp(2) = p_uncorr(RU_roi_idx);
 
             % paired t-test = RU - TU contrast
             [h, p, ci, stats] = ttest(betas{1}, betas{2});
@@ -1378,9 +1416,15 @@ function show_figure(fig)
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+            end
+            y = max(beta + err + 0.06);
+            line([1 2], [y y], 'color', 'black');
+            text(1.45, y + 0.02, significance(p));
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.2]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.1 0.25]);
             ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
             title({'Main effect', 'RLPFC (R) [36 56 -8]'}, 'FontSize', axisfontsize);
 
@@ -1406,6 +1450,8 @@ function show_figure(fig)
 
             save('Supp_Figure1C.mat', 'beta', 'err', 'ci');
             %}
+            pp(1) = 0.02; % TODO get from paper; re-run stuff on cluster then recalc properly & save shit... (rename .mat files on cluster)
+            pp(2) = 0.9;
 
             err = [];
             load Supp_Figure1C;
@@ -1414,6 +1460,9 @@ function show_figure(fig)
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 1, significance(pp(i)));
+            end
             hold off;
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-7 4]);
@@ -1484,17 +1533,22 @@ function show_figure(fig)
             ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
             err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
             betas{1} = bs{TU_roi_idx};
+            pp(1) = p_uncorr(TU_roi_idx);
 
             load('main_effect_roiglm-1_dlpfc_glm36_TU_corr=0_extent=100_Num=3.mat');
             beta(2) = m(TU_roi_idx);
             ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
             err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
             betas{2} = bs{TU_roi_idx};
+            pp(2) = p_uncorr(TU_roi_idx);
 
             plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+            end
             hold off;
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.05 0.1]);
@@ -1522,6 +1576,8 @@ function show_figure(fig)
 
             save('Supp_Figure2C.mat', 'beta', 'err', 'ci');
             %}
+            pp(1) = 0.9; % TODO get from paper; re-run stuff on cluster then recalc properly & save shit... (rename .mat files on cluster)
+            pp(2) = 0.06;
 
             err = [];
             load Supp_Figure2C;
@@ -1530,9 +1586,12 @@ function show_figure(fig)
             hold on;
             errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 2, significance(pp(i)));
+            end
             hold off;
             set(gca,'TickLabelInterpreter','latex');
-            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 10]);
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2],'XTickLabel',{'$\widehat{RU}$', '$V/\widehat{TU}$'},'XLim',[0.5 2.5], 'Ylim', [-3 12]);
             ylabel('Regression coefficient (w)','FontSize',axisfontsize);
             title({'Decoding', 'DLPFC (R) [40 30 34]'}, 'FontSize', axisfontsize);
 
@@ -1545,6 +1604,110 @@ function show_figure(fig)
 
 
             print('images/FigureS3', '-dpdf');
+
+
+        case '1reg_only'
+            % single-regressor GLMs 
+            %
+
+            figure('pos', [100 100 520 450]);
+
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+            pos_scale = [1.0 1.0 1.2 1.2];
+
+            % RU only
+            %
+            h = subplot(2,2,1);
+            pos = get(h, 'position');
+            pos = pos .* pos_scale;
+            pos(2) = pos(2) * 0.8;
+            subplot(2,2, 1, 'position', pos);
+            PICpng = imread('images/RU_only_100.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('RU (uncorr.; extent >= 100)', 'FontSize', fontsize);
+
+            % TODO dedupe with Figure3
+            centx = x * 0.79;
+            centy = y * 0.30;
+
+            r = 50;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+
+          
+            % TU only
+            %
+            h = subplot(2,2,2);
+            pos = get(h, 'position');
+            pos = pos .* pos_scale;
+            pos(2) = pos(2) * 0.8;
+            subplot(2,2, 2, 'position', pos);
+            PICpng = imread('images/TU_only_100.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('TU (uncorr.; extent >= 100)', 'FontSize', fontsize);
+
+            hold on;
+
+            xs = [0.09, 0.16];
+            ys = [0.18, 0.17];
+            colors = {[0.99 0.99 0.99], [0.50 0.99 0.50]};
+            for i = 1:length(xs)
+                centx = x * xs(i);
+                centy = y * ys(i);
+
+                r = 50;
+                theta = 0 : (2 * pi / 10000) : (2 * pi);
+                pline_x = r * cos(theta) + centx;
+                pline_y = r * sin(theta) + centy;
+                k = ishold;
+                plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', colors{i});
+            end
+            hold off;
+
+
+
+            % V only
+            %
+            h = subplot(2,2,3);
+            pos = get(h, 'position');
+            pos(2) = pos(2) * 0.8;
+            pos = pos .* pos_scale;
+            subplot(2,2, 3, 'position', pos);
+            PICpng = imread('images/V_only_100.png');
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+            title('V (uncorr.; extent >= 100)', 'FontSize', fontsize);
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.10, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.55, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.10, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
+
+            print('images/Figure_1reg_only', '-dpdf');
 
 
 
@@ -2017,3 +2180,5 @@ function show_figure(fig)
     end
 
 end
+
+
