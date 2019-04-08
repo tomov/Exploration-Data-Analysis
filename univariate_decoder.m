@@ -98,14 +98,14 @@ for s = 1:length(data)
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
         % adjust for fact that the regressor was |RU|
-        if strcmp(regressor, 'RU')
-            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
-        end
+        %if strcmp(regressor, 'RU')
+        %    data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+        %end
 
-        % adjust for fact that the regressor was |V|
-        if strcmp(regressor, 'V')
-            data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
-        end
+        %% adjust for fact that the regressor was |V|
+        %if strcmp(regressor, 'V')
+        %    data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
+        %end
     end
 end
 
