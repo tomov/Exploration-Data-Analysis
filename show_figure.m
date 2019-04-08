@@ -11,6 +11,42 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'perf'
+
+            data = load_data;
+            load results_glme_fig3_nozscore.mat;
+            w = getEffects(results_VTURU, false);
+
+            perf = [];
+            for s = 1:length(data)
+                which = ~data(s).timeout;
+                better = (data(s).mu2(which) > data(s).mu1(which)) + 1; 
+                C = double(data(s).choice(which) == better); % human choices
+                %perf = [perf; mean(data(s).reward)];
+                perf = [perf; mean(C)];
+            end
+
+            [r, p] = corr(w(:,1), perf);
+            fprintf('performance and w_1 ($r = %.2f, p = %.4f$, Pearson correlation across %d subjects)\n', r, p, length(perf));
+
+            [r, p] = corr(w(:,2), perf);
+            fprintf('performance and w_2 ($r = %.2f, p = %.3f$, Pearson correlation across %d subjects)\n', r, p, length(perf));
+
+            [r, p] = corr(w(:,3), perf);
+            fprintf('performance and w_3 ($r = %.2f, p = %.3f$, Pearson correlation across %d subjects)\n', r, p, length(perf));
+
+            figure;
+
+            for i = 1:3
+                subplot(1,3,i);
+                scatter(w(:,i), perf);
+                lsline;
+                title(sprintf('w_%d', i));
+                xlabel(sprintf('w_%d', i));
+                ylabel('P(better option)');
+            end
+
+
         case 'vifs'
 
             figure('pos', [10 10 600 600]);
