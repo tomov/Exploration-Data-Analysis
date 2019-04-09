@@ -3,6 +3,8 @@ function tbl = data2table(data,standardize,no_timeouts)
     if nargin < 2; standardize = 0; end
     if nargin < 3; no_timeouts = 1; end
 
+    assert(standardize ~= 1, 'Don''t z-score! It makes the w''s meaningless, also it''s incorrect.');
+
     % take care of timeouts
     %
     if no_timeouts

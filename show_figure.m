@@ -242,8 +242,8 @@ function show_figure(fig)
             %  learning curves
             %
             data = load_data;
-            tbl = data2table(data,1,1); % do standardize! that's how we analyze behavior
-            load results_glme_fig3.mat;
+            tbl = data2table(data,0,1); % don't standardize! TODO never standardize anywhere
+            load results_glme_fig3_nozscore.mat;
             y = predict(results_VTURU, tbl); % hybrid model predictions
 
             for human_or_model = 1:2
@@ -299,7 +299,7 @@ function show_figure(fig)
             text(0.06, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
 
 
-            tbl = data2table(data,1,1);
+            tbl = data2table(data,0,1);
             y = predict(results_VTURU, tbl);
             %mu = [tbl.mu1 tbl.mu2];
             r = [tbl.r1 tbl.r2];
@@ -340,24 +340,24 @@ function show_figure(fig)
                     clear pc_fit;
                 
                     data = load_data;
-                    tbl = data2table(data,1,1);
+                    tbl = data2table(data,0,1);
 
-                    load results_glme_fig3.mat;
+                    load results_glme_fig3_nozscore.mat;
                     y = predict(results_VTURU, tbl); % hybrid model predictions
 
-                    load results_glme_fig4.mat
+                    load results_glme_fig4_nozscore.mat
                     yh_probit = predict(results, tbl); % probit for humans
 
                     % same as Figure2 but for model
                     Cm = binornd(1, y); % model choices
                     tbl = [tbl table(Cm)];
-                    if ~exist('results_glme_learning.mat', 'file')
+                    if ~exist('results_glme_learning_nozscore.mat', 'file')
                         formula = 'Cm ~ -1 + cond + cond:V + (-1 + cond + cond:V|S)';
                         % note: Laplace method not used here because it doesn't seem to complete
                         results = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','DummyVarCoding','Full');
-                        save results_glme_learning results
+                        save results_glme_learning_nozscore results
                     else
-                        load results_glme_learning.mat;
+                        load results_glme_learning_nozscore.mat;
                     end
                     ym_probit = predict(results, tbl); % probit for hybrid model
 
@@ -429,7 +429,7 @@ function show_figure(fig)
 
 
             % same as Figure 2 TODO dedupe
-            load results_glme_fig4.mat
+            load results_glme_fig4_nozscore.mat
             
             % hypothesis tests
             H = [1 -1 0 0 0 0 0 0; 0 0 1 -1 0 0 0 0; 0 0 0 0 1 -1 0 0; 0 0 0 0 0 0 1 -1];   % contrast matrix
@@ -460,7 +460,7 @@ function show_figure(fig)
             %errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
-            ylim([1 2.5]);
+            ylim([0.075 0.2]);
 
 
 
@@ -509,7 +509,7 @@ function show_figure(fig)
             print('images/Figure_psycho', '-dpdf');
 
 
-        case 'Figure1'
+        case 'task' % Figure1
             figure('pos', [10 10 520 450]);
 
             fontsize = 12;
@@ -547,8 +547,8 @@ function show_figure(fig)
             x = v(1:end-1) + diff(v)/2;
            
             data = load_data;
-            tbl = data2table(data,1);
-            load results_glme_fig3.mat;
+            tbl = data2table(data,0,1);
+            load results_glme_fig3_nozscore.mat;
             CC = predict(results_VTURU,tbl);
             
             for s = 1:length(data)
@@ -626,10 +626,10 @@ function show_figure(fig)
             text(0.06, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
             text(0.50, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
-            print('images/Figure1', '-dpdf');
+            print('images/task', '-dpdf');
 
 
-        case 'Figure2'
+        case 'behav' % Figure2
             figure('pos', [10 10 700 200]);
 
             fontsize = 12;
@@ -642,14 +642,14 @@ function show_figure(fig)
             data = load_data;
             
             % fit generalized linear mixed effects model
-            if ~exist('results_glme_fig4.mat', 'file')
-                tbl = data2table(data,1);
+            if ~exist('results_glme_fig4_nozscore.mat', 'file')
+                tbl = data2table(data,0,1);
                 formula = 'C ~ -1 + cond + cond:V + (-1 + cond + cond:V|S)';
                 % note: Laplace method not used here because it doesn't seem to complete
                 results = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','DummyVarCoding','Full');
-                save results_glme_fig4 results
+                save results_glme_fig4_nozscore results
             else
-                load results_glme_fig4.mat
+                load results_glme_fig4_nozscore.mat
             end
             
             % hypothesis tests
@@ -681,9 +681,10 @@ function show_figure(fig)
             %errorbar(beta(5:8),(stats.Upper(5:8) - stats.Lower(5:8))/2,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
             set(gca,'FontSize',fontsize,'XTickLabel',{'RS' 'SR' 'RR' 'SS'},'XLim',[0.5 4.5], 'YLim', [0 3]);
             ylabel('Slope','FontSize',fontsize);
-            ylim([1 2.5]);
+            ylim([0.075 0.2]);
 
-
+            % TODO nozscore
+            %{
             subplot(1,3,3);
 
             % Probit analysis of computational variables
@@ -697,16 +698,15 @@ function show_figure(fig)
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
+            %}
             
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
             text(0.07, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
             text(0.35, 0.95, 'B', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.64, 0.95, 'C', 'FontSize', 25, 'FontWeight', 'bold');
+            %text(0.64, 0.95, 'C', 'FontSize', 25, 'FontWeight', 'bold');
 
-            print('images/Figure2', '-dpdf');
-
-
+            print('images/behav', '-dpdf');
 
 
 
@@ -714,7 +714,9 @@ function show_figure(fig)
 
 
 
-        case 'Figure3'
+
+
+        case 'RU' % Figure3
             % RU contrast 
             %
             figure('pos', [100 100 350 800]);
@@ -864,12 +866,12 @@ function show_figure(fig)
             text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
             text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/Figure3', '-dpdf');
+            print('images/RU', '-dpdf');
 
 
 
 
-        case 'Figure4'
+        case 'TU' % Figure4
             % TU contrast
             %
 
@@ -1049,7 +1051,7 @@ function show_figure(fig)
             text(0.04, 0.29, 'D', 'FontSize', 20, 'FontWeight', 'bold');
             text(0.49, 0.29, 'E', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/Figure4', '-dpdf');
+            print('images/TU', '-dpdf');
 
 
 
@@ -1278,7 +1280,7 @@ function show_figure(fig)
             print('images/Figure4', '-dpdf');
 
 
-        case 'FigureS1'
+        case 'corr' % FigureS1
             % corrected contrasts
             %
 
@@ -1418,12 +1420,12 @@ function show_figure(fig)
             %text(0.13, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
             %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
-            print('images/FigureS1', '-dpdf');
+            print('images/corr', '-dpdf');
 
 
 
 
-        case 'FigureS2'
+        case 'badreRU' % FigureS2
             % Badre RLPFC 
             % parallels Figure 3
             %
@@ -1559,13 +1561,13 @@ function show_figure(fig)
             text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
             text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/FigureS2', '-dpdf');
+            print('images/badreRU', '-dpdf');
 
 
             
 
 
-        case 'FigureS3'
+        case 'badreTU'  % FigureS3
             % Badre DLPFC
             % Parallels Figure 4
             %
@@ -1686,7 +1688,7 @@ function show_figure(fig)
             text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
 
-            print('images/FigureS3', '-dpdf');
+            print('images/badreTU', '-dpdf');
 
 
         case '1reg_only'
