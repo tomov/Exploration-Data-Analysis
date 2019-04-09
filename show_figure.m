@@ -11,6 +11,53 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'compare'
+
+            data = load_data;
+            load results_glme_fig3_nozscore.mat;
+            w = getEffects(results_VTURU, false);
+
+            comp{1} = compare(results_V, results_VRU);
+            comp{2} = compare(results_V, results_VTU);
+            comp{3} = compare(results_VRU, results_VTURU);
+            comp{4} = compare(results_VTU, results_VTURU);
+
+            fprintf('\n\n\n');
+            fprintf('\\textbf{Model} & \\textbf{AIC} & \\textbf{BIC} & \\textbf{LL}  \\\\ \\hline \n');
+            fprintf('\n\n\n');
+
+            model_names = {'V', 'V + RU', 'V + V/TU', 'V + RU + V/TU'};
+            BIC = [comp{1}.BIC(1) comp{3}.BIC(1) comp{4}.BIC(1) comp{4}.BIC(2)];
+            AIC = [comp{1}.AIC(1) comp{3}.AIC(1) comp{4}.AIC(1) comp{4}.AIC(2)];
+            LogLik = [comp{1}.LogLik(1) comp{3}.LogLik(1) comp{4}.LogLik(1) comp{4}.LogLik(2)];
+
+            for i = 1:length(BIC)
+                fprintf(' %s & %.2f & %.2f & %.2f \\\\ \\hline \n', model_names{i}, BIC(i), AIC(i), LogLik(i));
+            end
+
+
+            fprintf('\n\n\n');
+            fprintf('\\textbf{Comparison} &  \\textbf{LR-stat} & \\textbf{p-value} \\\\ \\hline \n');
+            fprintf('\n\n\n');
+
+            comp_names = {'V vs. V + RU', 'V vs. V + V/TU', 'V + RU vs. V + RU + V/TU', 'V + V/TU vs. V + RU + V/TU'};
+
+            for i = 1:length(comp)
+                p = comp{i}.pValue;
+                if p > 0.0001
+                    p_string = sprintf('p = %.4f', p);
+                else
+                    log10p = log10(p);
+                    if log10p < -20
+                        log10p = -20;
+                    end
+                    p_string = sprintf('p < 10^{%.0f}', ceil(log10p));
+                end
+
+                fprintf(' %s & %.2f  & %s \\\\ \\hline \n', comp_names{i}, comp{i}.LRStat(2), p_string);
+            end
+
+
         case 'perf'
 
             data = load_data;
@@ -1864,6 +1911,7 @@ function show_figure(fig)
             %load('Table2_uncorr.mat'); % uncorrected
             load('Supp_Table2.mat');
 
+
             table(p_uncorr, p_corr)
             fprintf('\n\n\n');
 
@@ -1871,6 +1919,7 @@ function show_figure(fig)
             %which = [tab{:,4}] >= extent;
             p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 
+            % \textbf{Brain region} & \textbf{MNI coord.} & \textbf{AIC} & \textbf{BIC}  & \textbf{LL}  & \textbf{LR-stat} & \textbf{p-value (uncorr.)} & \textbf{p-value (corr.)} \\ \hline
             for i = 1:length(p_uncorr)
                 %if ~which(i)
                 %    continue;
