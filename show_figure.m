@@ -11,6 +11,46 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'simulate'
+
+            figure('pos', [10 10 700 200]);
+
+            fontsize = 12;
+            linewidth = 1;
+            markersize = 5;
+
+            load simulate.mat
+
+            perf = [perf_V perf_VRU perf_VTU perf_VTURU];
+            names = {'V', 'V + RU', 'V/TU', 'V + RU + V/TU'};
+            m = mean(perf,1);
+            se = std(perf,[],1) / sqrt(size(perf,1));
+
+            errorbar(1:4, m, se,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            xlabel('Model');
+            ylabel('P(better option)');
+            xticks(1:4);
+            xlim([0 5]);
+            ylim([0.73 0.83]);
+            xticklabels(names);
+
+
+            [p, anovatab, stats] = anova1(perf);
+            [c,m,h,nms] = multcompare(stats);
+
+            comp_names = {'V vs. V + RU', 'V vs. V/TU', 'V + RU vs. V + RU + V/TU', 'V/TU vs. V + RU + V/TU'};
+            comps = [1 2; 1 3; 2 4; 3 4];
+
+            fprintf('significant difference between models ($F(%d,%d) = %.2f, %s$, one-way ANOVA)\n', anovatab{2,3}, anovatab{3,3}, anovatab{2,5}, pvalue_to_latex(anovatab{2,6}));
+
+            for i = 1:4
+                j = find(c(:,1) == comps(i,1) & c(:,2) == comps(i,2));
+                p_string = pvalue_to_latex(c(j, end));
+
+                fprintf('%s (%s, pairwise multiple comparison test)\n', comp_names{i}, p_string);
+            end
+
+
         case 'compare'
 
             data = load_data;
@@ -26,7 +66,7 @@ function show_figure(fig)
             fprintf('\\textbf{Model} & \\textbf{AIC} & \\textbf{BIC} & \\textbf{LL}  \\\\ \\hline \n');
             fprintf('\n\n\n');
 
-            model_names = {'V', 'V + RU', 'V + V/TU', 'V + RU + V/TU'};
+            model_names = {'V', 'V + RU', 'V/TU', 'V + RU + V/TU'};
             BIC = [comp{1}.BIC(1) comp{3}.BIC(1) comp{4}.BIC(1) comp{4}.BIC(2)];
             AIC = [comp{1}.AIC(1) comp{3}.AIC(1) comp{4}.AIC(1) comp{4}.AIC(2)];
             LogLik = [comp{1}.LogLik(1) comp{3}.LogLik(1) comp{4}.LogLik(1) comp{4}.LogLik(2)];
@@ -40,19 +80,10 @@ function show_figure(fig)
             fprintf('\\textbf{Comparison} &  \\textbf{LR-stat} & \\textbf{p-value} \\\\ \\hline \n');
             fprintf('\n\n\n');
 
-            comp_names = {'V vs. V + RU', 'V vs. V + V/TU', 'V + RU vs. V + RU + V/TU', 'V + V/TU vs. V + RU + V/TU'};
+            comp_names = {'V vs. V + RU', 'V vs. V/TU', 'V + RU vs. V + RU + V/TU', 'V/TU vs. V + RU + V/TU'};
 
             for i = 1:length(comp)
-                p = comp{i}.pValue;
-                if p > 0.0001
-                    p_string = sprintf('p = %.4f', p);
-                else
-                    log10p = log10(p);
-                    if log10p < -20
-                        log10p = -20;
-                    end
-                    p_string = sprintf('p < 10^{%.0f}', ceil(log10p));
-                end
+                p_string = pvalue_to_latex(comp{i}.pValue);
 
                 fprintf(' %s & %.2f  & %s \\\\ \\hline \n', comp_names{i}, comp{i}.LRStat(2), p_string);
             end
@@ -82,7 +113,7 @@ function show_figure(fig)
             [r, p] = corr(w(:,3), perf);
             fprintf('performance and w_3 ($r = %.2f, p = %.3f$, Pearson correlation across %d subjects)\n', r, p, length(perf));
 
-            figure;
+            figure('pos', [10 10 700 200]);
 
             for i = 1:3
                 subplot(1,3,i);
@@ -173,7 +204,7 @@ function show_figure(fig)
 
             h = gcf;
             set(h,'PaperOrientation','landscape');
-            print('images/Figure_vifs', '-dpdf');
+            print('images/vifs', '-dpdf');
 
         case 'recovery'
 
@@ -221,7 +252,7 @@ function show_figure(fig)
             text(0.06, 0.95, 'A', 'FontSize', 25, 'FontWeight', 'bold');
             text(0.06, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
 
-            print('images/Figure_recovery', '-dpdf');
+            print('images/recovery', '-dpdf');
 
 
         case 'learning'
@@ -313,7 +344,7 @@ function show_figure(fig)
                 fprintf('%s -> avg model reward = %.3f\n', conds{cond}, mean(r_cond(ix)));
             end
 
-            print('images/Figure_learning', '-dpdf');
+            print('images/learning', '-dpdf');
 
 
         case 'psycho'
@@ -506,7 +537,7 @@ function show_figure(fig)
             text(0.03, 0.50, 'B', 'FontSize', 25, 'FontWeight', 'bold');
 
 
-            print('images/Figure_psycho', '-dpdf');
+            print('images/psycho', '-dpdf');
 
 
         case 'task' % Figure1
@@ -1792,7 +1823,7 @@ function show_figure(fig)
             text(0.10, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
             %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
-            print('images/Figure_1reg_only', '-dpdf');
+            print('images/1reg_only', '-dpdf');
 
 
 

@@ -1,4 +1,6 @@
-function tbl = data2table(data,standardize,no_timeouts)
+function tbl = data2table_gen(data,standardize,no_timeouts,w)
+
+    % same as data2table but run generatively
     
     if nargin < 2; standardize = 0; end
     if nargin < 3; no_timeouts = 1; end
@@ -24,7 +26,7 @@ function tbl = data2table(data,standardize,no_timeouts)
     r1 = []; r2 = [];    run = []; mu1 = []; mu2 = []; r = [];
     trial = []; block = [];
     for s = 1:length(data)
-        latents = kalman_filter(data(s));
+        [data(s), latents] = kalman_filter_gen(data(s), w);
         V = [V; latents.m(:,1) - latents.m(:,2)];
         risky = [risky; double((data(s).cond==1&data(s).choice==1)|(data(s).cond==2&data(s).choice==2)) - double((data(s).cond==1&data(s).choice==2)|(data(s).cond==2&data(s).choice==1))];
         RS = [RS; double(data(s).cond==1) - double(data(s).cond==2)];

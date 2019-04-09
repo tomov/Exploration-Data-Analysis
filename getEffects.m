@@ -1,20 +1,33 @@
-function w = getEffects(results, fixed)
+function w = getEffects(results, fixed, order)
+
+if ~exist('order', 'var')
+    order = [3 1 2]; % in results_VTURU
+end
 
 [w_f, names_f] = fixedEffects(results);
 [w_r, names_r] = randomEffects(results);
 
 if fixed 
     w = w_f;
-    w1 = w(3);
-    w2 = w(1);
-    w3 = w(2);
+    for i = 1:3
+        if order(i)
+            new_w(i) = w(order(i));
+        else
+            new_w(i) = 0;
+        end
+    end
 else
     for subj = 1:size(w_r,1)/3
         w(subj,:) = w_f + w_r((subj - 1) * 3 + 1 : subj * 3);
     end
-    w1 = w(:,3);
-    w2 = w(:,1);
-    w3 = w(:,2);
+    for i = 1:3
+        if order(i)
+            new_w(:,i) = w(:,order(i));
+        else
+            new_w(:,i) = zeros(size(w(:,1)));
+        end
+    end
 end
 
-w = [w1 w2 w3]; % reorder them
+w = new_w;
+
