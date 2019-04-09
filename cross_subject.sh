@@ -9,10 +9,10 @@ echo ---------------- >> jobs.txt
 
 #function cross_subject(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)
 declare -a fn_calls=(
-                     "cross_subject(11, \'RU\', 35, \'RU\', 2, false, 100, true)"
-                     "cross_subject(11, \'RU\', 35, \'TU\', 2, false, 100, true)"
-                     "cross_subject(11, \'TU\', 35, \'RU\', 2, false, 100, true)"
-                     "cross_subject(11, \'TU\', 35, \'TU\', 2, false, 100, true)"
+                     "cross_subject(36, \'RU\', 36, \'RU\', 2, false, 100, false)"
+                     "cross_subject(36, \'RU\', 36, \'TU\', 2, false, 100, false)"
+                     "cross_subject(36, \'TU\', 36, \'RU\', 2, false, 100, false)"
+                     "cross_subject(36, \'TU\', 36, \'TU\', 2, false, 100, false)"
                      )
 
 

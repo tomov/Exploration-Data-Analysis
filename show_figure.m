@@ -19,6 +19,10 @@ function show_figure(fig)
             linewidth = 1;
             markersize = 5;
 
+            %
+            % compare perf generatively using fitted params
+            %
+
             load simulate.mat
 
             perf = [perf_V perf_VRU perf_VTU perf_VTURU];
@@ -48,6 +52,30 @@ function show_figure(fig)
                 p_string = pvalue_to_latex(c(j, end));
 
                 fprintf('%s (%s, pairwise multiple comparison test)\n', comp_names{i}, p_string);
+            end
+
+            %
+            % compare perf generatively using different params
+            %
+
+            load simulate_more.mat
+
+            figure;
+
+            col = colormap;
+            for i = 1:9
+                subplot(3,3,i);
+
+                img = squeeze(m(i,:,:));
+                imagesc(img);
+                xticks(1:nws);
+                yticks(1:nws);
+                xticklabels(w2s);
+                yticklabels(w3s);
+                xlabel('w_2');
+                ylabel('w_3');
+                title(sprintf('w_1 = %.2f', w1s(i)));
+                colorbar;
             end
 
 

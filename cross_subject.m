@@ -1,5 +1,7 @@
 function cross_subject(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)
 
+    % correlate neural betas with behaviora weights (betas)
+
 % TODO dedupe with residuals_analysis.m
 % TODO support what = voxel, not just sphere
 
