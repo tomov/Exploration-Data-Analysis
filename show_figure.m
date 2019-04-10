@@ -13,7 +13,7 @@ function show_figure(fig)
 
         case 'simulate'
 
-            figure('pos', [10 10 700 200]);
+            figure('pos', [10 10 300 200]);
 
             fontsize = 12;
             linewidth = 1;
@@ -37,6 +37,10 @@ function show_figure(fig)
             xlim([0 5]);
             ylim([0.73 0.83]);
             xticklabels(names);
+            xtickangle(30);
+
+            print('images/simulate', '-dpdf');
+
 
 
             [p, anovatab, stats] = anova1(perf);
@@ -54,30 +58,69 @@ function show_figure(fig)
                 fprintf('%s (%s, pairwise multiple comparison test)\n', comp_names{i}, p_string);
             end
 
+
+        case 'simulate_more'
+
             %
             % compare perf generatively using different params
             %
 
-            load simulate_more.mat
+            load results_glme_fig3_nozscore.mat;
 
-            figure;
+            %load simulate_more.mat 
+            load simulate_more_nws=16_niters=10.mat;
+
+            subj_w1s = logical(size(w1s));
+            subj_w2s = logical(size(w2s));
+            subj_w3s = logical(size(w3s));
+
+            w = getEffects(results_VTURU, true);
+            [~, i1] = min(abs(w1s - w(1)));
+            [~, i2] = min(abs(w2s - w(2)));
+            [~, i3] = min(abs(w3s - w(3)));
+
+
+            figure('pos', [10 10 700 600]);
+
+            xtix = {};
+            for i = 1:nws
+                xtix{i} = sprintf('%.2f\n', w2s(i));
+                ytix{i} = sprintf('%.2f\n', w3s(i));
+            end
 
             col = colormap;
-            for i = 1:9
-                subplot(3,3,i);
+            for i = 1:16
+                subplot(4,4,i);
 
                 img = squeeze(m(i,:,:));
                 imagesc(img);
-                xticks(1:nws);
-                yticks(1:nws);
-                xticklabels(w2s);
-                yticklabels(w3s);
-                xlabel('w_2');
-                ylabel('w_3');
+                set(gca, 'xtick', []);
+                set(gca, 'ytick', []);
+                xtickangle(90);
+                if ismember(i, [13 14 15 16])
+                    xlabel('w_2');
+                    xticklabels(xtix(1:2:end));
+                    xticks(1:nws);
+                end
+                if ismember(i, [1 5 9 13])
+                    ylabel('w_3');
+                    yticklabels(ytix(1:2:end));
+                    yticks(1:nws);
+                end
                 title(sprintf('w_1 = %.2f', w1s(i)));
                 colorbar;
+
+                if i == i1
+                    % circle where the peeps are
+                    hold on;
+                    draw_circle(i2, i3, 1, 'red');
+                    hold off;
+                end
             end
 
+            save shit.mat
+
+            print('images/simulate_more', '-dpdf');
 
         case 'compare'
 
@@ -2333,3 +2376,12 @@ function show_figure(fig)
 end
 
 
+
+
+function draw_circle(centx, centy, r, color)
+    theta = 0 : (2 * pi / 10000) : (2 * pi);
+    pline_x = r * cos(theta) + centx;
+    pline_y = r * sin(theta) + centy;
+    k = ishold;
+    plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', color);
+end

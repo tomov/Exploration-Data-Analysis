@@ -5,8 +5,9 @@
 clear all;
 
 glmodel = 36;
-regressor = 'trial_onset';
+regressor = ' trial_onset*';
 EXPT = exploration_expt();
+null_iters = 10000;
 
 group_mask_filename = fullfile('masks', 'mask.nii');
 
@@ -19,9 +20,9 @@ data = load_data;
 parcel_idxs = unique(parcellation_vol(:));
 
 
+% compute model RDM
 load results_glme_fig3_nozscore.mat;
 w = getEffects(results_VTURU, false);
-
 model_RDM = pdist(w, 'euclidean');
 
 
@@ -31,6 +32,9 @@ for i = 1:length(parcel_idxs)
     if parcel_idx == 0
         continue;
     end
+
+    i
+    tic
    
     % ROI
     mask = parcellation_vol == parcel_idx;
@@ -55,8 +59,12 @@ for i = 1:length(parcel_idxs)
     %
     mask = mask & group_mask;
 
+    clear b;
+
     % extract betas
+    % TODO ccnl_get_beta_fast
     for s = 1:length(data)
+        s
         % from ccnl_decode_regressor
         %
         modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
@@ -77,7 +85,43 @@ for i = 1:length(parcel_idxs)
 
     all_b{parcel_idx} = b;
 
+    % compute neural RDM
     neural_RDM = pdist(b, 'correlation');
 
-    break; % TODO rm
+    % second-order correlation
+    %
+    [rho, p] = corr(model_RDM', neural_RDM', 'type', 'Spearman')
+    spearman_rho(parcel_idx) = rho;
+    spearman_p(parcel_idx) = p;
+
+    toc
+
+    % generate null 
+    null_rhos = [];
+
+    disp('Generating null');
+    tic
+
+    for iter = 1:null_iters
+        % randomly shuffle observations i.e. rows i.e. subjects
+        b = b(randperm(size(b,1)), :);
+
+        % recompute neural RDM
+        neural_RDM = pdist(b, 'correlation');
+
+        % recompute second-order
+        null_rhos(iter) = corr(model_RDM', neural_RDM', 'type', 'Spearman');
+    end
+
+    toc
+
+    all_null_rhos{parcel_idx} = null_rhos;
+
+    pval(parcel_idx) = mean(null_rhos >= rho); % what fraction of the null rhos are "better" than rho? = P(we got a value as extreme as rho under the null)
+
+    pval(parcel_idx)
+
 end
+
+
+save('is_rsa.mat', '-v7.3');
