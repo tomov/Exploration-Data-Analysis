@@ -37,6 +37,8 @@ load results_glme_fig3_nozscore.mat;
 
 tbl = data2table(data,0,1); % don't standardize
 
+rmpath('/n/sw/helmod/apps/centos7/Core/spm/12.7487-fasrc01/external/fieldtrip/external/stats/'); % for binopdf; use the MATLAB one, not SPM one
+
 loglik = []; % P(better option)
 for s = 1:length(data)
     c = tbl.C(tbl.S == s); % I(a == 1)

@@ -41,7 +41,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     
 
     [allSubjects, subjdirs, goodRuns, goodSubjs] = exploration_getSubjectsDirsAndRuns();
-    
+   
+    SPM_run = run; % save the SPM run (SPM doesn't see bad runs)
   
     % skip bad runs
     runs = find(goodRuns{subj});
@@ -1979,6 +1980,85 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                multi.durations{5} = zeros(size(multi.onsets{5}));
            end
 
+
+        % 36 but with residuals from DV Precentral (L) ROI (GLM 47)
+        % for functional connectivity analysis (activation-induced correlations; see p. 133 from Poldrack book)
+        %
+        case 49 % WRONG -- see below
+           roi_glmodel = 47; % DV only
+           roi_contrast = 'DV';
+           clusterFWEcorrect = false;
+           extent = 100;
+           Num = 1;
+           EXPT = exploration_expt();
+
+           % get DV ROI from GLM 47
+           [masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
+           DV_mask = masks{1};
+
+           % extract residuals from DV ROI (from GLM 36!! we don't have DV there b/c of lineariy)
+           res_glmodel = 36; % V, RU, TU, V/TU
+           res = mean(ccnl_get_residuals(EXPT, res_glmodel, DV_mask, subj), 2);
+
+           % subset residuals for this run only
+           nTRs = 242;
+           assert(mod(length(res), nTRs) == 0);
+           res = res((SPM_run - 1)*nTRs + 1 : SPM_run*nTRs, :);
+       
+           % same as GLM 36
+           %
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           % except add residuals from DV ROI !
+           %
+           assert(length(res) == nTRs);
+           TR = EXPT.TR;
+           % TODO must deconvolve with HRF... or add to raw design matrix, i.e. SPM.xX.X ... anyway, fuck this
+           multi.names{2} = 'TR_onset';
+           multi.onsets{2} = TR/2 : TR : nTRs*TR;
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.orth{2} = 0; % do not orthogonalise them  
+
+           multi.pmod(2).name{1} = 'DVres';
+           multi.pmod(2).param{1} = res';
+           multi.pmod(2).poly{1} = 1;    
+
+           % same nuisance regressors as 36
+           %
+           multi.names{3} = 'choice_onset';
+           multi.onsets{3} = data(subj).choice_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'feedback_onset';
+           multi.onsets{4} = data(subj).feedback_onset(which_trials);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           multi.names{5} = 'trial_onset_L';
+           multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{5} = zeros(size(multi.onsets{5}));
 
 
 

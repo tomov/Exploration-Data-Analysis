@@ -48,6 +48,11 @@ switch contrast
         end
         direct = '+';
 
+        % TODO HACK FIXME
+        if ismember(glmodel, [47])
+            direct = '-';
+        end
+
         [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num, clusterFWEcorrect, extent);
 
         r = 10 / 1.5; % 10 mm radius

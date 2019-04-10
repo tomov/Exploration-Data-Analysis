@@ -74,7 +74,7 @@ function show_figure(fig)
             subj_w2s = logical(size(w2s));
             subj_w3s = logical(size(w3s));
 
-            w = getEffects(results_VTURU, false);
+            w = getEffects(results_VTURU, true);
             for s = 1:size(w,1)
                 [~, i1(s)] = min(abs(w1s - w(s,1)));
                 [~, i2(s)] = min(abs(w2s - w(s,2)));
@@ -120,6 +120,8 @@ function show_figure(fig)
                         hold off;
                     end
                 end
+
+                set(gca, 'YDir', 'normal');
             end
 
             save shit.mat
