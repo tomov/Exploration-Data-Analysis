@@ -74,10 +74,12 @@ function show_figure(fig)
             subj_w2s = logical(size(w2s));
             subj_w3s = logical(size(w3s));
 
-            w = getEffects(results_VTURU, true);
-            [~, i1] = min(abs(w1s - w(1)));
-            [~, i2] = min(abs(w2s - w(2)));
-            [~, i3] = min(abs(w3s - w(3)));
+            w = getEffects(results_VTURU, false);
+            for s = 1:size(w,1)
+                [~, i1(s)] = min(abs(w1s - w(s,1)));
+                [~, i2(s)] = min(abs(w2s - w(s,2)));
+                [~, i3(s)] = min(abs(w3s - w(s,3)));
+            end
 
 
             figure('pos', [10 10 700 600]);
@@ -110,11 +112,13 @@ function show_figure(fig)
                 title(sprintf('w_1 = %.2f', w1s(i)));
                 colorbar;
 
-                if i == i1
-                    % circle where the peeps are
-                    hold on;
-                    draw_circle(i2, i3, 1, 'red');
-                    hold off;
+                for s = 1:size(w,1)
+                    if i == i1(s)
+                        % circle where the peeps are
+                        hold on;
+                        draw_circle(i2(s), i3(s), 1, 'red');
+                        hold off;
+                    end
                 end
             end
 

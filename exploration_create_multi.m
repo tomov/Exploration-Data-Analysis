@@ -1749,13 +1749,13 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
-        % same as 29 but CentOS 7
+        % same as 29 but CentOS 7 (paired with 45)
         %
         % |DV| @ trial_onset
         % left choice @ trial_onset
         % nuisance @ choice_onset and feedback_onset 
         %
-        case 43 % <-- nothing after FWE
+        case 43 % <-- nothing pos; L precentral negative 
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
 
            multi.names{1} = 'trial_onset';
@@ -1874,7 +1874,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % same as 36 but w/o choice_onset 
         %
-        case 46
+        case 46 % <-- bigger R RLPFC (205), still n.s. after correction
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -1916,7 +1916,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % left choice @ trial_onset
         % nuisance @ choice_onset and feedback_onset 
         %
-        case 47 
+        case 47  % <-- L precentral negative
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
 
            multi.names{1} = 'trial_onset';
