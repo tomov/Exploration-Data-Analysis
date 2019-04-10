@@ -244,7 +244,8 @@ function show_figure(fig)
 
 
             %load recovery.mat % expo [0, infty]
-            load recovery_mvnrnd.mat % mvnrnd
+            %load recovery_mvnrnd.mat % mvnrnd <---- from preprint
+            load recovery_gen_mvnrnd.mat % mvnrnd, generative (i.e. generate choices too; don't use subject choices)
 
             for i = 1:3
                 [r,p] = corr(w_orig(:,i), w_rec(:,i));
@@ -252,10 +253,12 @@ function show_figure(fig)
 
                 subplot(2,3,i);
                 scatter(w_orig(:,i), w_rec(:,i));
-                lsline;
                 title(sprintf('w_%d', i));
                 xlabel('simulated');
                 ylabel('fitted');
+                xlim([-5 5]);
+                ylim([-5 5]);
+                lsline;
             end
 
             k = 0;
@@ -268,10 +271,12 @@ function show_figure(fig)
 
                     subplot(2,3,k + 3);
                     scatter(w_rec(:,i), w_rec(:,j));
-                    lsline;
                     title(sprintf('w_%d vs. w_%d', i, j));
                     xlabel(sprintf('fitted w_%d', i));
                     ylabel(sprintf('fitted w_%d', j));
+                    xlim([-5 5]);
+                    ylim([-5 5]);
+                    lsline;
                 end
             end
 
