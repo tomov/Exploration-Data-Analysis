@@ -14,7 +14,7 @@ Num = 1;
 
 % get DV ROI from GLM 47
 [DV_masks, ~] = get_masks(DV_glm, 'DV', clusterFWEcorrect, extent, Num);
-DV_mask = masks{1};
+DV_mask = DV_masks{1};
 
 for s = 1:length(data)
     DV_betas{s} = get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', DV_mask);

@@ -31,14 +31,7 @@ disp(filename);
 [masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
 
 
-perf = []; % P(better option)
-for s = 1:length(data)
-    which = ~data(s).timeout;
-    better = (data(s).mu2(which) > data(s).mu1(which)) + 1; 
-    C = double(data(s).choice(which) == better); % human choices
-    %perf = [perf; mean(data(s).reward)];
-    perf = [perf; mean(C)];
-end
+perf = getPerfs(data);
 
 
 for c = 1:length(masks)
