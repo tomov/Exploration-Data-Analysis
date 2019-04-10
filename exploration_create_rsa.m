@@ -103,6 +103,65 @@ function rsa = exploration_create_rsa(rsa_idx, subj)
             rsa.model(4).distance_measure = @(c1, c2) c1 ~= c2;
             rsa.model(4).is_control = true;
 
+        % [Q1, Q2, sigma1, sigma2], proxy for DV
+        %
+        case 3
+            [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'left');
+
+            rsa.event = 'trial_onset';
+            rsa.glmodel = 23;
+            rsa.radius = 10 / 1.5;
+            rsa.mask = 'masks/mask.nii';
+            rsa.which_betas = ~data(subj).timeout(~bad_run);
+
+            rsa.model(1).name = 'Qs_and_sigmas';
+            rsa.model(1).features = [Q1, Q2, std1, std2];
+            rsa.model(1).features = rsa.model(1).features + rand(size(rsa.model(1).features)) * 0.0001; % no 0's
+            rsa.model(1).distance_measure = 'cosine';
+            rsa.model(1).is_control = false;
+
+            % controls
+
+            rsa.model(2).name = 'time';
+            rsa.model(2).features = data(subj).trial_onset(which_trials);
+            rsa.model(2).distance_measure = 'euclidean';
+            rsa.model(2).is_control = true;
+
+            rsa.model(3).name = 'run';
+            rsa.model(3).features = data(subj).run(which_trials);
+            rsa.model(3).distance_measure = @(c1, c2) c1 ~= c2;
+            rsa.model(3).is_control = true;
+
+        % [V, RU, TU], proxy for DV (note no abs)
+        %
+        case 4
+            [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, 'left');
+
+            rsa.event = 'trial_onset';
+            rsa.glmodel = 23;
+            rsa.radius = 10 / 1.5;
+            rsa.mask = 'masks/mask.nii';
+            rsa.which_betas = ~data(subj).timeout(~bad_run);
+
+            rsa.model(1).name = 'V, RU, TU';
+            rsa.model(1).features = [V, RU, TU];
+            rsa.model(1).features = rsa.model(1).features + rand(size(rsa.model(1).features)) * 0.0001; % no 0's
+            rsa.model(1).distance_measure = 'cosine';
+            rsa.model(1).is_control = false;
+
+            % controls
+
+            rsa.model(2).name = 'time';
+            rsa.model(2).features = data(subj).trial_onset(which_trials);
+            rsa.model(2).distance_measure = 'euclidean';
+            rsa.model(2).is_control = true;
+
+            rsa.model(3).name = 'run';
+            rsa.model(3).features = data(subj).run(which_trials);
+            rsa.model(3).distance_measure = @(c1, c2) c1 ~= c2;
+            rsa.model(3).is_control = true;
+
+
         otherwise
             assert(false, 'invalid rsa_idx -- should be one of the above');
 
