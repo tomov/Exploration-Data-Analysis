@@ -13,7 +13,7 @@ function B = get_beta_series(EXPT,glmodel,subj, name, mask)
     % load betas 
     modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(subj)]);
     load(fullfile(modeldir,'SPM.mat'));
-    assert(isequal(SPM.Vbeta(1).dim, Vmask.dim), 'Different dimensions between mask and betas');
+    %assert(isequal(SPM.Vbeta(1).dim, Vmask.dim), 'Different dimensions between mask and betas');
 
     which = contains(SPM.xX.name, name); % betas for given event
     %which(which) = rsa.which_betas; % of those, only betas for given trials

@@ -4,8 +4,8 @@
 
 clear all;
 
-glmodel = 36;
-regressor = ' trial_onset*';
+glmodel = 23;
+regressor = 'trial_onset';
 EXPT = exploration_expt();
 null_iters = 10000;
 
@@ -64,21 +64,7 @@ for i = 1:length(parcel_idxs)
     % extract betas
     % TODO ccnl_get_beta_fast
     for s = 1:length(data)
-        s
-        % from ccnl_decode_regressor
-        %
-        modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
-        load(fullfile(modeldir,'SPM.mat'));
-        assert(isequal(SPM.Vbeta(1).dim, Vmask.dim), 'Different dimensions between mask and betas');
-
-        names = SPM.xX.name'; % regressor names
-        which_reg = contains(names, regressor);
-
-        % extract betas B
-        cdir = pwd;
-        cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
-        B = spm_data_read(SPM.Vbeta(which_reg), find(mask));
-        cd(cdir);
+        B = get_beta_series(EXPT, glmodel, s, regressor, mask);
 
         b(s,:) = nanmean(B, 1);
     end
@@ -124,4 +110,4 @@ for i = 1:length(parcel_idxs)
 end
 
 
-save('is_rsa.mat', '-v7.3');
+save('is_rsa_glmodel=23.mat', '-v7.3');

@@ -1,3 +1,11 @@
+% WRONG -- this is super circular;
+% the RU and TU ROIs correlate with RU and TU
+% the DV ROI correlates with DV which correlates with RU and TU
+% so ofc their beta series will be correlated doh
+
+% correlate beta series between DV and RU and TU ROIs
+%
+
 clear all;
 
 DV_glm = 47;

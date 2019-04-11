@@ -1947,7 +1947,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % left choice @ trial_onset
         % nuisance @ choice_onset and feedback_onset 
         %
-        case 48
+        case 48 % <-- parietal bilateral
            [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'chosen'); 
 
            DV = w(1) * Q1 + w(2) * std1;
@@ -2059,6 +2059,250 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.names{5} = 'trial_onset_L';
            multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{5} = zeros(size(multi.onsets{5}));
+
+
+        % same as 47 but at choice onset 
+        %
+        % |DV| @ choice_onset 
+        % left choice @ choice_onset (!!!)
+        % nuisance @ trial_onset and feedback_onset 
+        %
+        case 50 
+           [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'choice_onset';
+           multi.onsets{1} = data(subj).choice_onset(which_trials); 
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'DV';
+           multi.pmod(1).param{1} = DV';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'trial_onset';
+           multi.onsets{2} = data(subj).trial_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'choice_onset_L';
+           multi.onsets{4} = data(subj).choice_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+        % copy of 36, but left - right
+        % seeking RU after FWE
+        %
+        case 51
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'left');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+        % 36 + beta series for RU and TU i.e. functional connectivity, w/ orth
+        %
+        case 52 
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 1; % DO orthogonalise them -- need to be ultra-conservative here
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           %
+           % brain activity pmods
+           %
+
+           VTURU_glm = 36;
+           EXPT = exploration_expt();
+           clusterFWEcorrect = false;
+           extent = 100;
+           Num = 1;
+
+           beta_series_glm = 23;
+           event = ['trial_onset_run_', num2str(run)];
+
+           % get RU ROIs from GLM 36 and beta series from GLM 23
+           RU_rois = [1];
+           [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
+           RU_mask = RU_masks{RU_rois(1)};
+
+           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+
+           % get TU ROIs from GLM 36 and beta series from GLM 23
+           TU_rois = [2, 8];
+           [TU_masks, ~] = get_masks(VTURU_glm, 'TU', clusterFWEcorrect, extent, Num);
+           TU_mask1 = TU_masks{TU_rois(1)};
+           TU_mask2 = TU_masks{TU_rois(2)};
+
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+
+           multi.pmod(1).name{5} = 'RU_betas';
+           multi.pmod(1).param{5} = RU_betas';
+           multi.pmod(1).poly{5} = 1; 
+
+           multi.pmod(1).name{6} = 'TU_betas1';
+           multi.pmod(1).param{6} = TU_betas1';
+           multi.pmod(1).poly{6} = 1; 
+
+           multi.pmod(1).name{7} = 'TU_betas2';
+           multi.pmod(1).param{7} = TU_betas2';
+           multi.pmod(1).poly{7} = 1; 
+
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
+        % same as 52 but do NOT orthogonalise
+        %
+        case 53
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do NOT orthogonalise them -- need to be ultra-conservative here
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           %
+           % brain activity pmods
+           %
+
+           VTURU_glm = 36;
+           EXPT = exploration_expt();
+           clusterFWEcorrect = false;
+           extent = 100;
+           Num = 1;
+
+           beta_series_glm = 23;
+           event = ['trial_onset_run_', num2str(run)];
+
+           % get RU ROIs from GLM 36 and beta series from GLM 23
+           RU_rois = [1];
+           [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
+           RU_mask = RU_masks{RU_rois(1)};
+
+           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+
+           % get TU ROIs from GLM 36 and beta series from GLM 23
+           TU_rois = [2, 8];
+           [TU_masks, ~] = get_masks(VTURU_glm, 'TU', clusterFWEcorrect, extent, Num);
+           TU_mask1 = TU_masks{TU_rois(1)};
+           TU_mask2 = TU_masks{TU_rois(2)};
+
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+
+           multi.pmod(1).name{5} = 'RU_betas';
+           multi.pmod(1).param{5} = RU_betas';
+           multi.pmod(1).poly{5} = 1; 
+
+           multi.pmod(1).name{6} = 'TU_betas1';
+           multi.pmod(1).param{6} = TU_betas1';
+           multi.pmod(1).poly{6} = 1; 
+
+           multi.pmod(1).name{7} = 'TU_betas2';
+           multi.pmod(1).param{7} = TU_betas2';
+           multi.pmod(1).poly{7} = 1; 
+
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+
+
+
+
+
 
 
 

@@ -1494,12 +1494,822 @@ cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57205308.out -- Su
 ----------------
 --- Running univariate_decoder
 ----------------
-main_effect.sh univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
-main_effect.sh univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100): output/univariate_decoder_.out --
+univariate_decoder.sh GLM 21, RU, RU - trial, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57338620.out -- Submitted batch job 57338620
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57338621.out -- Submitted batch job 57338621
+univariate_decoder.sh GLM 21, RU, badre, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57338622.out -- Submitted batch job 57338622
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, RU, RU - trial, norm=4, do_orth=1, lambda=1, standardize=1, mixed=1 : output/univariate_decoder_57339455.out -- Submitted batch job 57339455
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=1, mixed=1 : output/univariate_decoder_57339456.out -- Submitted batch job 57339456
+univariate_decoder.sh GLM 21, RU, badre, norm=4, do_orth=1, lambda=1, standardize=1, mixed=1 : output/univariate_decoder_57339457.out -- Submitted batch job 57339457
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, RU, RU - trial, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57401568.out -- Submitted batch job 57401568
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57401571.out -- Submitted batch job 57401571
+univariate_decoder.sh GLM 21, RU, badre, norm=4, do_orth=1, lambda=1, standardize=1 : output/univariate_decoder_57401577.out -- Submitted batch job 57401577
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=1: output/cross_subject_57401646.out -- Submitted batch job 57401646
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=1: output/cross_subject_57404257.out -- Submitted batch job 57404257
+cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57404258.out -- Submitted batch job 57404258
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=2: output/cross_subject_57807042.out -- Submitted batch job 57807042
+cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57807043.out -- Submitted batch job 57807043
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=2: output/cross_subject_57833674.out -- Submitted batch job 57833674
+cross_subject.sh GLM 21, TU, TU - trial: output/cross_subject_57833675.out -- Submitted batch job 57833675
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, RU, RU - trial, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_57834028.out -- Submitted batch job 57834028
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_57834029.out -- Submitted batch job 57834029
+univariate_decoder.sh GLM 21, RU, badre, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_57834030.out -- Submitted batch job 57834030
 ----------------
 --- Running main_effect
 ----------------
-main_effect.sh main_effect(11, \'RU\', 11, \'RU\', false, 100, 3): output/main_effect_.out --
-main_effect.sh main_effect(11, \'RU\', 11, \'TU\', false, 100, 3): output/main_effect_.out --
-main_effect.sh main_effect(11, \'TU\', 11, \'RU\', false, 100, 3): output/main_effect_.out --
-main_effect.sh main_effect(11, \'TU\', 11, \'TU\', false, 100, 3): output/main_effect_.out --
+-- RU --
+main_effect.sh GLM 21, RU, dlpfc: output/main_effect_58239389.out -- Submitted batch job 58239389
+-- TU --
+main_effect.sh GLM 21, TU, dlpfc: output/main_effect_58239390.out -- Submitted batch job 58239390
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, RU, dlpfc, norm=4, do_orth=1, lambda=1 : output/univariate_decoder_58239597.out -- Submitted batch job 58239597
+univariate_decoder.sh GLM 21, TU, dlpfc, norm=4, do_orth=1, lambda=1 : output/univariate_decoder_58239600.out -- Submitted batch job 58239600
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, RU, dlpfc: output/cross_subject_58239721.out -- Submitted batch job 58239721
+cross_subject.sh GLM 21, TU, dlpfc: output/cross_subject_58239724.out -- Submitted batch job 58239724
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+-- rsa_idx 2 --
+ccnl_rsa_searchlight.sh for rsa_idx 2, 1-10000, subjects 30 11 22 2 28 21 23 7 14 29 12 6 20 24 8 13 4 25 16 3 18 27 17 31 15 19 10 9 5 1 26: output/ccnl_rsa_searchlight_2_1-10000_goodSubjects_58259892.out -- Submitted batch job 58259892
+ccnl_rsa_searchlight.sh for rsa_idx 2, 10001-20000, subjects 10 26 11 13 21 25 2 3 15 1 17 23 16 30 27 28 24 29 31 20 19 22 4 8 6 5 18 7 9 14 12: output/ccnl_rsa_searchlight_2_10001-20000_goodSubjects_58259898.out -- Submitted batch job 58259898
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh GLM 21, RU, RU - trial: output/main_effect_58283796.out -- Submitted batch job 58283796
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh GLM 21, RU, RU - trial: output/main_effect_58283909.out -- Submitted batch job 58283909
+main_effect.sh GLM 21, RU, TU - trial: output/main_effect_58283940.out -- Submitted batch job 58283940
+-- TU --
+main_effect.sh GLM 21, TU, RU - trial: output/main_effect_58283945.out -- Submitted batch job 58283945
+main_effect.sh GLM 21, TU, TU - trial: output/main_effect_58283948.out -- Submitted batch job 58283948
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, TU, RU - trial, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58285327.out -- Submitted batch job 58285327
+univariate_decoder.sh GLM 21, RU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58285342.out -- Submitted batch job 58285342
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, TU, badre, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58789976.out -- Submitted batch job 58789976
+univariate_decoder.sh GLM 21, RU, badre, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58789981.out -- Submitted batch job 58789981
+univariate_decoder.sh GLM 21, TU, dlpfc, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58789982.out -- Submitted batch job 58789982
+univariate_decoder.sh GLM 21, RU, dlpfc, norm=4, do_orth=1, lambda=1, standardize=2 : output/univariate_decoder_58789988.out -- Submitted batch job 58789988
+----------------
+--- Running cross_subj_vbm
+----------------
+cross_subj_vbm.sh GLM 21, RU, RU - trial: output/cross_subj_vbm_58946592.out -- Submitted batch job 58946592
+cross_subj_vbm.sh GLM 21, RU, TU - trial: output/cross_subj_vbm_58946595.out -- Submitted batch job 58946595
+cross_subj_vbm.sh GLM 21, TU, RU - trial: output/cross_subj_vbm_58946599.out -- Submitted batch job 58946599
+cross_subj_vbm.sh GLM 21, TU, TU - trial: output/cross_subj_vbm_58946603.out -- Submitted batch job 58946603
+----------------
+--- Running cross_subj_vbm modulated=false
+----------------
+cross_subj_vbm.sh GLM 21, RU, RU - trial: output/cross_subj_vbm_58957110.out -- Submitted batch job 58957110
+cross_subj_vbm.sh GLM 21, RU, TU - trial: output/cross_subj_vbm_58957123.out -- Submitted batch job 58957123
+cross_subj_vbm.sh GLM 21, TU, RU - trial: output/cross_subj_vbm_58957125.out -- Submitted batch job 58957125
+cross_subj_vbm.sh GLM 21, TU, TU - trial: output/cross_subj_vbm_58957128.out -- Submitted batch job 58957128
+----------------
+--- Running cross_subj_vbm_beta
+----------------
+cross_subj_vbm_beta.sh GLM 21, RU, RU - trial: output/cross_subj_vbm_beta_58960683.out -- Submitted batch job 58960683
+cross_subj_vbm_beta.sh GLM 21, RU, TU - trial: output/cross_subj_vbm_beta_58960687.out -- Submitted batch job 58960687
+cross_subj_vbm_beta.sh GLM 21, TU, RU - trial: output/cross_subj_vbm_beta_58960692.out -- Submitted batch job 58960692
+cross_subj_vbm_beta.sh GLM 21, TU, TU - trial: output/cross_subj_vbm_beta_58960710.out -- Submitted batch job 58960710
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh GLM 21, RU, dlpfc: output/main_effect_58962293.out -- Submitted batch job 58962293
+main_effect.sh GLM 21, RU, badre: output/main_effect_58962294.out -- Submitted batch job 58962294
+-- TU --
+main_effect.sh GLM 21, TU, dlpfc: output/main_effect_58962295.out -- Submitted batch job 58962295
+main_effect.sh GLM 21, TU, badre: output/main_effect_58962296.out -- Submitted batch job 58962296
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+-- rsa_idx 2 --
+ccnl_rsa_searchlight.sh for rsa_idx 2, 1-10000, subjects 22 20 17 29 23 9 6 12 1 28 21 30 25 15 8 26 31 2 18 5 10 24 27 16 19 13 7 11 4 3 14: output/ccnl_rsa_searchlight_2_1-10000_goodSubjects_59375104.out -- Submitted batch job 59375104
+ccnl_rsa_searchlight.sh for rsa_idx 2, 10001-20000, subjects 10 25 12 2 18 31 27 5 13 3 7 6 9 28 23 16 14 19 24 8 4 30 1 15 26 22 17 20 11 29 21: output/ccnl_rsa_searchlight_2_10001-20000_goodSubjects_59375106.out -- Submitted batch job 59375106
+ccnl_rsa_searchlight.sh for rsa_idx 2, 20001-30000, subjects 5 6 15 2 10 4 28 12 7 25 19 26 1 22 31 9 23 21 3 13 27 11 30 14 24 20 18 16 8 29 17: output/ccnl_rsa_searchlight_2_20001-30000_goodSubjects_59375107.out -- Submitted batch job 59375107
+ccnl_rsa_searchlight.sh for rsa_idx 2, 30001-40000, subjects 4 13 29 26 23 3 11 25 28 19 10 17 9 18 16 14 21 15 6 24 22 20 7 27 12 2 5 8 1 31 30: output/ccnl_rsa_searchlight_2_30001-40000_goodSubjects_59375108.out -- Submitted batch job 59375108
+ccnl_rsa_searchlight.sh for rsa_idx 2, 40001-50000, subjects 3 22 25 21 2 28 20 13 11 27 18 5 9 8 30 23 4 7 12 24 17 10 29 14 15 1 6 26 31 19 16: output/ccnl_rsa_searchlight_2_40001-50000_goodSubjects_59375109.out -- Submitted batch job 59375109
+ccnl_rsa_searchlight.sh for rsa_idx 2, 50001-60000, subjects 15 28 10 3 7 19 30 21 20 12 5 11 16 17 13 14 22 26 25 1 23 4 18 29 8 2 6 31 24 27 9: output/ccnl_rsa_searchlight_2_50001-60000_goodSubjects_59375110.out -- Submitted batch job 59375110
+ccnl_rsa_searchlight.sh for rsa_idx 2, 60001-70000, subjects 29 18 31 17 12 5 8 26 19 7 21 13 24 11 14 16 4 9 20 6 27 1 30 25 10 23 2 22 3 28 15: output/ccnl_rsa_searchlight_2_60001-70000_goodSubjects_59375112.out -- Submitted batch job 59375112
+ccnl_rsa_searchlight.sh for rsa_idx 2, 70001-80000, subjects 12 6 3 17 1 19 30 31 4 21 29 11 9 22 8 7 23 5 26 27 25 24 13 2 14 15 16 18 28 20 10: output/ccnl_rsa_searchlight_2_70001-80000_goodSubjects_59375113.out -- Submitted batch job 59375113
+ccnl_rsa_searchlight.sh for rsa_idx 2, 80001-90000, subjects 2 4 8 12 5 19 16 14 11 15 27 26 23 29 31 10 3 18 1 20 9 30 21 24 7 6 22 25 17 13 28: output/ccnl_rsa_searchlight_2_80001-90000_goodSubjects_59375114.out -- Submitted batch job 59375114
+ccnl_rsa_searchlight.sh for rsa_idx 2, 90001-100000, subjects 12 21 10 5 3 24 11 25 7 28 20 2 26 18 14 22 31 4 19 29 17 8 30 23 1 13 15 16 27 6 9: output/ccnl_rsa_searchlight_2_90001-100000_goodSubjects_59375115.out -- Submitted batch job 59375115
+ccnl_rsa_searchlight.sh for rsa_idx 2, 100001-110000, subjects 28 12 15 16 13 19 24 10 21 14 31 2 18 9 29 4 30 5 25 20 6 27 1 23 22 17 26 11 8 3 7: output/ccnl_rsa_searchlight_2_100001-110000_goodSubjects_59375116.out -- Submitted batch job 59375116
+ccnl_rsa_searchlight.sh for rsa_idx 2, 110001-120000, subjects 14 9 25 20 11 16 24 1 2 22 31 12 18 10 17 3 19 21 8 7 13 26 28 5 29 6 15 4 23 27 30: output/ccnl_rsa_searchlight_2_110001-120000_goodSubjects_59375117.out -- Submitted batch job 59375117
+ccnl_rsa_searchlight.sh for rsa_idx 2, 120001-130000, subjects 26 17 20 12 3 22 11 10 1 15 8 30 27 16 7 31 18 19 13 2 29 4 24 25 28 23 21 5 14 6 9: output/ccnl_rsa_searchlight_2_120001-130000_goodSubjects_59375118.out -- Submitted batch job 59375118
+ccnl_rsa_searchlight.sh for rsa_idx 2, 130001-140000, subjects 20 12 3 16 2 10 19 5 7 1 23 17 21 29 25 28 13 30 27 18 14 24 31 15 9 4 11 8 26 6 22: output/ccnl_rsa_searchlight_2_130001-140000_goodSubjects_59375121.out -- Submitted batch job 59375121
+ccnl_rsa_searchlight.sh for rsa_idx 2, 140001-150000, subjects 2 18 23 5 28 21 15 25 17 22 24 7 13 6 8 27 16 20 29 4 11 31 26 3 19 10 30 9 12 1 14: output/ccnl_rsa_searchlight_2_140001-150000_goodSubjects_59375123.out -- Submitted batch job 59375123
+ccnl_rsa_searchlight.sh for rsa_idx 2, 150001-160000, subjects 29 28 20 15 4 11 10 2 19 12 21 17 23 7 30 31 25 24 5 6 16 13 8 1 27 14 9 22 26 3 18: output/ccnl_rsa_searchlight_2_150001-160000_goodSubjects_59375124.out -- Submitted batch job 59375124
+ccnl_rsa_searchlight.sh for rsa_idx 2, 160001-170000, subjects 15 27 3 25 6 29 30 22 24 9 12 26 20 7 16 28 19 18 5 4 8 13 23 31 17 1 11 14 21 10 2: output/ccnl_rsa_searchlight_2_160001-170000_goodSubjects_59375126.out -- Submitted batch job 59375126
+ccnl_rsa_searchlight.sh for rsa_idx 2, 170001-180000, subjects 19 13 30 25 11 24 23 2 26 14 4 20 12 18 9 10 22 31 3 21 16 8 28 15 17 6 27 7 29 1 5: output/ccnl_rsa_searchlight_2_170001-180000_goodSubjects_59375127.out -- Submitted batch job 59375127
+ccnl_rsa_searchlight.sh for rsa_idx 2, 180001-190000, subjects 29 13 6 21 31 15 12 22 3 30 14 26 17 7 20 18 1 23 9 8 24 27 19 5 2 25 4 11 28 16 10: output/ccnl_rsa_searchlight_2_180001-190000_goodSubjects_59375128.out -- Submitted batch job 59375128
+ccnl_rsa_searchlight.sh for rsa_idx 2, 190001-200000, subjects 17 25 1 24 5 21 29 8 18 14 10 13 20 3 26 19 15 12 22 30 6 23 11 9 2 4 16 31 28 7 27: output/ccnl_rsa_searchlight_2_190001-200000_goodSubjects_59375129.out -- Submitted batch job 59375129
+ccnl_rsa_searchlight.sh for rsa_idx 2, 200001-210000, subjects 7 19 5 9 2 27 10 13 3 15 26 21 1 18 28 24 8 17 22 6 16 30 23 12 25 29 20 31 4 11 14: output/ccnl_rsa_searchlight_2_200001-210000_goodSubjects_59375130.out -- Submitted batch job 59375130
+ccnl_rsa_searchlight.sh for rsa_idx 2, 210001-220000, subjects 24 11 10 7 14 26 15 20 12 25 2 8 28 6 13 4 18 30 3 23 31 9 27 22 21 1 5 19 17 29 16: output/ccnl_rsa_searchlight_2_210001-220000_goodSubjects_59375132.out -- Submitted batch job 59375132
+ccnl_rsa_searchlight.sh for rsa_idx 2, 220001-230000, subjects 21 4 17 30 6 27 20 1 12 7 18 29 26 15 25 8 10 23 2 13 9 5 31 19 24 16 3 14 11 22 28: output/ccnl_rsa_searchlight_2_220001-230000_goodSubjects_59375133.out -- Submitted batch job 59375133
+ccnl_rsa_searchlight.sh for rsa_idx 2, 230001-240000, subjects 28 22 2 27 23 1 16 3 12 29 20 7 30 9 31 8 21 15 19 4 24 5 11 14 25 17 26 6 10 13 18: output/ccnl_rsa_searchlight_2_230001-240000_goodSubjects_59375134.out -- Submitted batch job 59375134
+ccnl_rsa_searchlight.sh for rsa_idx 2, 240001-250000, subjects 4 28 13 14 18 19 8 7 9 17 20 3 25 12 30 26 29 31 10 1 23 11 2 15 16 24 21 22 6 27 5: output/ccnl_rsa_searchlight_2_240001-250000_goodSubjects_59375135.out -- Submitted batch job 59375135
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=2, clusterFWE=false : output/univariate_decoder_59661949.out -- Submitted batch job 59661949
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=2, mixed=false, clusterFWE=false : output/univariate_decoder_59667151.out -- Submitted batch job 59667151
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=2, corr=0: output/cross_subject_59682003.out -- Submitted batch job 59682003
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh GLM 21, TU, TU - trial, norm=4, do_orth=1, lambda=1, standardize=2, mixed=false, clusterFWE=false, extent=100 : output/univariate_decoder_59784403.out -- Submitted batch job 59784403
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh GLM 21, TU, TU - trial, standardize=2, corr=0, extent=100: output/cross_subject_59784415.out -- Submitted batch job 59784415
+----------------
+--- Running univariate_decoder_both
+----------------
+univariate_decoder_both.sh GLM 21, do_orth=1, lambda=1, standardize=2, mixed=false, clusterFWE=false, extent=100 : output/univariate_decoder_both_60144435.out -- Submitted batch job 60144435
+----------------
+--- Running univariate_decoder_both
+----------------
+univariate_decoder_both.sh GLM 21, do_orth=1, lambda=1, standardize=2, mixed=false, clusterFWE=false, extent=100 : output/univariate_decoder_both_60144601.out -- Submitted batch job 60144601
+----------------
+--- Running univariate_decoder_both
+----------------
+univariate_decoder_both.sh GLM 21, do_orth=1, lambda=1, standardize=2, mixed=false, clusterFWE=false, extent=100 : output/univariate_decoder_both_60206373.out -- Submitted batch job 60206373
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 17 31 16 19 8 7 18 3 22 21 29 1 6 24 23 2 28 9 5 12 25 4 20 10 27 30 14 11 15 26 13: output/ccnl_fmri_glm_11_goodSubjects_65852759.out -- Submitted batch job 65852759
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 31 3 15 16 30 18 29 22 7 4 24 10 25 13 2 21 6 20 9 12 17 5 11 1 14 26 27 8 19 23 28: output/ccnl_fmri_glm_11_goodSubjects_65852935.out -- Submitted batch job 65852935
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_65888183.out -- Submitted batch job 65888183
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 31, subjects 2 13 4 26 25 18 31 11 20 8 7 5 24 9 21 3 10 1 29 16 23 17 6 22 30 28 12 15 14 27 19: output/ccnl_fmri_glm_31_goodSubjects_65889571.out -- Submitted batch job 65889571
+ccnl_fmri_glm.sh for GLM 32, subjects 16 13 18 19 28 24 20 30 5 11 23 29 27 10 17 25 21 1 4 9 2 3 22 6 15 12 14 31 7 26 8: output/ccnl_fmri_glm_32_goodSubjects_65889572.out -- Submitted batch job 65889572
+ccnl_fmri_glm.sh for GLM 33, subjects 7 30 16 23 12 20 1 15 22 18 10 11 6 19 2 13 4 5 28 24 21 27 8 25 29 3 31 17 26 14 9: output/ccnl_fmri_glm_33_goodSubjects_65889573.out -- Submitted batch job 65889573
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_65978446.out -- Submitted batch job 65978446
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66014579.out -- Submitted batch job 66014579
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66136952.out -- Submitted batch job 66136952
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 29 22 5 31 11 27 24 19 17 6 30 1 14 28 25 9 18 7 21 3 12 4 10 26 15 2 13 23 20 16 8: output/ccnl_fmri_glm_11_goodSubjects_66144720.out -- Submitted batch job 66144720
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 5 9 6 26 10 17 30 14 25 13 18 8 3 27 11 20 28 12 1 19 23 16 21 4 29 22 31 15 2 24 7: output/ccnl_fmri_glm_11_goodSubjects_66144790.out -- Submitted batch job 66144790
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 5 3 2 21 28 9 18 22 23 14 29 1 25 12 31 26 17 7 16 8 11 20 6 10 4 24 19 30 15 27 13: output/ccnl_fmri_glm_11_goodSubjects_66144857.out -- Submitted batch job 66144857
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 1 27 24 8 4 28 2 25 19 20 30 31 26 16 3 7 21 13 12 9 17 11 15 22 10 5 29 14 18 6 23: output/ccnl_fmri_glm_11_goodSubjects_66146623.out -- Submitted batch job 66146623
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 11, subjects 26 20 24 27 19 8 14 29 12 22 16 4 30 18 13 15 28 10 23 1 11 5 7 3 21 2 25 6 9 17 31: output/ccnl_fmri_glm_11_goodSubjects_66147830.out -- Submitted batch job 66147830
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66253603.out -- Submitted batch job 66253603
+----------------
+--- Running recovery
+----------------
+recovery.sh: output/recovery_66255847.out -- Submitted batch job 66255847
+----------------
+--- Running recovery
+----------------
+recovery.sh: output/recovery_66256344.out -- Submitted batch job 66256344
+----------------
+--- Running recovery
+----------------
+recovery.sh: output/recovery_66308551.out -- Submitted batch job 66308551
+----------------
+--- Running recovery
+----------------
+recovery.sh: output/recovery_66308663.out -- Submitted batch job 66308663
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 35, subjects 15 9 31 16 4 1 17 30 26 20 28 11 5 12 24 18 27 21 3 23 22 10 6 13 7 8 25 29 19 2 14: output/ccnl_fmri_glm_35_goodSubjects_66310018.out -- Submitted batch job 66310018
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_66318552.out -- Submitted batch job 66318552
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_66318571.out -- Submitted batch job 66318571
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_.out -- wtf
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_.out -- wtf
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_.out -- wtf
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_.out -- wtf
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_.out -- wtf
+----------------
+--- Running main_effect
+----------------
+-- RU --
+main_effect.sh main_effect(11, \'RU\', 21, \'RU\', false, 100): output/main_effect_66318646.out -- Submitted batch job 66318646
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(11, \'RU\', 21, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_66321317.out -- Submitted batch job 66321317
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh cross_subject(11, \'TU\', 21, \'TU\', 2, false, 100, true): output/cross_subject_66321644.out -- Submitted batch job 66321644
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66321700.out -- Submitted batch job 66321700
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(11, \'RU\', 35, \'RU\', false, 100): output/main_effect_66325257.out -- Submitted batch job 66325257
+main_effect.sh main_effect(11, \'RU\', 35, \'TU\', false, 100): output/main_effect_66325261.out -- Submitted batch job 66325261
+main_effect.sh main_effect(11, \'TU\', 35, \'RU\', false, 100): output/main_effect_66325264.out -- Submitted batch job 66325264
+main_effect.sh main_effect(11, \'TU\', 35, \'TU\', false, 100): output/main_effect_66325267.out -- Submitted batch job 66325267
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(11, \'RU\', 35, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_66325362.out -- Submitted batch job 66325362
+univariate_decoder.sh univariate_decoder(11, \'RU\', 35, \'TU\', true, 1, 2, false, false, 100): output/univariate_decoder_66325365.out -- Submitted batch job 66325365
+univariate_decoder.sh univariate_decoder(11, \'TU\', 35, \'RU\', true, 1, 2, false, false, 100): output/univariate_decoder_66325368.out -- Submitted batch job 66325368
+univariate_decoder.sh univariate_decoder(11, \'TU\', 35, \'TU\', true, 1, 2, false, false, 100): output/univariate_decoder_66325370.out -- Submitted batch job 66325370
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh cross_subject(11, \'RU\', 35, \'RU\', 2, false, 100, true): output/cross_subject_66325397.out -- Submitted batch job 66325397
+cross_subject.sh cross_subject(11, \'RU\', 35, \'TU\', 2, false, 100, true): output/cross_subject_66325419.out -- Submitted batch job 66325419
+cross_subject.sh cross_subject(11, \'TU\', 35, \'RU\', 2, false, 100, true): output/cross_subject_66325423.out -- Submitted batch job 66325423
+cross_subject.sh cross_subject(11, \'TU\', 35, \'TU\', 2, false, 100, true): output/cross_subject_66325426.out -- Submitted batch job 66325426
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(11, \'RU\', 35, \'RU\', false, 100): output/main_effect_66640257.out -- Submitted batch job 66640257
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(11, \'RU\', 11, \'RU\', false, 100, 3): output/main_effect_66640423.out -- Submitted batch job 66640423
+main_effect.sh main_effect(11, \'RU\', 11, \'TU\', false, 100, 3): output/main_effect_66640431.out -- Submitted batch job 66640431
+main_effect.sh main_effect(11, \'TU\', 11, \'RU\', false, 100, 3): output/main_effect_66640438.out -- Submitted batch job 66640438
+main_effect.sh main_effect(11, \'TU\', 11, \'TU\', false, 100, 3): output/main_effect_66640440.out -- Submitted batch job 66640440
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 36, subjects 24 19 7 8 2 25 16 4 14 1 12 23 31 11 22 17 15 29 28 13 26 3 6 18 21 30 10 20 27 5 9: output/ccnl_fmri_glm_36_goodSubjects_66640800.out -- Submitted batch job 66640800
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66705910.out -- Submitted batch job 66705910
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(36, \'RU\', 36, \'RU\', false, 100, 3): output/main_effect_66721015.out -- Submitted batch job 66721015
+main_effect.sh main_effect(36, \'RU\', 36, \'TU\', false, 100, 3): output/main_effect_66721027.out -- Submitted batch job 66721027
+main_effect.sh main_effect(36, \'TU\', 36, \'RU\', false, 100, 3): output/main_effect_66721039.out -- Submitted batch job 66721039
+main_effect.sh main_effect(36, \'TU\', 36, \'TU\', false, 100, 3): output/main_effect_66721041.out -- Submitted batch job 66721041
+main_effect.sh main_effect(36, \'RU\', 36, \'RU - TU\', false, 100, 3): output/main_effect_66721052.out -- Submitted batch job 66721052
+main_effect.sh main_effect(36, \'RU\', 36, \'TU - RU\', false, 100, 3): output/main_effect_66721063.out -- Submitted batch job 66721063
+main_effect.sh main_effect(36, \'TU\', 36, \'RU - TU\', false, 100, 3): output/main_effect_66721078.out -- Submitted batch job 66721078
+main_effect.sh main_effect(36, \'TU\', 36, \'TU - RU\', false, 100, 3): output/main_effect_66721092.out -- Submitted batch job 66721092
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721129.out -- Submitted batch job 66721129
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721132.out -- Submitted batch job 66721132
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721134.out -- Submitted batch job 66721134
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721135.out -- Submitted batch job 66721135
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU - TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721140.out -- Submitted batch job 66721140
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU - RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721141.out -- Submitted batch job 66721141
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU - TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721151.out -- Submitted batch job 66721151
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU - RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66721153.out -- Submitted batch job 66721153
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(36, \'RU\', 36, \'RU\', false, 100, 1): output/main_effect_66724595.out -- Submitted batch job 66724595
+main_effect.sh main_effect(36, \'RU\', 36, \'TU\', false, 100, 1): output/main_effect_66724597.out -- Submitted batch job 66724597
+main_effect.sh main_effect(36, \'TU\', 36, \'RU\', false, 100, 1): output/main_effect_66724599.out -- Submitted batch job 66724599
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_66724601.out -- Submitted batch job 66724601
+main_effect.sh main_effect(36, \'TU\', 36, \'TU\', false, 100, 1): output/main_effect_66724603.out -- Submitted batch job 66724603
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_66724604.out -- Submitted batch job 66724604
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_66724606.out -- Submitted batch job 66724606
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_66724608.out -- Submitted batch job 66724608
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh cross_subject(36, \'RU\', 36, \'RU\', 2, false, 100, true): output/cross_subject_66739562.out -- Submitted batch job 66739562
+cross_subject.sh cross_subject(36, \'RU\', 36, \'TU\', 2, false, 100, true): output/cross_subject_66739566.out -- Submitted batch job 66739566
+cross_subject.sh cross_subject(36, \'TU\', 36, \'RU\', 2, false, 100, true): output/cross_subject_66739569.out -- Submitted batch job 66739569
+cross_subject.sh cross_subject(36, \'TU\', 36, \'TU\', 2, false, 100, true): output/cross_subject_66739573.out -- Submitted batch job 66739573
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 37, subjects 29 7 6 15 23 27 16 2 5 12 25 18 21 19 30 11 9 28 1 22 14 31 26 8 10 20 17 3 13 4 24: output/ccnl_fmri_glm_37_goodSubjects_66782095.out -- Submitted batch job 66782095
+----------------
+--- Running univariate_decoder_both
+----------------
+univariate_decoder_both.sh univariate_decoder_both(36, 1, 1, true, 1, 2, false, false, 100): output/univariate_decoder_both_66818026.out -- Submitted batch job 66818026
+univariate_decoder_both.sh univariate_decoder_both(36, 1, 2, true, 1, 2, false, false, 100): output/univariate_decoder_both_66818029.out -- Submitted batch job 66818029
+univariate_decoder_both.sh univariate_decoder_both(36, 1, 8, true, 1, 2, false, false, 100): output/univariate_decoder_both_66818030.out -- Submitted batch job 66818030
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66927626.out -- Submitted batch job 66927626
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66927627.out -- Submitted batch job 66927627
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66927628.out -- Submitted batch job 66927628
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66927629.out -- Submitted batch job 66927629
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 3): output/main_effect_66927630.out -- Submitted batch job 66927630
+main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 3): output/main_effect_66927632.out -- Submitted batch job 66927632
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 3): output/main_effect_66927633.out -- Submitted batch job 66927633
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3): output/main_effect_66927634.out -- Submitted batch job 66927634
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 39, subjects 26 3 5 19 27 1 17 8 15 12 14 10 21 16 7 2 28 30 24 25 11 13 31 9 4 20 29 6 18 22 23: output/ccnl_fmri_glm_39_goodSubjects_66928673.out -- Submitted batch job 66928673
+ccnl_fmri_glm.sh for GLM 40, subjects 29 1 12 18 30 13 19 24 3 21 9 10 23 26 27 15 25 20 7 4 5 22 8 14 31 17 6 11 2 28 16: output/ccnl_fmri_glm_40_goodSubjects_66928674.out -- Submitted batch job 66928674
+ccnl_fmri_glm.sh for GLM 41, subjects 29 8 14 9 1 22 18 2 21 6 26 4 11 23 16 20 5 19 31 13 15 24 25 10 27 7 3 17 12 30 28: output/ccnl_fmri_glm_41_goodSubjects_66928675.out -- Submitted batch job 66928675
+ccnl_fmri_glm.sh for GLM 42, subjects 13 29 20 8 21 2 10 4 28 9 24 19 5 1 22 3 23 17 30 27 11 16 12 31 14 7 25 6 18 26 15: output/ccnl_fmri_glm_42_goodSubjects_66928685.out -- Submitted batch job 66928685
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_66942635.out -- Submitted batch job 66942635
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66984522.out -- Submitted batch job 66984522
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66988907.out -- Submitted batch job 66988907
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_66989050.out -- Submitted batch job 66989050
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 39, subjects 16 25 18 20 11 10 28 23 24 2 12 15 4 29 9 5 26 7 21 22 14 19 31 6 13 30 8 17 27 3 1: output/ccnl_fmri_glm_39_goodSubjects_66996512.out -- Submitted batch job 66996512
+ccnl_fmri_glm.sh for GLM 40, subjects 3 1 6 17 23 29 25 12 7 26 15 21 2 30 11 20 9 8 28 27 31 10 18 22 4 24 16 19 13 14 5: output/ccnl_fmri_glm_40_goodSubjects_66996514.out -- Submitted batch job 66996514
+ccnl_fmri_glm.sh for GLM 41, subjects 31 23 25 5 9 11 8 18 27 29 4 20 12 24 13 14 26 6 30 17 15 7 22 10 21 28 1 2 19 3 16: output/ccnl_fmri_glm_41_goodSubjects_66996516.out -- Submitted batch job 66996516
+ccnl_fmri_glm.sh for GLM 42, subjects 22 10 28 11 17 27 2 29 26 31 13 25 20 23 14 3 19 18 15 7 16 30 21 1 5 6 4 8 9 24 12: output/ccnl_fmri_glm_42_goodSubjects_66996518.out -- Submitted batch job 66996518
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_67038407.out -- Submitted batch job 67038407
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 12, subjects 29 19 28 4 13 7 20 24 10 22 21 12 26 18 14 3 30 8 11 16 23 27 5 31 1 15 25 6 2 17 9: output/ccnl_fmri_glm_12_goodSubjects_50233.out -- Submitted batch job 50233
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(41, \'V\', 41, \'V\', false, 100, 3): output/main_effect_51198.out -- Submitted batch job 51198
+main_effect.sh main_effect(41, \'V\', 36, \'RU\', false, 100, 3): output/main_effect_51202.out -- Submitted batch job 51202
+main_effect.sh main_effect(41, \'V\', 36, \'TU\', false, 100, 3): output/main_effect_51204.out -- Submitted batch job 51204
+main_effect.sh main_effect(36, \'RU\', 41, \'V\', false, 100, 3): output/main_effect_51207.out -- Submitted batch job 51207
+main_effect.sh main_effect(36, \'RU\', 36, \'RU\', false, 100, 3): output/main_effect_51209.out -- Submitted batch job 51209
+main_effect.sh main_effect(36, \'RU\', 36, \'TU\', false, 100, 3): output/main_effect_51211.out -- Submitted batch job 51211
+main_effect.sh main_effect(36, \'TU\', 41, \'V\', false, 100, 3): output/main_effect_51214.out -- Submitted batch job 51214
+main_effect.sh main_effect(36, \'TU\', 36, \'RU\', false, 100, 3): output/main_effect_51217.out -- Submitted batch job 51217
+main_effect.sh main_effect(36, \'TU\', 36, \'TU\', false, 100, 3): output/main_effect_51219.out -- Submitted batch job 51219
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51227.out -- Submitted batch job 51227
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51231.out -- Submitted batch job 51231
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51235.out -- Submitted batch job 51235
+univariate_decoder.sh univariate_decoder(36, \'RU\', 41, \'V\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51238.out -- Submitted batch job 51238
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51241.out -- Submitted batch job 51241
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51246.out -- Submitted batch job 51246
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51252.out -- Submitted batch job 51252
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51286.out -- Submitted batch job 51286
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 3): output/univariate_decoder_51305.out -- Submitted batch job 51305
+----------------
+--- Running univariate_decoder (no -RU)
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85272.out -- Submitted batch job 85272
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'RU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85273.out -- Submitted batch job 85273
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'TU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85274.out -- Submitted batch job 85274
+univariate_decoder.sh univariate_decoder(36, \'RU\', 41, \'V\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85276.out -- Submitted batch job 85276
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85277.out -- Submitted batch job 85277
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85278.out -- Submitted batch job 85278
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85279.out -- Submitted batch job 85279
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85280.out -- Submitted batch job 85280
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1): output/univariate_decoder_85281.out -- Submitted batch job 85281
+----------------
+--- Running univariate_decoder (no -RU)
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85300.out -- Submitted batch job 85300
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'RU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85301.out -- Submitted batch job 85301
+univariate_decoder.sh univariate_decoder(41, \'V\', 36, \'TU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85303.out -- Submitted batch job 85303
+univariate_decoder.sh univariate_decoder(36, \'RU\', 41, \'V\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85304.out -- Submitted batch job 85304
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85305.out -- Submitted batch job 85305
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85306.out -- Submitted batch job 85306
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85307.out -- Submitted batch job 85307
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85308.out -- Submitted batch job 85308
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1): output/univariate_decoder_85317.out -- Submitted batch job 85317
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_106083.out -- Submitted batch job 106083
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_106088.out -- Submitted batch job 106088
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_106089.out -- Submitted batch job 106089
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_106091.out -- Submitted batch job 106091
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_115367.out -- Submitted batch job 115367
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_115368.out -- Submitted batch job 115368
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_115379.out -- Submitted batch job 115379
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_115393.out -- Submitted batch job 115393
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_131734.out -- Submitted batch job 131734
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_131736.out -- Submitted batch job 131736
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_131739.out -- Submitted batch job 131739
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_131741.out -- Submitted batch job 131741
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_141656.out -- Submitted batch job 141656
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_141667.out -- Submitted batch job 141667
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_141669.out -- Submitted batch job 141669
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_141672.out -- Submitted batch job 141672
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, false, false, 100, 1, true): output/univariate_decoder_141985.out -- Submitted batch job 141985
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, true): output/univariate_decoder_141996.out -- Submitted batch job 141996
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, false, false, 100, 1, true): output/univariate_decoder_141999.out -- Submitted batch job 141999
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, true): output/univariate_decoder_142004.out -- Submitted batch job 142004
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', true, 0, 2, true, true, 100, 1, true): output/univariate_decoder_142191.out -- Submitted batch job 142191
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 0, 2, true, false, 100, 1, true): output/univariate_decoder_142193.out -- Submitted batch job 142193
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', true, 0, 2, true, false, 100, 1, true): output/univariate_decoder_142203.out -- Submitted batch job 142203
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 0, 2, true, false, 100, 1, true): output/univariate_decoder_142215.out -- Submitted batch job 142215
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 0, 2, true, true, 100, 1, true): output/univariate_decoder_143559.out -- Submitted batch job 143559
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 0, 2, true, false, 100, 1, true): output/univariate_decoder_143570.out -- Submitted batch job 143570
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 0, 2, true, false, 100, 1, true): output/univariate_decoder_143573.out -- Submitted batch job 143573
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 0, 2, true, false, 100, 1, true): output/univariate_decoder_143574.out -- Submitted batch job 143574
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1, 2, true, true, 100, 1, true): output/univariate_decoder_219811.out -- Submitted batch job 219811
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_219832.out -- Submitted batch job 219832
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_219835.out -- Submitted batch job 219835
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_219848.out -- Submitted batch job 219848
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10, 2, true, true, 100, 1, true): output/univariate_decoder_219896.out -- Submitted batch job 219896
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_219899.out -- Submitted batch job 219899
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_219921.out -- Submitted batch job 219921
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_219935.out -- Submitted batch job 219935
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 100, 2, true, true, 100, 1, true): output/univariate_decoder_219986.out -- Submitted batch job 219986
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_219987.out -- Submitted batch job 219987
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220009.out -- Submitted batch job 220009
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220033.out -- Submitted batch job 220033
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1000, 2, true, true, 100, 1, true): output/univariate_decoder_220047.out -- Submitted batch job 220047
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220065.out -- Submitted batch job 220065
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220078.out -- Submitted batch job 220078
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220079.out -- Submitted batch job 220079
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10000, 2, true, true, 100, 1, true): output/univariate_decoder_220160.out -- Submitted batch job 220160
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220161.out -- Submitted batch job 220161
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220172.out -- Submitted batch job 220172
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220185.out -- Submitted batch job 220185
+----------------
+--- Running univariate_decoder <-- all crap ... intercept = 0
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_220291.out -- Submitted batch job 220291
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_220292.out -- Submitted batch job 220292
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_220293.out -- Submitted batch job 220293
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_220295.out -- Submitted batch job 220295
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_220296.out -- Submitted batch job 220296
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_220298.out -- Submitted batch job 220298
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_220299.out -- Submitted batch job 220299
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_220300.out -- Submitted batch job 220300
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220301.out -- Submitted batch job 220301
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220302.out -- Submitted batch job 220302
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220303.out -- Submitted batch job 220303
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_220304.out -- Submitted batch job 220304
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220306.out -- Submitted batch job 220306
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220307.out -- Submitted batch job 220307
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220308.out -- Submitted batch job 220308
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_220309.out -- Submitted batch job 220309
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220311.out -- Submitted batch job 220311
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220312.out -- Submitted batch job 220312
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220313.out -- Submitted batch job 220313
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_220314.out -- Submitted batch job 220314
+----------------
+--- Running cross_subj_vbm
+----------------
+univariate_decoder.sh cross_subj_vbm(41, \'V\', \'V\', 2, false, 100, 1): output/cross_subj_vbm_220776.out -- Submitted batch job 220776
+univariate_decoder.sh cross_subj_vbm(36, \'RU\', \'RU\', 2, false, 100, 1)): output/cross_subj_vbm_220779.out -- Submitted batch job 220779
+univariate_decoder.sh cross_subj_vbm(36, \'TU\', \'TU\', 2, false, 100, 1)): output/cross_subj_vbm_220788.out -- Submitted batch job 220788
+----------------
+--- Running cross_subj_vbm
+----------------
+run cross_subj_vbm(36, \'RU\', \'RU\', 2, false, 100, 1): output/cross_subj_vbm_222687.out -- Submitted batch job 222687
+run cross_subj_vbm(36, \'TU\', \'TU\', 2, false, 100, 1): output/cross_subj_vbm_222699.out -- Submitted batch job 222699
+----------------
+--- Running cross_subj_vbm_beta
+----------------
+run cross_subj_vbm_beta(41, \'V\', \'V\', 2, false, 100, 1): output/cross_subj_vbm_beta_223205.out -- Submitted batch job 223205
+run cross_subj_vbm_beta(36, \'RU\', \'RU\', 2, false, 100, 1): output/cross_subj_vbm_beta_223206.out -- Submitted batch job 223206
+run cross_subj_vbm_beta(36, \'TU\', \'TU\', 2, false, 100, 1): output/cross_subj_vbm_beta_223217.out -- Submitted batch job 223217
+----------------
+--- Running cross_subj_vbm
+----------------
+run cross_subj_vbm(41, \'V\', \'V\', 2, false, 100, 1): output/cross_subj_vbm_224387.out -- Submitted batch job 224387
+run cross_subj_vbm(36, \'RU\', \'RU\', 2, false, 100, 1): output/cross_subj_vbm_224389.out -- Submitted batch job 224389
+run cross_subj_vbm(36, \'TU\', \'TU\', 2, false, 100, 1): output/cross_subj_vbm_224390.out -- Submitted batch job 224390
+----------------
+--- Running cross_subj_vbm_beta
+----------------
+run cross_subj_vbm_beta(41, \'V\', \'V\', 2, false, 100, 1): output/cross_subj_vbm_beta_224903.out -- Submitted batch job 224903
+run cross_subj_vbm_beta(36, \'RU\', \'RU\', 2, false, 100, 1): output/cross_subj_vbm_beta_224904.out -- Submitted batch job 224904
+run cross_subj_vbm_beta(36, \'TU\', \'TU\', 2, false, 100, 1): output/cross_subj_vbm_beta_224905.out -- Submitted batch job 224905
+----------------
+--- Running univariate_decoder
+----------------
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_226001.out -- Submitted batch job 226001
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_226002.out -- Submitted batch job 226002
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_226003.out -- Submitted batch job 226003
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_226004.out -- Submitted batch job 226004
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_226005.out -- Submitted batch job 226005
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_226006.out -- Submitted batch job 226006
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_226008.out -- Submitted batch job 226008
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10, 2, true, false, 100, 1, true): output/univariate_decoder_226009.out -- Submitted batch job 226009
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_226010.out -- Submitted batch job 226010
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_226011.out -- Submitted batch job 226011
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_226012.out -- Submitted batch job 226012
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 100, 2, true, false, 100, 1, true): output/univariate_decoder_226013.out -- Submitted batch job 226013
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_226014.out -- Submitted batch job 226014
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_226015.out -- Submitted batch job 226015
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_226016.out -- Submitted batch job 226016
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1000, 2, true, false, 100, 1, true): output/univariate_decoder_226017.out -- Submitted batch job 226017
+univariate_decoder.sh univariate_decoder(41, \'V\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_226018.out -- Submitted batch job 226018
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_226020.out -- Submitted batch job 226020
+univariate_decoder.sh univariate_decoder(36, \'TU\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_226021.out -- Submitted batch job 226021
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 10000, 2, true, false, 100, 1, true): output/univariate_decoder_226022.out -- Submitted batch job 226022
+----------------
+--- Running univariate_decoder <-- bad (if V < 0, RU < 0, etc hack)
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484524.out -- Submitted batch job 484524
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484525.out -- Submitted batch job 484525
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484526.out -- Submitted batch job 484526
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484527.out -- Submitted batch job 484527
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484528.out -- Submitted batch job 484528
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484529.out -- Submitted batch job 484529
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484530.out -- Submitted batch job 484530
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_484532.out -- Submitted batch job 484532
+----------------
+--- Running univariate_decoder <-- reverted; with timeouts, fixed effects => repro! 
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124500.out -- Submitted batch job 6124500
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124501.out -- Submitted batch job 6124501
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124502.out -- Submitted batch job 6124502
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124513.out -- Submitted batch job 6124513
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124524.out -- Submitted batch job 6124524
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124545.out -- Submitted batch job 6124545
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124556.out -- Submitted batch job 6124556
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6124569.out -- Submitted batch job 6124569
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 43, subjects 7 21 12 22 3 13 11 8 15 25 5 14 28 6 18 24 17 9 16 27 1 29 23 2 4 26 10 19 20 30 31: output/ccnl_fmri_glm_43_goodSubjects_6129734.out -- Submitted batch job 6129734
+ccnl_fmri_glm.sh for GLM 44, subjects 21 13 4 9 18 16 12 28 11 24 19 6 30 2 17 23 10 29 3 22 26 14 31 8 5 25 15 7 20 27 1: output/ccnl_fmri_glm_44_goodSubjects_6129749.out -- Submitted batch job 6129749
+ccnl_fmri_glm.sh for GLM 45, subjects 22 18 27 3 23 25 31 24 21 16 19 4 17 9 28 8 29 2 20 7 11 13 30 6 14 5 10 26 15 12 1: output/ccnl_fmri_glm_45_goodSubjects_6129756.out -- Submitted batch job 6129756
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6202888.out -- Submitted batch job 6202888
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6217993.out -- Submitted batch job 6217993
+----------------
+--- Running cross_subject <-- nothing
+----------------
+cross_subject.sh cross_subject(36, \'RU\', 36, \'RU\', 2, false, 100, false): output/cross_subject_6219811.out -- Submitted batch job 6219811
+cross_subject.sh cross_subject(36, \'RU\', 36, \'TU\', 2, false, 100, false): output/cross_subject_6219813.out -- Submitted batch job 6219813
+cross_subject.sh cross_subject(36, \'TU\', 36, \'RU\', 2, false, 100, false): output/cross_subject_6219816.out -- Submitted batch job 6219816
+cross_subject.sh cross_subject(36, \'TU\', 36, \'TU\', 2, false, 100, false): output/cross_subject_6219820.out -- Submitted batch job 6219820
+----------------
+--- Running cross_subj_perf <-- nothing
+----------------
+cross_subj_perf.sh cross_subj_perf(36, \'RU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_perf_6219825.out -- Submitted batch job 6219825
+cross_subj_perf.sh cross_subj_perf(36, \'RU\', 36, \'TU\', 2, false, 100, false): output/cross_subj_perf_6219828.out -- Submitted batch job 6219828
+cross_subj_perf.sh cross_subj_perf(36, \'TU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_perf_6219830.out -- Submitted batch job 6219830
+cross_subj_perf.sh cross_subj_perf(36, \'TU\', 36, \'TU\', 2, false, 100, false): output/cross_subj_perf_6219832.out -- Submitted batch job 6219832
+----------------
+--- Running simulate_more
+----------------
+simulate_more.sh simulate_more(16, 10): output/simulate_more_6220603.out -- Submitted batch job 6220603
+----------------
+--- Running univariate_decoder  <-- w/o timeouts, fixed effects => nope; badre?
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221520.out -- Submitted batch job 6221520
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221524.out -- Submitted batch job 6221524
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221528.out -- Submitted batch job 6221528
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221531.out -- Submitted batch job 6221531
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221534.out -- Submitted batch job 6221534
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221540.out -- Submitted batch job 6221540
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221544.out -- Submitted batch job 6221544
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221547.out -- Submitted batch job 6221547
+----------------
+--- Running univariate_decoder <-- w/ timeouts, fixed effects (repro!)
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6224257.out -- Submitted batch job 6224257
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6224258.out -- Submitted batch job 6224258
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+-- rsa_idx 3 --
+ccnl_rsa_searchlight.sh for rsa_idx 3, 1-10000, subjects 5 8 11 15 6 24 30 25 22 10 29 12 1 9 13 16 18 31 27 3 28 19 23 2 14 17 7 20 26 21 4: output/ccnl_rsa_searchlight_3_1-10000_goodSubjects_.out --
+ccnl_rsa_searchlight.sh for rsa_idx 3, 10001-20000, subjects 19 7 11 15 23 30 18 26 28 29 21 10 9 14 5 20 16 27 4 2 1 24 3 17 6 31 22 8 25 12 13: output/ccnl_rsa_searchlight_3_10001-20000_goodSubjects_.out --
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+-- rsa_idx 3 --
+ccnl_rsa_searchlight.sh for rsa_idx 3, 1-10000, subjects 18 12 29 17 26 3 6 15 2 16 31 7 30 22 14 5 20 10 4 1 8 21 11 25 9 13 27 19 24 28 23: output/ccnl_rsa_searchlight_3_1-10000_goodSubjects_6228529.out -- Submitted batch job 6228529
+ccnl_rsa_searchlight.sh for rsa_idx 3, 10001-20000, subjects 4 30 25 8 2 20 9 18 13 10 1 15 16 5 22 31 26 12 3 23 24 19 7 21 14 17 6 11 28 27 29: output/ccnl_rsa_searchlight_3_10001-20000_goodSubjects_6228535.out -- Submitted batch job 6228535
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 46, subjects 11 25 16 14 7 28 24 3 15 31 1 4 2 17 18 9 5 12 6 8 10 29 27 19 30 26 23 22 13 21 20: output/ccnl_fmri_glm_46_goodSubjects_6229799.out -- Submitted batch job 6229799
+ccnl_fmri_glm.sh for GLM 47, subjects 3 6 24 12 14 11 25 17 15 19 13 31 23 1 9 28 29 18 8 27 21 26 30 5 10 2 7 4 16 20 22: output/ccnl_fmri_glm_47_goodSubjects_6229800.out -- Submitted batch job 6229800
+ccnl_fmri_glm.sh for GLM 48, subjects 22 26 14 10 17 23 27 28 19 11 8 24 6 31 1 4 3 7 2 20 5 29 16 30 21 12 9 13 25 15 18: output/ccnl_fmri_glm_48_goodSubjects_6229811.out -- Submitted batch job 6229811
+----------------
+--- Running ccnl_rsa_searchlight for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+-- rsa_idx 4 --
+ccnl_rsa_searchlight.sh for rsa_idx 4, 1-10000, subjects 30 10 3 31 19 13 5 9 15 7 27 18 6 16 4 12 28 2 14 20 21 22 8 26 24 25 29 1 11 17 23: output/ccnl_rsa_searchlight_4_1-10000_goodSubjects_6230109.out -- Submitted batch job 6230109
+ccnl_rsa_searchlight.sh for rsa_idx 4, 10001-20000, subjects 22 1 14 19 9 5 8 3 26 11 20 13 25 15 17 31 28 23 10 27 29 2 30 16 4 21 18 24 7 6 12: output/ccnl_rsa_searchlight_4_10001-20000_goodSubjects_6230111.out -- Submitted batch job 6230111
+----------------
+--- Running is_rsa
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6244436.out -- Submitted batch job 6244436
+----------------
+--- Running is_rsa
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6308134.out -- Submitted batch job 6308134
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6308348.out -- Submitted batch job 6308348
+----------------
+--- Running univariate_decoder <-- w/ timeouts, mixed effects
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6309249.out -- Submitted batch job 6309249
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6309253.out -- Submitted batch job 6309253
+----------------
+--- Running simulate_more
+----------------
+simulate_more.sh simulate_more(16, 10): output/simulate_more_6317051.out -- Submitted batch job 6317051
+----------------
+--- Running is_rsa glm 23 JK wrong... scp_to_ncf fuckup
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6321113.out -- Submitted batch job 6321113
+----------------
+--- Running univariate_decoder <-- no timeouts, mixed effects
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321496.out -- Submitted batch job 6321496
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321505.out -- Submitted batch job 6321505
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321513.out -- Submitted batch job 6321513
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321518.out -- Submitted batch job 6321518
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321524.out -- Submitted batch job 6321524
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321530.out -- Submitted batch job 6321530
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321540.out -- Submitted batch job 6321540
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321550.out -- Submitted batch job 6321550
+----------------
+--- Running cross_subj_perf
+----------------
+cross_subj_perf.sh cross_subj_perf(47, \'DV\', 47, \'DV\', 2, false, 100, false): output/cross_subj_perf_6326101.out -- Submitted batch job 6326101
+----------------
+--- Running cross_subj_lik
+----------------
+cross_subj_lik.sh cross_subj_lik(47, \'DV\', 47, \'DV\', 2, false, 100, false): output/cross_subj_lik_6328881.out -- Submitted batch job 6328881
+cross_subj_lik.sh cross_subj_lik(36, \'RU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_lik_6328885.out -- Submitted batch job 6328885
+cross_subj_lik.sh cross_subj_lik(36, \'RU\', 36, \'TU\', 2, false, 100, false): output/cross_subj_lik_6328889.out -- Submitted batch job 6328889
+cross_subj_lik.sh cross_subj_lik(36, \'TU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_lik_6328891.out -- Submitted batch job 6328891
+cross_subj_lik.sh cross_subj_lik(36, \'TU\', 36, \'TU\', 2, false, 100, false): output/cross_subj_lik_6328894.out -- Submitted batch job 6328894
+----------------
+--- Running univariate_decoder <---- EBMethod = TrustRegion2D
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357858.out -- Submitted batch job 6357858
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357862.out -- Submitted batch job 6357862
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357865.out -- Submitted batch job 6357865
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357874.out -- Submitted batch job 6357874
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357881.out -- Submitted batch job 6357881
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357889.out -- Submitted batch job 6357889
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357893.out -- Submitted batch job 6357893
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357902.out -- Submitted batch job 6357902
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 50, subjects 2 20 1 29 23 22 15 18 11 10 8 19 5 31 14 25 3 26 4 16 30 7 24 13 12 27 6 21 9 28 17: output/ccnl_fmri_glm_50_goodSubjects_6362473.out -- Submitted batch job 6362473
+----------------
+--- Running is_rsa  glm 23
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6363849.out -- Submitted batch job 6363849
