@@ -58,6 +58,25 @@ switch regressor
             formula_dec = 'C ~ -1 + V + RU + VdecTU';
         end
 
+    case 'DV'
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV_orth + (-1 + V + RU + VTU + decDV_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV + (-1 + V + RU + VTU + decDV|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+            formula_dec = 'C ~ -1 + decDV (-1 + decDV|S)';
+        else
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+            formula_dec = 'C ~ -1 + decDV';
+        end
+
     case 'both'
         if mixed_effects
             if do_orth

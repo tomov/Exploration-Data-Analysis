@@ -8,6 +8,8 @@ function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_or
 
 printcode;
 
+assert(standardize ~= 1, 'Don''t z-score! It makes the w''s meaningless, also it''s incorrect.');
+
 nTRs = 242;
 EXPT = exploration_expt();
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
@@ -78,16 +80,19 @@ end
 % or flip RU based on sign, etc
 %
 V_all = [];
+DV_all = [];
 for s = 1:length(data)
     modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
     load(fullfile(modeldir,'SPM.mat'));
 
     data(s).act = nan(length(data(s).run), length(masks));
-    [V, RU, TU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
+    [V, RU, TU, VTU, DV] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
     data(s).TU = TU;
     data(s).V = V;
+    data(s).DV = DV;
     V_all = [V_all; V(~data(s).timeout)];
+    DV_all = [DV_all; DV(~data(s).timeout)];
 
     for c = 1:length(masks)
         % not all runs were used in the GLMs
@@ -105,6 +110,11 @@ for s = 1:length(data)
         %% adjust for fact that the regressor was |V|
         %if strcmp(regressor, 'V')
         %    data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
+        %end
+
+        %% adjust for fact that the regressor was |DV|
+        %if strcmp(regressor, 'DV')
+        %    data(s).act(:,c) = data(s).act(:,c) .* (DV >= 0) + (-data(s).act(:,c)) .* (DV < 0);
         %end
     end
 end
@@ -131,6 +141,8 @@ for c = 1:numel(masks)
                 mse(s) = immse(data(s).TU(which), data(s).act(which, c));
             case 'V'
                 mse(s) = immse(data(s).V(which), data(s).act(which, c));
+            case 'DV'
+                mse(s) = immse(data(s).DV(which), data(s).act(which, c));
         end
     end
     assert(all(isnan(act(bad_runs))));
@@ -152,7 +164,7 @@ for c = 1:numel(masks)
             % orthogonalized version
             tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
             decRU_orth = decRU;
-            decRU_orth(~bad_runs) = tmp(:,2);
+            decRU_orth(~bad_runs) = tmp(:,end);
             if standardize == 1
                 decRU_orth(~bad_runs) = zscore(decRU_orth(~bad_runs));
             elseif standardize == 2
@@ -172,7 +184,7 @@ for c = 1:numel(masks)
             % orthogonalized version
             tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
             VdecTU_orth = VdecTU;
-            VdecTU_orth(~bad_runs) = tmp(:,2); 
+            VdecTU_orth(~bad_runs) = tmp(:,end); 
             if standardize == 1
                 VdecTU_orth(~bad_runs) = zscore(VdecTU_orth(~bad_runs));
             elseif standardize == 2
@@ -192,7 +204,7 @@ for c = 1:numel(masks)
             % orthogonalized version
             tmp = spm_orth([tbl.V(~bad_runs), decV(~bad_runs)]);
             decV_orth = decV;
-            decV_orth(~bad_runs) = tmp(:,2);
+            decV_orth(~bad_runs) = tmp(:,end);
             if standardize == 1
                 decV_orth(~bad_runs) = zscore(decV_orth(~bad_runs));
             elseif standardize == 2
@@ -201,11 +213,32 @@ for c = 1:numel(masks)
             tbl = [tbl table(decV_orth)];
 
 
+        case 'DV'
+            decDV = act;
+            if standardize == 1
+                decDV(~bad_runs) = zscore(decDV(~bad_runs));
+            elseif standardize == 2
+                decDV(~bad_runs) = decDV(~bad_runs) / norm(decDV(~bad_runs));
+            end
+            tbl = [tbl table(decDV)];
+
+            % orthogonalized version
+            tmp = spm_orth([tbl.V(~bad_runs), tbl.RU(~bad_runs), tbl.VTU(~bad_runs), decDV(~bad_runs)]);
+            decDV_orth = decDV;
+            decDV_orth(~bad_runs) = tmp(:,end);
+            if standardize == 1
+                decDV_orth(~bad_runs) = zscore(decDV_orth(~bad_runs));
+            elseif standardize == 2
+                decDV_orth(~bad_runs) = decDV_orth(~bad_runs) / norm(decDV_orth(~bad_runs));
+            end
+            tbl = [tbl table(decDV_orth)];
+
+
         otherwise
             assert(false);
     end
 
-    % glm with both RU and actRU
+    % augmented glm with decoded regressor 
     results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     [w, names, stats] = fixedEffects(results_both{c});
     ps(c,:) = stats.pValue';
@@ -213,7 +246,7 @@ for c = 1:numel(masks)
     stats.pValue
     w
 
-    % glm with RU only
+    % original glm  
     % do model comparison
     results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
@@ -221,13 +254,15 @@ for c = 1:numel(masks)
     p_comp(c,:) = comp{c}.pValue(2);
     BIC(c,:) = comp{c}.BIC';
 
-    % glm with actRU only
+    %{
+    % glm with decoded regressor only
     % do second model comparison
     results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
     comp2{c}
     p_comp2(c,:) = comp2{c}.pValue(2);
     BIC2(c,:) = comp2{c}.BIC';
+    %}
 
 
     % sanity check -- activations should correlate with regressor
@@ -241,6 +276,8 @@ for c = 1:numel(masks)
         case 'V'
             V = table2array(tbl(:,'V'));
             [r,p] = corr(V(~bad_runs), act(~bad_runs));
+        case 'DV'
+            [r,p] = corr(DV_all(~bad_runs), act(~bad_runs));
     end
 
 
@@ -266,6 +303,9 @@ for c = 1:numel(masks)
             [r, p] = corr(abs(w(:,3)), mse');
         case 'V'
             [r, p] = corr(abs(w(:,1)), mse');
+        case 'DV'
+            r = NaN;
+            p = NaN;
         otherwise
             assert(false);
     end
@@ -284,6 +324,7 @@ p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
-BIC_dec = BIC2(:,1);
-table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, BIC_dec, p_comp2, p_ax, r_ax)
+%BIC_dec = BIC2(:,1);
+p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
+table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, p_ax, r_ax)
 
