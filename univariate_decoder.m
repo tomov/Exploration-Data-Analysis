@@ -94,11 +94,12 @@ for s = 1:length(data)
     DV_all = [DV_all; DV(~data(s).timeout)];
 
     for c = 1:length(masks)
-        % not all runs were used in the GLMs
+        % pick trial_onset activations only
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
         act{c} = data(s).all_act{c}(which_act,:); % only consider 1 activation for each trial
 
         % average across voxels in ROI
+        % notice not all runs were used in the GLMs
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
         % adjust for fact that the regressor was |RU|
@@ -149,7 +150,8 @@ for c = 1:numel(masks)
 
     tbl = data2table(data,standardize,1); % exclude timeouts for fitting
 
-    % TODO dedupe with univariate_decoder_both and three
+    % TODO use this, also in univariate_decoder_both and three
+    %tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, bad_runs);
     switch regressor
         case 'RU'
             decRU = act;
