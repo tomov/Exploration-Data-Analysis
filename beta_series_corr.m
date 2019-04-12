@@ -5,7 +5,7 @@
 
 % correlate beta series between DV and RU and TU ROIs
 %
-function roi_corr()
+function beta_series_corr()
 
     printcode;
 
@@ -20,6 +20,9 @@ function roi_corr()
     clusterFWEcorrect = false;
     extent = 100;
     Num = 1;
+
+    load results_glme_fig3_nozscore.mat;
+    w = getEffects(results_VTURU, false);
 
     % get DV ROI from GLM 47
     [DV_masks, ~] = get_masks(DV_glm, 'DV', clusterFWEcorrect, extent, Num);
@@ -67,17 +70,32 @@ function roi_corr()
             rs
             mean_rs(dv,:) = mean(rs);
 
+            % is coupling > 0 across subjects?
+            %
             rs = atanh(rs);
             [h, p, ci, stats] = ttest(rs)
 
             ttest_ts(dv,:) = stats.tstat;
             ttest_ps(dv,:) = p;
+
+
+            % correlate f'n coupling with w's
+            %
+            if c == 1
+                % TODO hardcoded
+                [r, p] = corr(rs', w(:,2));
+            else
+                [r, p] = corr(rs', w(:,3));
+            end
+
+            cc_rs(dv,:) = r;
+            cc_ps(dv,:) = p;
         end
 
-        T = table(DV_masks', mean_rs, ttest_ts, ttest_ps);
+        T = table(DV_masks', mean_rs, ttest_ts, ttest_ps, cc_rs, cc_ps);
         disp(T);
         all_T{c} = T;
     end
 
-    save('roi_corr.mat', '-v7.3');
+    save('beta_series_corr.mat', '-v7.3');
 end
