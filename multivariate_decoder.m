@@ -3,7 +3,7 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function multivariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept)
+function multivariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null)
 
 printcode;
 
@@ -14,6 +14,7 @@ EXPT = exploration_expt();
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
 data = load_data;
+data = data(1:4);
 
 if ~exist('do_orth', 'var')
     do_orth = false;
@@ -40,7 +41,7 @@ if ~exist('intercept', 'var')
     intercept = false; 
 end
 
-filename = sprintf('multivariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept);
+filename = sprintf('multivariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
 disp(filename);
 
 % get ROIs
@@ -85,8 +86,8 @@ for s = 1:length(data)
     data(s).TU = TU;
     data(s).V = V;
     data(s).DV = DV;
-    V_all = [V_all; V(~data(s).timeout)];
-    DV_all = [DV_all; DV(~data(s).timeout)];
+    V_all = [V_all; V];
+    DV_all = [DV_all; DV];
 
     data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
 
@@ -95,7 +96,7 @@ for s = 1:length(data)
         B = get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
 
         % exclude nan voxels
-        which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+        which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
         B(:, which_nan) = [];
 
         % init betas with # trials = # of rows in behavioral data
@@ -123,7 +124,19 @@ for c = 1:numel(masks)
     for s = 1:length(data)
         exclude = [exclude; data(s).exclude];
         X = data(s).betas{c};
-        y = data(s).y;
+
+        switch regressor
+            case 'RU'
+                y = data(s).RU;
+            case 'TU'
+                y = data(s).TU;
+            case 'V'
+                y = data(s).V;
+            case 'DV'
+                y = data(s).DV;
+            otherwise
+                assert(false);
+        end
 
         % remove bad data points
         X = X(~data(s).exclude, :);
@@ -171,7 +184,7 @@ for c = 1:numel(masks)
     tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
 
 
-    tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude);
+    tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
 
 
     % augmented glm with decoded regressor 

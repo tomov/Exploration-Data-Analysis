@@ -1,4 +1,4 @@
-function tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude)
+function tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all)
 
     % given a table generated with data2table
     % and a decoded regressor dec, append it to the table
