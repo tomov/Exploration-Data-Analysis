@@ -4,8 +4,10 @@
 
 clear all;
 
+printcode;
+
 glmodel = 23;
-regressor = 'trial_onset';
+regressor = 'choice_onset';
 EXPT = exploration_expt();
 null_iters = 10000;
 
@@ -64,7 +66,7 @@ for i = 1:length(parcel_idxs)
     % extract betas
     % TODO ccnl_get_beta_fast
     for s = 1:length(data)
-        B = get_beta_series(EXPT, glmodel, s, regressor, mask);
+        B = get_beta_series(EXPT, glmodel, s, regressor, mask, false);
 
         b(s,:) = nanmean(B, 1);
     end
@@ -110,4 +112,4 @@ for i = 1:length(parcel_idxs)
 end
 
 
-save('is_rsa_glmodel=23.mat', '-v7.3');
+save('is_rsa_glmodel=23_choice_onset.mat', '-v7.3');

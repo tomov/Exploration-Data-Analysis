@@ -2062,6 +2062,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
 
         % same as 47 but at choice onset 
+        % trying to make the activations positive
         %
         % |DV| @ choice_onset 
         % left choice @ choice_onset (!!!)
@@ -2133,6 +2134,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
         % 36 + beta series for RU and TU i.e. functional connectivity, w/ orth
+        % => who are the RU and TU ROI's talking to?
         %
         case 52 
         
@@ -2299,6 +2301,52 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
+        % 36 + condition regressor at trial onset
+        % trying to get rid of negative activations for RU, also make it significant => could be that SS condition is screwing us (ppl stop paying attn)
+        %
+        case 54
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           for cond = 1:3 % skip last one => linearly dependent w/ trial_onset
+                multi.names{cond + 4} = conds{cond};
+                multi.onsets{cond + 4} = data(subj).trial_onset(which_trials & data(subj).cond == cond)';
+                multi.durations{cond + 4} = zeros(size(multi.onsets{cond}));
+           end
 
 
 

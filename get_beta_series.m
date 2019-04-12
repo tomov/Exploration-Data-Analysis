@@ -2,7 +2,11 @@
 %
 % adapted from https://github.com/hayleydorfman/agency-fmri/blob/master/getBetaSeries.m
 %
-function B = get_beta_series(EXPT,glmodel,subj, name, mask)
+function B = get_beta_series(EXPT,glmodel,subj, name, mask, do_average)
+
+    if ~exist('do_average', 'var')
+        do_average = true; % average across voxels?
+    end
 
     %prefix = [event_prefix, '_run_', num2str(run)];
     
@@ -21,7 +25,9 @@ function B = get_beta_series(EXPT,glmodel,subj, name, mask)
     cd(modeldir); % b/c SPM.Vbeta are relative to modeldir
     B = spm_data_read(SPM.Vbeta(which), find(mask));
     cd(cdir);
-            
-    B = nanmean(B,2);
+           
+    if do_average
+        B = nanmean(B,2);
+    end
     
     assert(size(B,1) > 0, 'no betas - likely wrong name');
