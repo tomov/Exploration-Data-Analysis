@@ -2068,7 +2068,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % left choice @ choice_onset (!!!)
         % nuisance @ trial_onset and feedback_onset 
         %
-        case 50 
+        case 50  % <-- same; negatives
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
 
            multi.names{1} = 'choice_onset';
@@ -2096,7 +2096,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % copy of 36, but left - right
         % seeking RU after FWE
         %
-        case 51
+        case 51 % <-- RU - weird occipital, no RLPFC; TU same; nothing for V; absolutely nothing for VTU
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'left');
 
            multi.names{1} = 'trial_onset';
@@ -2133,10 +2133,10 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
-        % 36 + beta series for RU and TU i.e. functional connectivity, w/ orth
+        % 36 + beta series for RU and TU i.e. functional connectivity, WITH orth
         % => who are the RU and TU ROI's talking to?
         %
-        case 52 
+        case 52  % <-- RU_betas = nothing; TU_betas1 = mOFC but ns; TU_betas2 = negative insula & occipital
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2220,7 +2220,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % same as 52 but do NOT orthogonalise
         %
-        case 53
+        case 53  % <-- RU_betas = nothing; TU_betas1 = R lingual gyrus; TU_betas2 = negative occipital
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2345,10 +2345,67 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            for cond = 1:3 % skip last one => linearly dependent w/ trial_onset
                 multi.names{cond + 4} = conds{cond};
                 multi.onsets{cond + 4} = data(subj).trial_onset(which_trials & data(subj).cond == cond)';
-                multi.durations{cond + 4} = zeros(size(multi.onsets{cond}));
+                multi.durations{cond + 4} = zeros(size(multi.onsets{cond + 4}));
            end
 
 
+        % 53 but with RU_betas only -- sanity check
+        %
+        case 55
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do NOT orthogonalise them -- need to be ultra-conservative here
+
+           %
+           % brain activity pmods
+           %
+
+           VTURU_glm = 36;
+           EXPT = exploration_expt();
+           clusterFWEcorrect = false;
+           extent = 100;
+           Num = 1;
+
+           beta_series_glm = 23;
+           event = ['trial_onset_run_', num2str(run)];
+
+           % get RU ROIs from GLM 36 and beta series from GLM 23
+           RU_rois = [1];
+           [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
+           RU_mask = RU_masks{RU_rois(1)};
+
+           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+
+           % get TU ROIs from GLM 36 and beta series from GLM 23
+           TU_rois = [2, 8];
+           [TU_masks, ~] = get_masks(VTURU_glm, 'TU', clusterFWEcorrect, extent, Num);
+           TU_mask1 = TU_masks{TU_rois(1)};
+           TU_mask2 = TU_masks{TU_rois(2)};
+
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+
+           multi.pmod(1).name{1} = 'RU_betas';
+           multi.pmod(1).param{1} = RU_betas';
+           multi.pmod(1).poly{1} = 1; 
+
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
 

@@ -239,7 +239,7 @@ for c = 1:numel(masks)
     end
 
     % augmented glm with decoded regressor 
-    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'fsolve', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     [w, names, stats] = fixedEffects(results_both{c});
     ps(c,:) = stats.pValue';
     results_both{c}
@@ -248,7 +248,7 @@ for c = 1:numel(masks)
 
     % original glm  
     % do model comparison
-    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'fsolve', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
     comp{c}
     p_comp(c,:) = comp{c}.pValue(2);
@@ -257,7 +257,7 @@ for c = 1:numel(masks)
     %{
     % glm with decoded regressor only
     % do second model comparison
-    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'fsolve', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
     comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
     comp2{c}
     p_comp2(c,:) = comp2{c}.pValue(2);

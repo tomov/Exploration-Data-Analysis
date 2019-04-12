@@ -33,6 +33,7 @@ function roi_corr()
 
     seed_masks = [RU_masks, TU_masks];
 
+
     for c = 1:length(seed_masks)
         seed_mask = seed_masks{c};
 
@@ -73,7 +74,10 @@ function roi_corr()
             ttest_ps(dv,:) = p;
         end
 
-        table(DV_masks', mean_rs, ttest_ts, ttest_ps);
+        T = table(DV_masks', mean_rs, ttest_ts, ttest_ps);
+        disp(T);
+        all_T{c} = T;
     end
 
+    save('roi_corr.mat', '-v7.3');
 end
