@@ -1,4 +1,11 @@
-function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
+function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
+
+    if exist('exclude', 'var')
+        X = X(~exclude, :);
+        y = y(~exclude);
+        Xtest = Xtest(~exclude, :);
+        foldid = foldid(~exclude);
+    end
 
     % Fit y = X * b using different methods.
     % Return mean-squared error (mse) and pred = Xtest * b.

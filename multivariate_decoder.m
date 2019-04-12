@@ -14,7 +14,6 @@ EXPT = exploration_expt();
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
 data = load_data;
-data = data(1:4);
 
 if ~exist('do_orth', 'var')
     do_orth = false;
@@ -41,6 +40,10 @@ if ~exist('intercept', 'var')
     intercept = false; 
 end
 
+betas_from_mat = true;
+
+
+
 filename = sprintf('multivariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
 disp(filename);
 
@@ -48,16 +51,7 @@ disp(filename);
 [masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
 
 
-% find closest TR to each trial onset (adjusted for HRF f'n)
-for s = 1:length(data)
-    runs = find(goodRuns{s}); % only those runs were included in the GLMs
-    data(s).bad_runs = ~ismember(data(s).run, runs); % ... those runs were NOT included in the GLMs
-
-    % trial onset idx's from bad runs are NaNs
-    [~,session] = find(data(s).run == runs); % automatically excludes bad runs
-    data(s).trial_onset_act_idx = nan(length(data(s).trial_onset), 1);
-    data(s).trial_onset_act_idx(~data(s).bad_runs) = get_activations_idx(EXPT, data(s).trial_onset(~data(s).bad_runs), session, nTRs);
-end
+load(filename);
 
 
 % define behavioral / hybrid GLM formulas
@@ -66,10 +60,35 @@ formula_both
 formula_orig
 
 
-% extract activations at trial onset
-beta_series_glm = 23;
-EXPT = exploration_expt();
+%{
 
+% --------- extract betas from .mat files -----------
+
+if betas_from_mat
+    % extract betas (GLM 23, saved as .mat files)
+    roi = extract_roi_betas(masks, 'trial_onset');
+
+    % clean up betas
+    %
+    for c = 1:length(roi)
+        for s = 1:length(data)
+            B = roi(c).subj(s).betas;
+            runs = find(goodRuns{s});
+            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
+            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
+            data(s).betas{c} = B;
+        end
+    end
+end
+
+% ---------------------------------------------
+
+
+if ~betas_from_mat
+    beta_series_glm = 23;
+    EXPT = exploration_expt();
+end
 
 % extract & massage betas
 % e.g. make them match the rows in the data table (NaNs for missing runs)
@@ -91,21 +110,27 @@ for s = 1:length(data)
 
     data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
 
-    for c = 1:length(masks)
-        % get beta series
-        B = get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
+    % --------- alternatively, extract betas from disk TODO sanity check -----------
+    %
+    if ~betas_from_mat
+        for c = 1:length(masks)
+            % get beta series
+            B = get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
 
-        % exclude nan voxels
-        which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
-        B(:, which_nan) = [];
+            % exclude nan voxels
+            which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+            B(:, which_nan) = [];
 
-        % init betas with # trials = # of rows in behavioral data
-        data(s).betas{c} = nan(length(data(s).run), size(B,2));
+            % init betas with # trials = # of rows in behavioral data
+            data(s).betas{c} = nan(length(data(s).run), size(B,2));
 
-        % not all runs were used in GLM => only set betas for the trials we will use
-        data(s).betas{c}(~data(s).bad_runs,:) = B;
+            % not all runs were used in GLM => only set betas for the trials we will use
+            data(s).betas{c}(~data(s).bad_runs,:) = B;
+        end
     end
 end
+
+%}
 
 save(filename, '-v7.3');
 
@@ -122,7 +147,6 @@ for c = 1:numel(masks)
     exclude = [];
     mse = [];
     for s = 1:length(data)
-        exclude = [exclude; data(s).exclude];
         X = data(s).betas{c};
 
         switch regressor
@@ -138,26 +162,22 @@ for c = 1:numel(masks)
                 assert(false);
         end
 
-        % remove bad data points
-        X = X(~data(s).exclude, :);
-        y = y(~data(s).exclude);
-
-        % predict using full data set; we ignore bad trials later 
-        % also for CV, one run per fold
-        [pred, mse(s)] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+        % predict, excluding bad trials (timeouts & bad runs) 
+        % for CV, one run per fold
+        [pred, mse(s)] = multilinear_fit(X, y, X, method, data(s).run, data(s).exclude);
         data(s).mse{c} = mse(s);
 
-        if strcmp(method, 'ridge_CV_CV')
-            tmp = pred;
-            pred = nan(length(data(s).run), 1);
-            pred(~data(s).exclude) = tmp;
-        end
+        % pad up predictions with nan's for bad trials 
+        tmp = pred;
+        pred = nan(length(data(s).run), 1);
+        pred(~data(s).exclude) = tmp;
 
-        % not any more
-        %
+        % sometimes predictions are nan's => exclude those too
+        exclude = [exclude; data(s).exclude | isnan(pred)];
+
         %if strcmp(regressor, 'RU')
         %    pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
-        %end
+        %end NB: we don't do this any more b/c we directly predict RU
         dec = [dec; pred];
 
         % optionally generate null distribution
@@ -183,8 +203,9 @@ for c = 1:numel(masks)
 
     tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
 
-
     tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
+
+    save wtf.mat
 
 
     % augmented glm with decoded regressor 
