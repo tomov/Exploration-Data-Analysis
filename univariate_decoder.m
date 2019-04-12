@@ -61,10 +61,9 @@ end
 
 
 % define behavioral / hybrid GLM formulas
-[formula_both, formula_orig, formula_dec] = get_formula(regressor, do_orth, mixed_effects, intercept);
+[formula_both, formula_orig] = get_formula(regressor, do_orth, mixed_effects, intercept);
 formula_both
 formula_orig
-formula_dec
 
 
 % decode regressor 
@@ -254,16 +253,6 @@ for c = 1:numel(masks)
     p_comp(c,:) = comp{c}.pValue(2);
     BIC(c,:) = comp{c}.BIC';
 
-    %{
-    % glm with decoded regressor only
-    % do second model comparison
-    results_dec{c} = fitglme(tbl,formula_dec,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
-    comp2{c} = compare(results_dec{c}, results_both{c}); % order is important -- see docs
-    comp2{c}
-    p_comp2(c,:) = comp2{c}.pValue(2);
-    BIC2(c,:) = comp2{c}.BIC';
-    %}
-
 
     % sanity check -- activations should correlate with regressor
     switch regressor
@@ -325,7 +314,6 @@ p_uncorr = ps(:,4);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
-%BIC_dec = BIC2(:,1);
 p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
 table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, p_ax, r_ax)
 

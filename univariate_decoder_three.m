@@ -63,7 +63,7 @@ end
 
 
 % define behavioral / hybrid GLM formulas
-[formula_three, formula_orig, formula_dec] = get_formula('three', do_orth, mixed_effects);
+[formula_three, formula_orig] = get_formula('three', do_orth, mixed_effects);
 
 
 % decode regressor 
