@@ -1,15 +1,12 @@
 function [formula_both, formula_orig] = get_formula(regressor, do_orth, mixed_effects, intercept)
 
-% notice we don't include decoded regressors in random effects 
-% that's b/c we don't want to overparameterize the model; we want to be maximally conservative
-
 switch regressor
     case 'RU'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth + (-1 + V + RU + VTU + decRU_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + decRU + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU + (-1 + V + RU + VTU + decRU|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else
@@ -24,9 +21,9 @@ switch regressor
     case 'V'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + (-1 + V + RU + VTU + decV_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + decV + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decV + (-1 + V + RU + VTU + decV|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else
@@ -41,9 +38,9 @@ switch regressor
     case 'TU'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU_orth + (-1 + V + RU + VTU + VdecTU_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + VdecTU + (-1 + V + RU + VTU + VdecTU|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else
@@ -58,9 +55,9 @@ switch regressor
     case 'DV'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + decDV_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV_orth + (-1 + V + RU + VTU + decDV_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + decDV + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decDV + (-1 + V + RU + VTU + decDV|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else
@@ -75,9 +72,9 @@ switch regressor
     case 'both'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth + VdecTU_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU_orth + VdecTU_orth + (-1 + V + RU + VTU + decRU_orth + VdecTU_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + decRU + VdecTU + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decRU + VdecTU + (-1 + V + RU + VTU + decRU + VdecTU|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else
@@ -92,9 +89,9 @@ switch regressor
     case 'three'
         if mixed_effects
             if do_orth
-                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth + (-1 + V + RU + VTU + decV_orth + decRU_orth + VdecTU_orth|S)';
             else
-                formula_both = 'C ~ -1 + V + RU + VTU + decV + decRU + VdecTU + (-1 + V + RU + VTU|S)';
+                formula_both = 'C ~ -1 + V + RU + VTU + decV + decRU + VdecTU + (-1 + V + RU + VTU + decV + decRU + VdecTU|S)';
             end
             formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
         else

@@ -15,6 +15,9 @@ EXPT = exploration_expt();
 
 data = load_data;
 
+betas_from_mat = true;
+null_iters = 100;
+
 if ~exist('do_orth', 'var')
     do_orth = false;
 end
@@ -40,9 +43,6 @@ if ~exist('intercept', 'var')
     intercept = false; 
 end
 
-betas_from_mat = true;
-
-
 
 filename = sprintf('multivariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
 disp(filename);
@@ -51,16 +51,11 @@ disp(filename);
 [masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
 
 
-load(filename);
-
-
 % define behavioral / hybrid GLM formulas
 [formula_both, formula_orig] = get_formula(regressor, do_orth, mixed_effects, intercept);
 formula_both
 formula_orig
 
-
-%{
 
 % --------- extract betas from .mat files -----------
 
@@ -130,7 +125,6 @@ for s = 1:length(data)
     end
 end
 
-%}
 
 save(filename, '-v7.3');
 
@@ -209,7 +203,7 @@ for c = 1:numel(masks)
 
 
     % augmented glm with decoded regressor 
-    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal', 'Exclude',exclude);
     [w, names, stats] = fixedEffects(results_both{c});
     ps(c,:) = stats.pValue';
     results_both{c}
@@ -218,7 +212,7 @@ for c = 1:numel(masks)
 
     % original glm  
     % do model comparison
-    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal', 'Exclude',exclude);
+    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal', 'Exclude',exclude);
     comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
     comp{c}
     p_comp(c,:) = comp{c}.pValue(2);
@@ -249,11 +243,11 @@ for c = 1:numel(masks)
     %
     if standardize == 1
         assert(false, 'NO ZSCORING!');
-        load results_glme_fig3_TrustRegion2D.mat; % TODO does not exist
+        load results_glme_fig3.mat; % TODO does not exist
     elseif standardize == 2
-        load results_glme_fig3_norm_TrustRegion2D.mat;
+        load results_glme_fig3_norm.mat;
     else
-        load results_glme_fig3_nozscore_TrustRegion2D.mat;
+        load results_glme_fig3_nozscore.mat;
     end
 
     w = getEffects(results_VTURU, false);

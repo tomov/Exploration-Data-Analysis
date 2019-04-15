@@ -1984,7 +1984,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % 36 but with residuals from DV Precentral (L) ROI (GLM 47)
         % for functional connectivity analysis (activation-induced correlations; see p. 133 from Poldrack book)
         %
-        case 49 % WRONG -- see below
+        case 49 % WRONG -- see below; never ran it
            roi_glmodel = 47; % DV only
            roi_contrast = 'DV';
            clusterFWEcorrect = false;
@@ -2180,7 +2180,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
            RU_mask = RU_masks{RU_rois(1)};
 
-           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+           RU_betas = get_beta_series(EXPT, beta_series_glm, subj, event, RU_mask);
 
            % get TU ROIs from GLM 36 and beta series from GLM 23
            TU_rois = [2, 8];
@@ -2188,8 +2188,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            TU_mask1 = TU_masks{TU_rois(1)};
            TU_mask2 = TU_masks{TU_rois(2)};
 
-           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
-           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask2);
 
            multi.pmod(1).name{5} = 'RU_betas';
            multi.pmod(1).param{5} = RU_betas';
@@ -2264,7 +2264,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
            RU_mask = RU_masks{RU_rois(1)};
 
-           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+           RU_betas = get_beta_series(EXPT, beta_series_glm, subj, event, RU_mask);
 
            % get TU ROIs from GLM 36 and beta series from GLM 23
            TU_rois = [2, 8];
@@ -2272,8 +2272,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            TU_mask1 = TU_masks{TU_rois(1)};
            TU_mask2 = TU_masks{TU_rois(2)};
 
-           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
-           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask2);
 
            multi.pmod(1).name{5} = 'RU_betas';
            multi.pmod(1).param{5} = RU_betas';
@@ -2304,7 +2304,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % 36 + condition regressor at trial onset
         % trying to get rid of negative activations for RU, also make it significant => could be that SS condition is screwing us (ppl stop paying attn)
         %
-        case 54
+        case 54 % <-- even less stuff than 36 => less (regressors) is more (blobs)
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2351,7 +2351,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 53 but with RU_betas only -- sanity check
         %
-        case 55
+        case 55  % <-------------- NOTHING! suspicious -- is get_beta_series broken?
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2379,7 +2379,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            [RU_masks, ~] = get_masks(VTURU_glm, 'RU', clusterFWEcorrect, extent, Num);
            RU_mask = RU_masks{RU_rois(1)};
 
-           RU_betas = get_beta_series(EXPT, beta_series_glm, s, event, RU_mask);
+           RU_betas = get_beta_series(EXPT, beta_series_glm, subj, event, RU_mask);
 
            % get TU ROIs from GLM 36 and beta series from GLM 23
            TU_rois = [2, 8];
@@ -2387,8 +2387,8 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            TU_mask1 = TU_masks{TU_rois(1)};
            TU_mask2 = TU_masks{TU_rois(2)};
 
-           TU_betas1 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask1);
-           TU_betas2 = get_beta_series(EXPT, beta_series_glm, s, event, TU_mask2);
+           TU_betas1 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask1);
+           TU_betas2 = get_beta_series(EXPT, beta_series_glm, subj, event, TU_mask2);
 
            multi.pmod(1).name{1} = 'RU_betas';
            multi.pmod(1).param{1} = RU_betas';
@@ -2408,6 +2408,26 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{4} = zeros(size(multi.onsets{4}));
 
 
+        % 36 but minimalist -- just trial onset, RU, and feedback onset
+        % looking for RU ...
+        %
+        case 56
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'feedback_onset';
+           multi.onsets{2} = data(subj).feedback_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
 
 
 
