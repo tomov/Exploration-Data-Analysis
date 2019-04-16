@@ -3,7 +3,7 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function multivariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null)
+function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null)
 
 printcode;
 
@@ -15,14 +15,11 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-betas_from_mat = true;
+betas_from_mat = false;
 null_iters = 100;
 
 if ~exist('do_orth', 'var')
     do_orth = false;
-end
-if ~exist('lambda', 'var')
-    lambda = 1;
 end
 if ~exist('standardize', 'var')
     standardize = false;
@@ -44,7 +41,7 @@ if ~exist('intercept', 'var')
 end
 
 
-filename = sprintf('multivariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
+filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
 disp(filename);
 
 % get ROIs
@@ -60,7 +57,7 @@ formula_orig
 % --------- extract betas from .mat files -----------
 
 if betas_from_mat
-    % extract betas (GLM 23, saved as .mat files)
+    % extract betas (GLM 57, saved as .mat files)
     roi = extract_roi_betas(masks, 'trial_onset');
 
     % clean up betas
@@ -81,8 +78,8 @@ end
 
 
 if ~betas_from_mat
-    beta_series_glm = 23;
-    EXPT = exploration_expt();
+    beta_series_glm = 57;
+    EXPT_nosmooth = exploration_expt_nosmooth();
 end
 
 % extract & massage betas
@@ -92,9 +89,6 @@ end
 V_all = [];
 DV_all = [];
 for s = 1:length(data)
-    modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
-    load(fullfile(modeldir,'SPM.mat'));
-
     [V, RU, TU, VTU, DV] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
     data(s).TU = TU;
@@ -103,6 +97,8 @@ for s = 1:length(data)
     V_all = [V_all; V];
     DV_all = [DV_all; DV];
 
+    runs = find(goodRuns{s}); % only those runs were included in the GLMs
+    data(s).bad_runs = ~ismember(data(s).run, runs); % ... those runs were NOT included in the GLMs
     data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
 
     % --------- alternatively, extract betas from disk TODO sanity check -----------
@@ -110,7 +106,7 @@ for s = 1:length(data)
     if ~betas_from_mat
         for c = 1:length(masks)
             % get beta series
-            B = get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
+            B = get_beta_series(EXPT_nosmooth, beta_series_glm, s, 'trial_onset', masks{c});
 
             % exclude nan voxels
             which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)

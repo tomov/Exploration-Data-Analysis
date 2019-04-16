@@ -2411,7 +2411,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % 36 but minimalist -- just trial onset, RU, and feedback onset
         % looking for RU ...
         %
-        case 56
+        case 56 % <--- cluster in RLPFC is 230 voxels yay; still n.s....
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2455,6 +2455,67 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                multi.onsets{idx} = [onsets(t)];
                multi.durations{idx} = [0];
            end
+
+
+        % 36 but w/o choice_onset
+        % see 56
+        %
+        case 58 
+        
+           [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials);
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'RU';
+           multi.pmod(1).param{1} = RU';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.pmod(1).name{2} = 'TU';
+           multi.pmod(1).param{2} = TU';
+           multi.pmod(1).poly{2} = 1; 
+
+           multi.pmod(1).name{3} = 'V';
+           multi.pmod(1).param{3} = V';
+           multi.pmod(1).poly{3} = 1; 
+
+           multi.pmod(1).name{4} = 'VTU';
+           multi.pmod(1).param{4} = VTU';
+           multi.pmod(1).poly{4} = 1; 
+
+           multi.names{2} = 'feedback_onset';
+           multi.onsets{2} = data(subj).feedback_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'trial_onset_L';
+           multi.onsets{3} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+        % 47 but w/o choice_onset
+        %
+        case 59
+           [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials); 
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'DV';
+           multi.pmod(1).param{1} = DV';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'feedback_onset';
+           multi.onsets{2} = data(subj).feedback_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'trial_onset_L';
+           multi.onsets{3} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
 
 
 
