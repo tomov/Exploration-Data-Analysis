@@ -1,7 +1,7 @@
 #scp get_beta_series.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp  exploration_create_multi.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/run_ccnl_fmri_con.m .
-#scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
+scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp results_glme_fig3*  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp masks/Neurosynth*.nii  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks/
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/recovery_gen_mvnrnd.mat .
@@ -53,7 +53,7 @@
 #scp  ../../libs/ccnl-fmri/ccnl_create_mask.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp  ../../libs/ccnl-fmri/ccnl_check_rsa.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/*.m  ../../libs/ccnl-fmri/
-scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/ccnl_fmri_con.m  ../../libs/ccnl-fmri/
+#scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/ccnl_fmri_con.m  ../../libs/ccnl-fmri/
 #scp   ../../libs/ccnl-fmri/ccnl_roi_glm.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/roi.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/betas_*.mat .

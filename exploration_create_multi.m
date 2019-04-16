@@ -2430,6 +2430,33 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            multi.durations{2} = zeros(size(multi.onsets{2}));
 
 
+        % 23 but w/o choice onset => b/c WTF trial_onset betas from 23 in R RLPFC don't correlate with RU...
+        %
+        case 57
+           idx = 0;
+
+           block = data(subj).block(which_trials);
+           trial = data(subj).trial(which_trials);
+
+           onsets = data(subj).trial_onset(which_trials);
+           for t = 1:numel(onsets)
+               idx = idx + 1;
+               suffix = ['run_', num2str(run), '_block_', num2str(block(t)), '_trial_', num2str(trial(t))];
+               multi.names{idx} = ['trial_onset_', suffix];
+               multi.onsets{idx} = [onsets(t)];
+               multi.durations{idx} = [0];
+           end
+
+           onsets = data(subj).feedback_onset(which_trials);
+           for t = 1:numel(onsets)
+               idx = idx + 1;
+               suffix = ['run_', num2str(run), '_block_', num2str(block(t)), '_trial_', num2str(trial(t))];
+               multi.names{idx} = ['feedback_onset_', suffix];
+               multi.onsets{idx} = [onsets(t)];
+               multi.durations{idx} = [0];
+           end
+
+
 
         otherwise
             assert(false, 'invalid glmodel -- should be one of the above');
