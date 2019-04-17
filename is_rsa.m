@@ -8,7 +8,7 @@ printcode;
 
 glmodel = 57;
 regressor = 'trial_onset';
-EXPT = exploration_expt_nosmooth();
+EXPT = exploration_expt();
 null_iters = 10000;
 
 group_mask_filename = fullfile('masks', 'mask.nii');
@@ -25,7 +25,7 @@ parcel_idxs = unique(parcellation_vol(:));
 % compute model RDM
 load results_glme_fig3_nozscore.mat;
 w = getEffects(results_VTURU, false);
-model_RDM = pdist(w, 'cosine');
+model_RDM = pdist(w, 'euclidean');
 
 
 for i = 1:length(parcel_idxs)
@@ -74,7 +74,7 @@ for i = 1:length(parcel_idxs)
     all_b{parcel_idx} = b;
 
     % compute neural RDM
-    neural_RDM = pdist(b, 'cosine');
+    neural_RDM = pdist(b, 'correlation');
 
     % second-order correlation
     %
@@ -112,4 +112,4 @@ for i = 1:length(parcel_idxs)
 end
 
 
-save('is_rsa_glmodel=57_trial_onset.mat', '-v7.3');
+save('is_rsa_glmodel=57_trial_onset_smooth.mat', '-v7.3');

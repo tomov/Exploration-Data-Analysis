@@ -195,24 +195,45 @@ for c = 1:numel(masks)
 
     tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
 
-    save wtf.mat
-
+    %
+    % fitglme sometimes gets NaN log likelihood and fails, especially for random effects 
+    % => need to try a few times with random starts
+    %
 
     % augmented glm with decoded regressor 
-    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal', 'Exclude',exclude);
-    [w, names, stats] = fixedEffects(results_both{c});
-    ps(c,:) = stats.pValue';
-    results_both{c}
-    stats.pValue
-    w
+    for attempt = 1:100
+        try
+            results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
+            [w, names, stats] = fixedEffects(results_both{c});
+            ps(c,:) = stats.pValue';
+            results_both{c}
+            stats.pValue
+            w
+            break
+        catch e
+            fprintf('             failed fitting "%s" on attempt %d...\n', formula_both, attempt);
+            disp(e)
+        end
+    end
+    assert(attempt < 100, 'failed too many times');
+
 
     % original glm  
     % do model comparison
-    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal', 'Exclude',exclude);
-    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
-    comp{c}
-    p_comp(c,:) = comp{c}.pValue(2);
-    BIC(c,:) = comp{c}.BIC';
+    for attempt = 1:100
+        try
+            results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
+            comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
+            comp{c}
+            p_comp(c,:) = comp{c}.pValue(2);
+            BIC(c,:) = comp{c}.BIC';
+            break
+        catch e
+            fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
+            disp(e)
+        end
+    end
+    assert(attempt < 100, 'failed too many times');
 
 
     % sanity check -- activations should correlate with regressor
