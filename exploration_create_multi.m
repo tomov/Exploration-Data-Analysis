@@ -2136,7 +2136,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % 36 + beta series for RU and TU i.e. functional connectivity, WITH orth
         % => who are the RU and TU ROI's talking to?
         %
-        case 52  % <-- RU_betas = nothing; TU_betas1 = mOFC but ns; TU_betas2 = negative insula & occipital
+        case 52  % <-- RU_betas, TU_betas1 = lol whole brain ; TU_betas2 = frontoparietal 
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2220,7 +2220,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % same as 52 but do NOT orthogonalise
         %
-        case 53  % <-- RU_betas = nothing; TU_betas1 = R lingual gyrus; TU_betas2 = negative occipital
+        case 53  % <-- RU_betas = frontoparietal, TU_betas1 = whole brain ; TU_betas2 = frontoparietal 
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2351,7 +2351,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 53 but with RU_betas only -- sanity check
         %
-        case 55  % <-------------- NOTHING! suspicious -- is get_beta_series broken?
+        case 55  % <--- whole brain; phew
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
