@@ -2220,7 +2220,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % same as 52 but do NOT orthogonalise
         %
-        case 53  % <-- RU_betas = frontoparietal, TU_betas1 = whole brain ; TU_betas2 = frontoparietal 
+        case 53  % <-- RU_betas = frontoparietal, TU_betas1 = whole brain ; TU_betas2 = frontoparietal ; RU = nothing positive => outcompeted by RU_betas => stick w/ 52
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2432,7 +2432,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 23 but w/o choice onset => b/c WTF trial_onset betas from 23 in R RLPFC don't correlate with RU...
         %
-        case 57
+        case 57 % <-- meh; going back to 23 b/c 58 and 59 kinda sucked (RU esp.)
            idx = 0;
 
            block = data(subj).block(which_trials);
@@ -2460,7 +2460,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % 36 but w/o choice_onset
         % see 56
         %
-        case 58 
+        case 58  % <-- similar to 36; RU bigger RLPFC but wrong peak => no univariate_decoder; more or less same results for TU => reverting to 36 & 47
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2496,7 +2496,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 47 but w/o choice_onset
         %
-        case 59
+        case 59 % <-- more or less the same as  47
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
 
            multi.names{1} = 'trial_onset';

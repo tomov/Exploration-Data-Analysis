@@ -57,7 +57,7 @@ formula_orig
 % --------- extract betas from .mat files -----------
 
 if betas_from_mat
-    % extract betas (GLM 57, saved as .mat files)
+    % extract betas (GLM 23, saved as .mat files)
     roi = extract_roi_betas(masks, 'trial_onset');
 
     % clean up betas
@@ -78,7 +78,7 @@ end
 
 
 if ~betas_from_mat
-    beta_series_glm = 57;
+    beta_series_glm = 23;
     EXPT_nosmooth = exploration_expt_nosmooth();
 end
 

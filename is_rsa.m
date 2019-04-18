@@ -6,7 +6,7 @@ clear all;
 
 printcode;
 
-glmodel = 57;
+glmodel = 23;
 regressor = 'trial_onset';
 EXPT = exploration_expt();
 null_iters = 10000;

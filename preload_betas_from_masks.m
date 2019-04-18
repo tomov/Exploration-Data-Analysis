@@ -8,7 +8,7 @@ assert(ismember(event, {'trial_onset', 'choice_onset', 'feedback_onset'}));
 
 data = load_data;
 EXPT_nosmooth = exploration_expt_nosmooth();
-rsa_glm = 57;
+rsa_glm = 23;
 
 [allSubjects, subjdirs, goodRuns, goodSubjs] = exploration_getSubjectsDirsAndRuns();
 

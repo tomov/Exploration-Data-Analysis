@@ -65,15 +65,12 @@ for c = 1:length(masks)
     all_b{c} = b;
 
 
-    switch regressor
-        case 'RU'
-            [r, p] = corr(w(:,2), b');
-
-        case 'TU'
-            [r, p] = corr(w(:,3), b');
-
-        otherwise
-            assert(false);
+    if startsWith(regressor, 'RU')
+        [r, p] = corr(w(:,2), b');
+    elseif startsWith(regressor, 'TU')
+        [r, p] = corr(w(:,3), b');
+    else
+        assert(false);
     end
 
     disp(mask);
