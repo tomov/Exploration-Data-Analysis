@@ -15,7 +15,7 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-betas_from_mat = false;
+betas_from_mat = true;
 null_iters = 100;
 
 if ~exist('do_orth', 'var')
@@ -164,13 +164,15 @@ for c = 1:numel(masks)
         pred = nan(length(data(s).run), 1);
         pred(~data(s).exclude) = tmp;
 
-        % sometimes predictions are nan's => exclude those too
-        exclude = [exclude; data(s).exclude | isnan(pred)];
+        exclude = [exclude; data(s).exclude];
 
         %if strcmp(regressor, 'RU')
         %    pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
         %end NB: we don't do this any more b/c we directly predict RU
         dec = [dec; pred];
+        data(s).dec{c} = pred;
+
+        assert(sum(isnan(data(s).dec{c}(~data(s).exclude))) == 0, 'got NaN predictions');
 
         % optionally generate null distribution
         if get_null

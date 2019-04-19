@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept)
+function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
 
 printcode;
 
@@ -40,6 +40,13 @@ end
 if ~exist('intercept', 'var')
     intercept = false; 
 end
+if ~exist('flip_sign', 'var')
+    flip_sign = false; % flip the sign of the decoded |RU|, |V|, |DV|, etc based on the sign of RU
+end
+
+GLM_has_timeouts = true; % does glmodel include timeout trials?
+assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
+
 
 filename = sprintf('univariate_decoder_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept);
 disp(filename);
@@ -102,20 +109,24 @@ for s = 1:length(data)
         % notice not all runs were used in the GLMs
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
-        % adjust for fact that the regressor was |RU|
-        %if strcmp(regressor, 'RU')
-        %    data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
-        %end
+        % flip the sign of the decoded regressor
+        % while this may seem like double dipping / cheating, we are including RU, V, etc in the GLM, so this sign flip does not add new information
+        if flip_sign
+            % adjust for fact that the regressor was |RU|
+            if strcmp(regressor, 'RU')
+                data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+            end
 
-        %% adjust for fact that the regressor was |V|
-        %if strcmp(regressor, 'V')
-        %    data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
-        %end
+            % adjust for fact that the regressor was |V|
+            if strcmp(regressor, 'V')
+                data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
+            end
 
-        %% adjust for fact that the regressor was |DV|
-        %if strcmp(regressor, 'DV')
-        %    data(s).act(:,c) = data(s).act(:,c) .* (DV >= 0) + (-data(s).act(:,c)) .* (DV < 0);
-        %end
+            % adjust for fact that the regressor was |DV|
+            if strcmp(regressor, 'DV')
+                data(s).act(:,c) = data(s).act(:,c) .* (DV >= 0) + (-data(s).act(:,c)) .* (DV < 0);
+            end
+        end
     end
 end
 
@@ -139,13 +150,25 @@ for c = 1:numel(masks)
         which = ~data(s).bad_runs & ~data(s).timeout;
         switch regressor % TODO act is still whitened & filtered => MSE might be wrong
             case 'RU'
-                mse(s) = immse(data(s).RU(which), data(s).act(which, c));
+                if flip_sign
+                    mse(s) = immse(data(s).RU(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).RU(which)), data(s).act(which, c));
+                end
             case 'TU'
                 mse(s) = immse(data(s).TU(which), data(s).act(which, c));
             case 'V'
-                mse(s) = immse(data(s).V(which), data(s).act(which, c));
+                if flip_sign
+                    mse(s) = immse(data(s).V(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).V(which)), data(s).act(which, c));
+                end
             case 'DV'
-                mse(s) = immse(data(s).DV(which), data(s).act(which, c));
+                if flip_sign
+                    mse(s) = immse(data(s).DV(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).DV(which)), data(s).act(which, c));
+                end
         end
     end
     assert(all(isnan(act(bad_runs))));
@@ -175,15 +198,28 @@ for c = 1:numel(masks)
     % sanity check -- activations should correlate with regressor
     switch regressor
         case 'RU'
-            RU = table2array(tbl(:,'RU'));
+            if flip_sign
+                RU = tbl.RU;
+            else
+                RU = abs(tbl.RU);
+            end
             [r,p] = corr(RU(~bad_runs), act(~bad_runs));
         case 'TU'
-            TU = table2array(tbl(:,'TU'));
+            TU = tbl.TU;
             [r,p] = corr(TU(~bad_runs), act(~bad_runs));
         case 'V'
-            V = table2array(tbl(:,'V'));
+            if flip_sign
+                V = tbl.V; 
+            else
+                V = abs(tbl.V);
+            end
             [r,p] = corr(V(~bad_runs), act(~bad_runs));
         case 'DV'
+            if flip_sign
+                DV = tbl.DV;
+            else
+                DV = abs(tbl.DV);
+            end
             [r,p] = corr(DV_all(~bad_runs), act(~bad_runs));
     end
 
