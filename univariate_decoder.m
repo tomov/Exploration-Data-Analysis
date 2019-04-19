@@ -150,110 +150,47 @@ for c = 1:numel(masks)
 
     tbl = data2table(data,standardize,1); % exclude timeouts for fitting
 
-    % TODO use this, also in univariate_decoder_both and three
-    %tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, bad_runs);
-    switch regressor
-        case 'RU'
-            decRU = act;
-            if standardize == 1
-                decRU(~bad_runs) = zscore(decRU(~bad_runs));
-            elseif standardize == 2
-                decRU(~bad_runs) = decRU(~bad_runs) / norm(decRU(~bad_runs));
-            end
-            tbl = [tbl table(decRU)];
+    tbl = augment_table_with_decoded_regressor(tbl, regressor, act, standardize, bad_runs, V_all);
 
-            % orthogonalized version
-            tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
-            decRU_orth = decRU;
-            decRU_orth(~bad_runs) = tmp(:,end);
-            if standardize == 1
-                decRU_orth(~bad_runs) = zscore(decRU_orth(~bad_runs));
-            elseif standardize == 2
-                decRU_orth(~bad_runs) = decRU_orth(~bad_runs) / norm(decRU_orth(~bad_runs));
-            end
-            tbl = [tbl table(decRU_orth)];
-
-        case 'TU'
-            VdecTU = V_all ./ act;
-            if standardize == 1
-                VdecTU(~bad_runs) = zscore(VdecTU(~bad_runs));
-            elseif standardize == 2
-                VdecTU(~bad_runs) = VdecTU(~bad_runs) / norm(VdecTU(~bad_runs));
-            end
-            tbl = [tbl table(VdecTU)];
-
-            % orthogonalized version
-            tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
-            VdecTU_orth = VdecTU;
-            VdecTU_orth(~bad_runs) = tmp(:,end); 
-            if standardize == 1
-                VdecTU_orth(~bad_runs) = zscore(VdecTU_orth(~bad_runs));
-            elseif standardize == 2
-                VdecTU_orth(~bad_runs) = VdecTU_orth(~bad_runs) / norm(VdecTU_orth(~bad_runs));
-            end
-            tbl = [tbl table(VdecTU_orth)];
-
-        case 'V'
-            decV = act;
-            if standardize == 1
-                decV(~bad_runs) = zscore(decV(~bad_runs));
-            elseif standardize == 2
-                decV(~bad_runs) = decV(~bad_runs) / norm(decV(~bad_runs));
-            end
-            tbl = [tbl table(decV)];
-
-            % orthogonalized version
-            tmp = spm_orth([tbl.V(~bad_runs), decV(~bad_runs)]);
-            decV_orth = decV;
-            decV_orth(~bad_runs) = tmp(:,end);
-            if standardize == 1
-                decV_orth(~bad_runs) = zscore(decV_orth(~bad_runs));
-            elseif standardize == 2
-                decV_orth(~bad_runs) = decV_orth(~bad_runs) / norm(decV_orth(~bad_runs));
-            end
-            tbl = [tbl table(decV_orth)];
-
-
-        case 'DV'
-            decDV = act;
-            if standardize == 1
-                decDV(~bad_runs) = zscore(decDV(~bad_runs));
-            elseif standardize == 2
-                decDV(~bad_runs) = decDV(~bad_runs) / norm(decDV(~bad_runs));
-            end
-            tbl = [tbl table(decDV)];
-
-            % orthogonalized version
-            tmp = spm_orth([tbl.V(~bad_runs), tbl.RU(~bad_runs), tbl.VTU(~bad_runs), decDV(~bad_runs)]);
-            decDV_orth = decDV;
-            decDV_orth(~bad_runs) = tmp(:,end);
-            if standardize == 1
-                decDV_orth(~bad_runs) = zscore(decDV_orth(~bad_runs));
-            elseif standardize == 2
-                decDV_orth(~bad_runs) = decDV_orth(~bad_runs) / norm(decDV_orth(~bad_runs));
-            end
-            tbl = [tbl table(decDV_orth)];
-
-
-        otherwise
-            assert(false);
-    end
+    %
+    % fitglme sometimes gets NaN log likelihood and fails, especially for random effects 
+    % => need to try a few times with random starts
+    %
 
     % augmented glm with decoded regressor 
-    results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
-    [w, names, stats] = fixedEffects(results_both{c});
-    ps(c,:) = stats.pValue';
-    results_both{c}
-    stats.pValue
-    w
+    for attempt = 1:100
+        try
+            results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random', 'verbose', 2);
+            [w, names, stats] = fixedEffects(results_both{c});
+            ps(c,:) = stats.pValue';
+            results_both{c}
+            stats.pValue
+            w
+            break
+        catch e
+            fprintf('             failed fitting "%s" on attempt %d...\n', formula_both, attempt);
+            disp(e)
+        end
+    end
+    assert(attempt < 100, 'failed too many times');
+
 
     % original glm  
     % do model comparison
-    results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
-    comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
-    comp{c}
-    p_comp(c,:) = comp{c}.pValue(2);
-    BIC(c,:) = comp{c}.BIC';
+    for attempt = 1:100
+        try
+            results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random', 'verbose', 2);
+            comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
+            comp{c}
+            p_comp(c,:) = comp{c}.pValue(2);
+            BIC(c,:) = comp{c}.BIC';
+            break
+        catch e
+            fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
+            disp(e)
+        end
+    end
+    assert(attempt < 100, 'failed too many times');
 
 
     % sanity check -- activations should correlate with regressor
