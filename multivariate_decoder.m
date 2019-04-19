@@ -106,7 +106,9 @@ for s = 1:length(data)
     if ~betas_from_mat
         for c = 1:length(masks)
             % get beta series
-            B = get_beta_series(EXPT_nosmooth, beta_series_glm, s, 'trial_onset', masks{c});
+            B = ccnl_get_beta_series(EXPT_nosmooth, beta_series_glm, s, 'trial_onset', masks{c});
+            assert(size(B,1) > 1);
+            assert(size(B,2) > 1);
 
             % exclude nan voxels
             which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
