@@ -3,14 +3,13 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels)
+function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
 
 printcode;
 
 assert(standardize ~= 1, 'Don''t z-score! It makes the w''s meaningless, also it''s incorrect.');
 
 nTRs = 242;
-EXPT = exploration_expt();
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
 data = load_data;
@@ -40,11 +39,17 @@ if ~exist('intercept', 'var')
     intercept = false; 
 end
 if ~exist('zscore_across_voxels', 'var')
-    zscore_across_voxels = false;
+    zscore_across_voxels = false; % whether to z-score betas across voxels
+end
+if ~exist('predict_abs', 'var')
+    predict_abs = false; % whether to predict |RU| instead of RU, |V| instead of V, etc; flip_sign = true by default (see univariate_decoder)
+end
+if ~exist('use_smooth', 'var')
+    use_smooth = false; % whether to use smooth activations
 end
 
 
-filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d_zav=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels);
+filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth);
 disp(filename);
 
 % get ROIs
@@ -60,6 +65,8 @@ formula_orig
 % --------- extract betas from .mat files -----------
 
 if betas_from_mat
+    assert(~use_smooth, 'not supported');
+
     % extract betas (GLM 23, saved as .mat files)
     roi = extract_roi_betas(masks, 'trial_onset');
 
@@ -82,7 +89,12 @@ end
 
 if ~betas_from_mat
     beta_series_glm = 23;
-    EXPT_nosmooth = exploration_expt_nosmooth();
+
+    if use_smooth
+        EXPT = exploration_expt();
+    else
+        EXPT = exploration_expt_nosmooth();
+    end
 end
 
 % extract & massage betas
@@ -109,7 +121,7 @@ for s = 1:length(data)
     if ~betas_from_mat
         for c = 1:length(masks)
             % get beta series
-            B = ccnl_get_beta_series(EXPT_nosmooth, beta_series_glm, s, 'trial_onset', masks{c});
+            B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
             assert(size(B,1) > 1);
             assert(size(B,2) > 1);
 
@@ -151,13 +163,25 @@ for c = 1:numel(masks)
 
         switch regressor
             case 'RU'
-                y = data(s).RU;
+                if predict_abs
+                    y = abs(data(s).RU);
+                else
+                    y = data(s).RU;
+                end
             case 'TU'
                 y = data(s).TU;
             case 'V'
-                y = data(s).V;
+                if predict_abs
+                    y = abs(data(s).V);
+                else
+                    y = data(s).V;
+                end
             case 'DV'
-                y = data(s).DV;
+                if predict_abs
+                    y = abs(data(s).DV);
+                else
+                    y = data(s).DV;
+                end
             otherwise
                 assert(false);
         end
@@ -173,6 +197,19 @@ for c = 1:numel(masks)
         pred(~data(s).exclude) = tmp;
 
         exclude = [exclude; data(s).exclude];
+
+        if predict_abs
+            % account for fact that we're predicing e.g. |RU| and not RU
+            % same as flip_sign in univariate_decoder
+            switch regressor
+                case 'RU'
+                    pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0);
+                case 'V'
+                    pred = pred .* (data(s).V >= 0) + (-pred) .* (data(s).V < 0);
+                case 'DV'
+                    pred = pred .* (data(s).DV >= 0) + (-pred) .* (data(s).DV < 0);
+            end
+        end
 
         %if strcmp(regressor, 'RU')
         %    pred = pred .* (data(s).RU >= 0) + (-pred) .* (data(s).RU < 0); % adjust for fact that we decode |RU|
