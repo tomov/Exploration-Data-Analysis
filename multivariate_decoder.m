@@ -3,7 +3,7 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null)
+function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels)
 
 printcode;
 
@@ -39,9 +39,12 @@ end
 if ~exist('intercept', 'var')
     intercept = false; 
 end
+if ~exist('zscore_across_voxels', 'var')
+    zscore_across_voxels = false;
+end
 
 
-filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null);
+filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d_zav=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels);
 disp(filename);
 
 % get ROIs
@@ -140,6 +143,11 @@ for c = 1:numel(masks)
     mse = [];
     for s = 1:length(data)
         X = data(s).betas{c};
+
+        if zscore_across_voxels
+            % optionally get rid of mean BOLD signal
+            X = zscore(X,[],2);
+        end
 
         switch regressor
             case 'RU'
