@@ -213,24 +213,30 @@ for c = 1:numel(masks)
             results_both{c}
             stats.pValue
             w
-            break
-        catch e
-            fprintf('             failed fitting "%s" on attempt %d...\n', formula_both, attempt);
-            disp(e)
-        end
-    end
-    assert(attempt < 100, 'failed too many times');
 
-
-    % original glm  
-    % do model comparison
-    for attempt = 1:100
-        try
+            % original glm  
+            % do model comparison
             results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
             comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
             comp{c}
             p_comp(c,:) = comp{c}.pValue(2);
             BIC(c,:) = comp{c}.BIC';
+
+            % TODO hacky, to make sure the fits are actually the nice fits (and not a bad local optimum, which sometimes happens)
+            if intercept && mixed_effects
+                if abs(BIC(c,1) - 6410) > 2
+                    assert(false, 'bad BIC for original GLM 1');
+                end
+            elseif mixed_effects
+                if abs(BIC(c,1) - 6427) > 2
+                    assert(false, 'bad BIC for original GLM 2');
+                end
+            elseif ~intercept && ~mixed_effects
+                if abs(BIC(c,1) - 7524) > 2
+                    assert(false, 'bad BIC for original GLM 3');
+                end
+            end
+
             break
         catch e
             fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);

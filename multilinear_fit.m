@@ -90,6 +90,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             %fprintf('                                                                  min lambda = %d (%e)\n', idx, Lambda(idx));
 
             f = @(XTRAIN,ytrain,XTEST,ytest) ridgepred(XTRAIN,ytrain,XTEST, Lambda(idx));
+            % TODO FIXME this is wrong -- it expects you to compute e.g. a classification accuracy for each fold, not the actual predictions.. see docs
             pred = crossval(f, X, y);
             pred = pred';
             pred = pred(:);
