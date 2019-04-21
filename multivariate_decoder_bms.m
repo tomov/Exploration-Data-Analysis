@@ -1,11 +1,13 @@
 % multivariate decoder analysis 
-% streamlined version of multivariate_decoder
+% streamlined version of multivariate_decoder, with BMS
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
+function multivariate_decoder_bms(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
 
 printcode;
+
+rmpath('/n/sw/helmod/apps/centos7/Core/spm/12.7487-fasrc01/external/fieldtrip/external/stats/'); % for binopdf on cluster
 
 assert(standardize ~= 1, 'Don''t z-score! It makes the w''s meaningless, also it''s incorrect.');
 
@@ -48,7 +50,7 @@ if ~exist('use_smooth', 'var')
 end
 
 
-filename = sprintf('multivariate_decoder_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth);
+filename = sprintf('multivariate_decoder_bms_roiglm%d_%s_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth);
 disp(filename);
 
 % get ROIs
@@ -214,7 +216,7 @@ for c = 1:numel(masks)
         end
     end
 
-    tbl_dec = augment_table_with_decoded_regressor(tbl_dec, regressor, dec, standardize, exclude, V_all);
+    tbl_dec = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
 
     %
     % fitglme sometimes gets NaN log likelihood and fails, especially for random effects 
@@ -229,13 +231,13 @@ for c = 1:numel(masks)
     for attempt = 1:100
         try
             res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
-            [w, names, stats] = fixedEffects(results_both{c});
+            [w, names, stats] = fixedEffects(res);
             ps(c,:) = stats.pValue';
             results_both{c}
             stats.pValue
             w
 
-            assert(results_both{c}.LogLikelihood < results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
+            assert(res.LogLikelihood < results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
             if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
                 results_both{c} = res;

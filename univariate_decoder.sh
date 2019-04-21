@@ -7,19 +7,110 @@ echo ---------------- >> jobs.txt
 echo --- Running univariate_decoder  >> jobs.txt
 echo ---------------- >> jobs.txt
 
-#function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
+#function univariate_decoder(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
+
 declare -a fn_calls=(
-                     "univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
-                     "univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
-                     "univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
-                     "univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
+                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true)"
+                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true)"
                      )
 
 #declare -a fn_calls=(
-#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
-#                     "univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
-#                     "univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 3)"
-#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 3)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, true)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.0001, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.001, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.01, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 10, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 100, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 1000, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 10000, 2, false, false, 100, 1, false)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(47, \'DV\', 47, \'DV\', false, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false)"
+#                     )
+
+
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false)"
+#                     )
+
+# repro from paper
+#declare -a fn_calls=(
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false)"
+#                     "univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(41, \'V\', 41, \'V\', false, 1, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', false, 1, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(41, \'V\', 41, \'V\', false, 10, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 10, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', false, 10, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', false, 10, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(41, \'V\', 41, \'V\', false, 100, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 100, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', false, 100, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', false, 100, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(41, \'V\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 1000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', false, 1000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', false, 1000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(41, \'V\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', false, 10000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', false, 10000, 2, true, false, 100, 1, true)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', false, 10000, 2, true, false, 100, 1, true)"
+#                     )
+
+
+#declare -a fn_calls=(
+#                     "univariate_decoder(41, \'V\', 41, \'V\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(41, \'V\', 36, \'RU\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(41, \'V\', 36, \'TU\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'RU\', 41, \'V\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'TU\', 41, \'V\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, true, false, 100, 1)"
+#                     "univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1)"
 #                     )
 
 #declare -a fn_calls=(

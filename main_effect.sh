@@ -7,17 +7,34 @@ echo ---------------- >> jobs.txt
 echo --- Running main_effect >> jobs.txt
 echo ---------------- >> jobs.txt
 
-# main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent)
+# main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent, Num)
+
 declare -a fn_calls=(
-                     "main_effect(-1, \'badre\', 36, \'RU\', false, 100, 3)"
-                     "main_effect(-1, \'badre\', 36, \'TU\', false, 100, 3)"
-                     "main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 3)"
-                     "main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3)"
+                     "main_effect(47, \'DV\', 52, \'RU_betas\', false, 100, 1)"
+                     "main_effect(47, \'DV\', 52, \'TU_betas1\', false, 100, 1)"
+                     "main_effect(47, \'DV\', 52, \'TU_betas2\', false, 100, 1)"
+                     "main_effect(47, \'DV\', 53, \'RU_betas\', false, 100, 1)"
+                     "main_effect(47, \'DV\', 53, \'TU_betas1\', false, 100, 1)"
+                     "main_effect(47, \'DV\', 53, \'TU_betas2\', false, 100, 1)"
                      )
 
+
+
 #declare -a fn_calls=(
+#                     "main_effect(-1, \'badre\', 36, \'RU\', false, 100, 3)"
+#                     "main_effect(-1, \'badre\', 36, \'TU\', false, 100, 3)"
+#                     "main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 3)"
+#                     "main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "main_effect(41, \'V\', 41, \'V\', false, 100, 3)"
+#                     "main_effect(41, \'V\', 36, \'RU\', false, 100, 3)"
+#                     "main_effect(41, \'V\', 36, \'TU\', false, 100, 3)"
+#                     "main_effect(36, \'RU\', 41, \'V\', false, 100, 3)"
 #                     "main_effect(36, \'RU\', 36, \'RU\', false, 100, 3)"
 #                     "main_effect(36, \'RU\', 36, \'TU\', false, 100, 3)"
+#                     "main_effect(36, \'TU\', 41, \'V\', false, 100, 3)"
 #                     "main_effect(36, \'TU\', 36, \'RU\', false, 100, 3)"
 #                     "main_effect(36, \'TU\', 36, \'TU\', false, 100, 3)"
 #                     )

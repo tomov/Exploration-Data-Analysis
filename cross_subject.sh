@@ -9,11 +9,20 @@ echo ---------------- >> jobs.txt
 
 #function cross_subject(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)
 declare -a fn_calls=(
-                     "cross_subject(36, \'RU\', 36, \'RU\', 2, false, 100, false)"
-                     "cross_subject(36, \'RU\', 36, \'TU\', 2, false, 100, false)"
-                     "cross_subject(36, \'TU\', 36, \'RU\', 2, false, 100, false)"
-                     "cross_subject(36, \'TU\', 36, \'TU\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 52, \'RU_betas\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 52, \'TU_betas1\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 52, \'TU_betas2\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 53, \'RU_betas\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 53, \'TU_betas1\', 2, false, 100, false)"
+                     "cross_subject(47, \'DV\', 53, \'TU_betas2\', 2, false, 100, false)"
                      )
+
+#declare -a fn_calls=(
+#                     "cross_subject(36, \'RU\', 36, \'RU\', 2, false, 100, false)"
+#                     "cross_subject(36, \'RU\', 36, \'TU\', 2, false, 100, false)"
+#                     "cross_subject(36, \'TU\', 36, \'RU\', 2, false, 100, false)"
+#                     "cross_subject(36, \'TU\', 36, \'TU\', 2, false, 100, false)"
+#                     )
 
 
 for fn_call in "${fn_calls[@]}"
