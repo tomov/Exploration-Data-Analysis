@@ -1,5 +1,5 @@
 % multivariate decoder analysis 
-% merge of univariate_decoder and multilinear_analysis
+% streamlined version of multivariate_decoder
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
@@ -14,7 +14,6 @@ nTRs = 242;
 
 data = load_data;
 
-betas_from_mat = true;
 null_iters = 100;
 
 if ~exist('do_orth', 'var')
@@ -62,47 +61,23 @@ formula_both
 formula_orig
 
 
-% --------- extract betas from .mat files -----------
 
-if betas_from_mat
-    assert(~use_smooth, 'not supported');
+beta_series_glm = 23;
 
-    % extract betas (GLM 23, saved as .mat files)
-    roi = extract_roi_betas(masks, 'trial_onset');
-
-    % clean up betas
-    %
-    for c = 1:length(roi)
-        for s = 1:length(data)
-            B = roi(c).subj(s).betas;
-            runs = find(goodRuns{s});
-            data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
-            which_nan = any(isnan(B(~data(s).exclude, :)), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
-            B(:, which_nan) = [];
-            data(s).betas{c} = B;
-        end
-    end
+if use_smooth
+    EXPT = exploration_expt();
+else
+    EXPT = exploration_expt_nosmooth();
 end
 
-% ---------------------------------------------
 
-
-if ~betas_from_mat
-    beta_series_glm = 23;
-
-    if use_smooth
-        EXPT = exploration_expt();
-    else
-        EXPT = exploration_expt_nosmooth();
-    end
-end
-
-% extract & massage betas
+% extract behavioral regressors
 % e.g. make them match the rows in the data table (NaNs for missing runs)
 % or flip RU based on sign, etc
 %
 V_all = [];
 DV_all = [];
+exclude = [];
 for s = 1:length(data)
     [V, RU, TU, VTU, DV] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
@@ -116,31 +91,24 @@ for s = 1:length(data)
     data(s).bad_runs = ~ismember(data(s).run, runs); % ... those runs were NOT included in the GLMs
     data(s).exclude = ~ismember(data(s).run, runs) | data(s).timeout; % exclude bad runs and timeout trials
 
-    % --------- alternatively, extract betas from disk TODO sanity check -----------
-    %
-    if ~betas_from_mat
-        for c = 1:length(masks)
-            % get beta series
-            B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
-            assert(size(B,1) > 1);
-            assert(size(B,2) > 1);
-
-            % exclude nan voxels
-            which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
-            B(:, which_nan) = [];
-
-            % init betas with # trials = # of rows in behavioral data
-            data(s).betas{c} = nan(length(data(s).run), size(B,2));
-
-            % not all runs were used in GLM => only set betas for the trials we will use
-            data(s).betas{c}(~data(s).bad_runs,:) = B;
-        end
-    end
+    exclude = [exclude; data(s).exclude];
 end
+exclude = logical(exclude);
 
 
 save(filename, '-v7.3');
 
+best_of = 3; % get best model (BIC-wise) out of how many
+
+% original behavioral glm   
+% NO random starts
+tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
+results_orig = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'verbose', 2);
+[BICs, logliks] = get_subj_bics(results_orig, tbl, exclude);
+disp('Original behavioral GLM');
+results_orig
+
+LMEs = [];
 
 % fit behavioral GLM with activations
 %
@@ -151,10 +119,22 @@ for c = 1:numel(masks)
     disp(region{c});
 
     dec = [];
-    exclude = [];
     mse = [];
     for s = 1:length(data)
-        X = data(s).betas{c};
+        % get beta series
+        B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
+        assert(size(B,1) > 1);
+        assert(size(B,2) > 1);
+
+        % exclude nan voxels
+        which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
+        B(:, which_nan) = [];
+
+        % init betas with # trials = # of rows in behavioral data
+        X = nan(length(data(s).run), size(B,2));
+
+        % not all runs were used in GLM => only set betas for the trials we will use
+        X(~data(s).bad_runs,:) = B;
 
         if zscore_across_voxels
             % optionally get rid of mean BOLD signal
@@ -196,8 +176,6 @@ for c = 1:numel(masks)
         pred = nan(length(data(s).run), 1);
         pred(~data(s).exclude) = tmp;
 
-        exclude = [exclude; data(s).exclude];
-
         if predict_abs
             % account for fact that we're predicing e.g. |RU| and not RU
             % same as flip_sign in univariate_decoder
@@ -221,7 +199,7 @@ for c = 1:numel(masks)
             null_mse = [];
             for i = 1:null_iters
                 y = y(randperm(length(y)));
-                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                [~, m] = multilinear_fit(X, y, X, method, data(s).run(~data(s).exclude));
                 null_mse = [null_mse, m];
             end
             data(s).null_mse{c} = null_mse;
@@ -235,11 +213,8 @@ for c = 1:numel(masks)
             data(s).null_p{c} = p;
         end
     end
-    exclude = logical(exclude);
 
-    tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
-
-    tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
+    tbl_dec = augment_table_with_decoded_regressor(tbl_dec, regressor, dec, standardize, exclude, V_all);
 
     %
     % fitglme sometimes gets NaN log likelihood and fails, especially for random effects 
@@ -247,45 +222,46 @@ for c = 1:numel(masks)
     %
 
     % augmented glm with decoded regressor 
+    successes = 0;
+    results_both{c} = [];
+    BIC(c,:) = [NaN NaN]; % in case it doesn't work
+    p_comp(c,:) = NaN;
     for attempt = 1:100
         try
-            results_both{c} = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
+            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
             [w, names, stats] = fixedEffects(results_both{c});
             ps(c,:) = stats.pValue';
             results_both{c}
             stats.pValue
             w
 
-            % original glm  
-            % do model comparison
-            results_orig{c} = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
-            comp{c} = compare(results_orig{c}, results_both{c}); % order is important -- see docs
-            comp{c}
-            p_comp(c,:) = comp{c}.pValue(2);
-            BIC(c,:) = comp{c}.BIC';
+            assert(results_both{c}.LogLikelihood < results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
-            % TODO hacky, to make sure the fits are actually the nice fits (and not a bad local optimum, which sometimes happens)
-            if intercept && mixed_effects
-                if abs(BIC(c,1) - 6410) > 2
-                    assert(false, 'bad BIC for original GLM 1');
-                end
-            elseif mixed_effects
-                if abs(BIC(c,1) - 6427) > 2
-                    assert(false, 'bad BIC for original GLM 2');
-                end
-            elseif ~intercept && ~mixed_effects
-                if abs(BIC(c,1) - 7524) > 2
-                    assert(false, 'bad BIC for original GLM 3');
-                end
+            if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
+                results_both{c} = res;
+
+                comp{c} = compare(results_orig, results_both{c}); % order is important -- see docs
+                comp{c}
+                p_comp(c,:) = comp{c}.pValue(2);
+                BIC(c,:) = comp{c}.BIC';
+
+                [~, reg_names] = fixedEffects(results_both{c});
             end
+            successes = successes + 1;
 
-            break
+            if successes == 3
+                break;
+            end
         catch e
             fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
             disp(e)
         end
     end
-    assert(attempt < 100, 'failed too many times');
+
+    if successes > 0
+        BICs = get_subj_bics(results_both{c}, tbl_dec, exclude);
+        LMEs = [LMEs, -0.5 * BICs];
+    end
 
 
     % sanity check -- activations should correlate with regressor
@@ -343,11 +319,21 @@ end
 
 save(filename, '-v7.3');
 
+[alpha,exp_r,xp,pxp,bor] = bms(LMEs);
 
-p_uncorr = ps(:,4);
+fprintf('BOR = %.6f\n', bor);
+fprintf('PXP of original GLM = %.6f\n', pxp(1));
+pxp = pxp(2:end);
+if size(pxp,1) == 1
+    pxp = pxp';
+end
+
+reg_idx = find(contains(reg_names.Name, 'dec'));
+
+p_uncorr = ps(:,reg_idx);
 p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
 p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
-table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, p_ax, r_ax)
+table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
 
