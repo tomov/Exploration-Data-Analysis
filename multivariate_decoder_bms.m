@@ -104,13 +104,36 @@ best_of = 3; % get best model (BIC-wise) out of how many
 
 % original behavioral glm   
 % NO random starts
+
 tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
-results_orig = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'verbose', 2);
+
+successes = 0;
+results_orig = [];
+for attempt = 1:100
+    try
+        res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
+        res 
+
+        if isempty(results_orig) || results_orig.LogLikelihood < res.LogLikelihood
+            results_orig = res;
+        end
+        successes = successes + 1;
+
+        if successes == best_of
+            break;
+        end
+    catch e
+        fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
+        disp(e)
+    end
+end
+assert(attempt < 100, 'failed too many times...');
+
 [BICs, logliks] = get_subj_bics(results_orig, tbl, exclude);
 disp('Original behavioral GLM');
 results_orig
 
-LMEs = [];
+LMEs = [-0.5 * BICs];
 
 % fit behavioral GLM with activations
 %
@@ -230,18 +253,19 @@ for c = 1:numel(masks)
     p_comp(c,:) = NaN;
     for attempt = 1:100
         try
-            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random', 'verbose', 2);
+            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
             [w, names, stats] = fixedEffects(res);
-            ps(c,:) = stats.pValue';
-            results_both{c}
+            res
             stats.pValue
             w
 
-            assert(res.LogLikelihood < results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
+            assert(res.LogLikelihood >= results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
+            save wtf.mat
             if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
                 results_both{c} = res;
 
+                ps(c,:) = stats.pValue';
                 comp{c} = compare(results_orig, results_both{c}); % order is important -- see docs
                 comp{c}
                 p_comp(c,:) = comp{c}.pValue(2);
@@ -251,7 +275,7 @@ for c = 1:numel(masks)
             end
             successes = successes + 1;
 
-            if successes == 3
+            if successes == best_of
                 break;
             end
         catch e
