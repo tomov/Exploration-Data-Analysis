@@ -131,8 +131,6 @@ for s = 1:length(data)
 end
 
 
-
-
 data = rmfield(data, 'all_act'); % takes up lots of space
 save(filename, '-v7.3');
 
@@ -165,49 +163,8 @@ tbl = data2table(data,standardize,1); % exclude timeouts for fitting
 % add decoded regressors to tbl
 %
 for c = 1:numel(masks)
-    switch regressor{c}
-        case 'RU'
-            decRU = act{c};
-            if standardize == 1
-                decRU(~bad_runs) = zscore(decRU(~bad_runs));
-            elseif standardize == 2
-                decRU(~bad_runs) = decRU(~bad_runs) / norm(decRU(~bad_runs));
-            end
-            tbl = [tbl table(decRU)];
-
-            % orthogonalized version
-            tmp = spm_orth([tbl.RU(~bad_runs), decRU(~bad_runs)]);
-            decRU_orth = decRU;
-            decRU_orth(~bad_runs) = tmp(:,2);
-            if standardize == 1
-                decRU_orth(~bad_runs) = zscore(decRU_orth(~bad_runs));
-            elseif standardize == 2
-                decRU_orth(~bad_runs) = decRU_orth(~bad_runs) / norm(decRU_orth(~bad_runs));
-            end
-            tbl = [tbl table(decRU_orth)];
-
-        case 'TU'
-            VdecTU = V_all ./ act{c};
-            if standardize == 1
-                VdecTU(~bad_runs) = zscore(VdecTU(~bad_runs));
-            elseif standardize == 2
-                VdecTU(~bad_runs) = VdecTU(~bad_runs) / norm(VdecTU(~bad_runs));
-            end
-            tbl = [tbl table(VdecTU)];
-
-            % orthogonalized version
-            tmp = spm_orth([tbl.VTU(~bad_runs), VdecTU(~bad_runs)]);
-            VdecTU_orth = VdecTU;
-            VdecTU_orth(~bad_runs) = tmp(:,2); 
-            if standardize == 1
-                VdecTU_orth(~bad_runs) = zscore(VdecTU_orth(~bad_runs));
-            elseif standardize == 2
-                VdecTU_orth(~bad_runs) = VdecTU_orth(~bad_runs) / norm(VdecTU_orth(~bad_runs));
-            end
-            tbl = [tbl table(VdecTU_orth)];
-        otherwise
-            assert(false);
-    end
+    
+    tbl = augment_table_with_decoded_regressor(tbl, regressor{c}, act{c}, standardize, bad_runs, V_all);
 
     % sanity check -- activations should correlate with regressor
     switch regressor{c}
@@ -224,7 +181,7 @@ for c = 1:numel(masks)
 end
 
 
-save('univariate_decoder_both_for_glmodel60.mat', '-v7.3');
+save(filename, '-v7.3');
 
 
 % fit behavioral GLM with activations
