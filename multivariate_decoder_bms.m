@@ -103,7 +103,6 @@ save(filename, '-v7.3');
 best_of = 3; % get best model (BIC-wise) out of how many
 
 % original behavioral glm   
-% NO random starts
 
 tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
 

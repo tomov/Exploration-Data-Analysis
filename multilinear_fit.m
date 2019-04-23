@@ -57,21 +57,21 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             mse = loss(mdl, X, y);
 
         case 'ridge'
-            Lambda = 0.1;
+            Lambda = 1e5;
             coef = ridge(y, X, Lambda, 0);
             pred = [ones(size(Xtest, 1), 1), Xtest] * coef; % include intercept term
             mse = immse(y, [ones(size(X, 1), 1), X] * coef);
 
         case 'ridge_CV'
             cv = cvpartition_from_folds(foldid);
-            Lambda = logspace(-10,10,21);
+            Lambda = logspace(-10,20,30);
             m = [];
             for i = 1:length(Lambda)
                 f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
                 m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
-            fprintf('      min lambda = %d\n', idx);
+            fprintf('      min lambda(%d) = %f\n', idx, Lambda(idx));
 
             pred = ridgepred(X, y, Xtest, Lambda(idx));
             mse = immse(y, ridgepred(X, y, X, Lambda(idx)));
