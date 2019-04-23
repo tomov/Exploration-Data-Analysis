@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent)
+function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept)
 
 printcode;
 
@@ -32,8 +32,14 @@ end
 if ~exist('extent', 'var')
     extent = [];
 end
+if ~exist('Num', 'var')
+    Num = 1; % # peak voxels per cluster; default in bspmview is 3
+end
+if ~exist('intercept', 'var')
+    intercept = false; 
+end
 
-filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent);
+filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept);
 disp(filename);
 
 % get ROIs
@@ -60,7 +66,7 @@ end
 
 
 % define behavioral / hybrid GLM formulas
-[formula_both, formula_orig] = get_formula('both', do_orth, mixed_effects);
+[formula_both, formula_orig] = get_formula('both', do_orth, mixed_effects, intercept);
 
 
 % decode regressor 
@@ -191,6 +197,9 @@ for c = 1:numel(masks)
 end
 
 
+save('univariate_decoder_both_for_glmodel60.mat', '-v7.3');
+
+
 % fit behavioral GLM with activations
 %
 ps = [];
@@ -215,11 +224,13 @@ comp
 results_all = results_both;
 
 %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
-load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both');
+%load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
+load('univariate_decoder_roiglm36_RU_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
 results_RU = results_both{RU_roi_idx};
 
 %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
-load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both');
+%load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
+load('univariate_decoder_roiglm36_TU_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
 results_TU = results_both{TU_roi_idx};
 
 comp_RU = compare(results_RU, results_all);
