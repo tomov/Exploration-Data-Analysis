@@ -1,5 +1,4 @@
-#scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
-scp  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/wtf.mat .
+scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp multivariate_decoder_bms.m neurosynth_bms.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/betas*.mat .
 #scp   ../../libs/ccnl-fmri/*.m  mtomov13@ncflogin8.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/ccnl-fmri-2018/

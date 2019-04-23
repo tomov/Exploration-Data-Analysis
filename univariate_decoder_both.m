@@ -4,7 +4,7 @@
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept)
+function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
 
 printcode;
 
@@ -38,8 +38,11 @@ end
 if ~exist('intercept', 'var')
     intercept = false; 
 end
+if ~exist('flip_sign', 'var')
+    flip_sign = false; % flip the sign of the decoded |RU|, |V|, |DV|, etc based on the sign of RU
+end
 
-filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept);
+filename = sprintf('univariate_decoder_both_glm%d_RUroi=%d_TUroi=%d_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d.mat', glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign);
 disp(filename);
 
 % get ROIs
@@ -77,36 +80,60 @@ for c = 1:length(masks)
     end
 end
 
+% TODO dedupe with univariate_decoder (except regressor{c})
 % massage decoded regressors
 % e.g. make them match the rows in the data table (NaNs for missing runs)
 % or flip RU based on sign, etc
 %
 V_all = [];
+DV_all = [];
 for s = 1:length(data)
     modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
     load(fullfile(modeldir,'SPM.mat'));
 
     data(s).act = nan(length(data(s).run), length(masks));
-    [V, RU, TU] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
+    [V, RU, TU, VTU, DV] = get_latents(data, s, logical(ones(length(data(s).run), 1)), 'left');
     data(s).RU = RU;
     data(s).TU = TU;
+    data(s).V = V;
+    data(s).DV = DV;
     V_all = [V_all; V(~data(s).timeout)];
+    DV_all = [DV_all; DV(~data(s).timeout)];
 
     for c = 1:length(masks)
-        % not all runs were used in the GLMs
+        % pick trial_onset activations only
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
         act{c} = data(s).all_act{c}(which_act,:); % only consider 1 activation for each trial
 
         % average across voxels in ROI
+        % notice not all runs were used in the GLMs
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
-        % adjust for fact that the regressor was |RU|
-        if strcmp(regressor{c}, 'RU')
-            data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+        % flip the sign of the decoded regressor
+        % while this may seem like double dipping / cheating, we are including RU, V, etc in the GLM, so this sign flip does not add new information
+        if flip_sign
+            % adjust for fact that the regressor was |RU|
+            if strcmp(regressor{c}, 'RU')
+                data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+            end
+
+            % adjust for fact that the regressor was |V|
+            if strcmp(regressor{c}, 'V')
+                data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
+            end
+
+            % adjust for fact that the regressor was |DV|
+            if strcmp(regressor{c}, 'DV')
+                data(s).act(:,c) = data(s).act(:,c) .* (DV >= 0) + (-data(s).act(:,c)) .* (DV < 0);
+            end
         end
     end
 end
 
+
+
+
+data = rmfield(data, 'all_act'); % takes up lots of space
 save(filename, '-v7.3');
 
 % massage activations some more
