@@ -2519,7 +2519,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 36 with decTU and decRU => functional connectivity
         %
-        case 60 
+        case 60  % <-- nothing for decRU and decTU !!!!! w t f well kinda makes sense but not really => shoulda been getter than RU and TU
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2577,7 +2577,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % #SAM
         % 47 with decRU and decTU => functional connectivity => do BIC / BMS thing in DV ROI from 47
         %
-        case 61
+        case 61 % <-- nothing for RU nor TU
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials, 'abs');
 
            multi.names{1} = 'trial_onset';
