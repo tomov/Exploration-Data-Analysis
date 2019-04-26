@@ -3,7 +3,7 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function neurosynth_bms(regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, parcel_idxs, lateralized)
+function neurosynth_bms(regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, lateralized, parcel_idxs)
 
 printcode;
 
@@ -55,10 +55,14 @@ end
 [~, Vparcel, parcellation_vol] = ccnl_load_mask(parcellation_file);
 parcellation_vol = round(parcellation_vol);
 
-parcel_idxs = unique(parcellation_vol(:));
+if ~exist('parcel_idxs', 'var') || isempty(parcel_idxs)
+    parcel_idxs = unique(parcellation_vol(:));
+else
+    assert(all(ismember(parcel_idxs, unique(parcellation_vol(:)))));
+end
 
 
-filename = sprintf('neurosynth_bms_%s_orth=%d_standardize=%d_mixed=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d_pi=%d_l=%d.mat', regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, length(parcel_idxs), lateralized);
+filename = sprintf('neurosynth_bms_%s_orth=%d_standardize=%d_mixed=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d_l=%d_pi=%d.mat', regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, lateralized, length(parcel_idxs));
 disp(filename);
 
 
