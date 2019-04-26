@@ -2283,11 +2283,11 @@ univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, 
 univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321540.out -- Submitted batch job 6321540
 univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321550.out -- Submitted batch job 6321550
 ----------------
---- Running cross_subj_perf
+--- Running cross_subj_perf <---- YAS
 ----------------
 cross_subj_perf.sh cross_subj_perf(47, \'DV\', 47, \'DV\', 2, false, 100, false): output/cross_subj_perf_6326101.out -- Submitted batch job 6326101
 ----------------
---- Running cross_subj_lik
+--- Running cross_subj_lik <-- YAS for DV, not for others
 ----------------
 cross_subj_lik.sh cross_subj_lik(47, \'DV\', 47, \'DV\', 2, false, 100, false): output/cross_subj_lik_6328881.out -- Submitted batch job 6328881
 cross_subj_lik.sh cross_subj_lik(36, \'RU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_lik_6328885.out -- Submitted batch job 6328885
@@ -2295,7 +2295,7 @@ cross_subj_lik.sh cross_subj_lik(36, \'RU\', 36, \'TU\', 2, false, 100, false): 
 cross_subj_lik.sh cross_subj_lik(36, \'TU\', 36, \'RU\', 2, false, 100, false): output/cross_subj_lik_6328891.out -- Submitted batch job 6328891
 cross_subj_lik.sh cross_subj_lik(36, \'TU\', 36, \'TU\', 2, false, 100, false): output/cross_subj_lik_6328894.out -- Submitted batch job 6328894
 ----------------
---- Running univariate_decoder <---- EBMethod = TrustRegion2D
+--- Running univariate_decoder <---- EBMethod = TrustRegion2D, mixed effects
 ----------------
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357858.out -- Submitted batch job 6357858
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357862.out -- Submitted batch job 6357862
@@ -2313,3 +2313,647 @@ ccnl_fmri_glm.sh for GLM 50, subjects 2 20 1 29 23 22 15 18 11 10 8 19 5 31 14 2
 --- Running is_rsa  glm 23
 ----------------
 is_rsa.sh is_rsa: output/is_rsa_6363849.out -- Submitted batch job 6363849
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 51, subjects 17 24 9 10 29 27 20 4 3 28 5 7 18 22 19 15 21 1 12 2 26 25 6 23 14 16 13 30 31 11 8: output/ccnl_fmri_glm_51_goodSubjects_6387228.out -- Submitted batch job 6387228
+----------------
+--- Running univariate_decoder <-- EBMethod = fsolve, mixed effects
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388248.out -- Submitted batch job 6388248
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388257.out -- Submitted batch job 6388257
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388276.out -- Submitted batch job 6388276
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388288.out -- Submitted batch job 6388288
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388301.out -- Submitted batch job 6388301
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388313.out -- Submitted batch job 6388313
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388317.out -- Submitted batch job 6388317
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388331.out -- Submitted batch job 6388331
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 52, subjects 31 8 3 14 29 13 25 18 20 1 17 15 6 9 12 10 21 2 22 26 27 23 24 7 28 5 4 30 11 19 16: output/ccnl_fmri_glm_52_goodSubjects_6401680.out -- Submitted batch job 6401680
+ccnl_fmri_glm.sh for GLM 53, subjects 23 2 19 26 3 15 10 9 31 27 20 21 8 28 4 18 24 30 22 5 7 12 13 14 25 6 29 11 1 17 16: output/ccnl_fmri_glm_53_goodSubjects_6401683.out -- Submitted batch job 6401683
+----------------
+--- Running univariate_decoder <-- sphere r = 0.5 mm i.e. peak voxel only (fixed effects)
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459969.out -- Submitted batch job 6459969
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459981.out -- Submitted batch job 6459981
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459986.out -- Submitted batch job 6459986
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459989.out -- Submitted batch job 6459989
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460000.out -- Submitted batch job 6460000
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460010.out -- Submitted batch job 6460010
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460019.out -- Submitted batch job 6460019
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460034.out -- Submitted batch job 6460034
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6460084.out -- Submitted batch job 6460084
+----------------
+--- Running is_rsa <-- GLM 23, trial onset => nothing (min p = 0.0038 uncorr., parcel = 153)
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6461481.out -- Submitted batch job 6461481
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6512970.out -- Submitted batch job 6512970
+----------------
+--- Running roi_corr
+----------------
+roi_corr.sh roi_corr: output/roi_corr_6517994.out -- Submitted batch job 6517994
+----------------
+--- Running is_rsa <-- GLM 23, choice onset => nothing... (min p = 0.0012 uncorr, parcel = 153)
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6518721.out -- Submitted batch job 6518721
+----------------
+--- Running roi_corr
+----------------
+roi_corr.sh roi_corr: output/roi_corr_6518893.out -- Submitted batch job 6518893
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 54, subjects 16 8 20 25 24 6 28 17 9 26 29 18 3 7 5 22 27 15 13 19 4 1 10 31 2 23 21 30 11 14 12: output/ccnl_fmri_glm_54_goodSubjects_6521926.out -- Submitted batch job 6521926
+----------------
+--- Running univariate_decoder <-- DV (fixed) ? no... :(
+----------------
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6526779.out -- Submitted batch job 6526779
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6526784.out -- Submitted batch job 6526784
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6526790.out -- Submitted batch job 6526790
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6526793.out -- Submitted batch job 6526793
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 54, subjects 21 4 29 20 6 8 2 14 3 1 27 30 28 9 18 7 24 10 5 26 25 16 11 31 19 12 17 22 15 23 13: output/ccnl_fmri_glm_54_goodSubjects_6544267.out -- Submitted batch job 6544267
+----------------
+--- Running roi_corr <-- all ROIs w t f; no specificity
+----------------
+roi_corr.sh roi_corr: output/roi_corr_6544504.out -- Submitted batch job 6544504
+----------------
+--- Running univariate_decoder <-- DV with mixed; they all work wtf BUT WE don't penalize for tons of parameters!!! hard to make the LL test argument... => fixed!
+----------------
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6545075.out -- Submitted batch job 6545075
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6545081.out -- Submitted batch job 6545081
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6545086.out -- Submitted batch job 6545086
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6545095.out -- Submitted batch job 6545095
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 55, subjects 22 11 4 29 18 26 31 17 14 25 24 15 1 10 3 30 5 21 28 23 7 20 16 19 2 6 12 27 13 9 8: output/ccnl_fmri_glm_55_goodSubjects_6601336.out -- Submitted batch job 6601336
+----------------
+--- Running main_effect <-- badre w/ GLM 45 (timeouts) => yes RU, no TU
+----------------
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 3): output/main_effect_6611463.out -- Submitted batch job 6611463
+main_effect.sh main_effect(-1, \'badre\', 45, \'TU\', false, 100, 3): output/main_effect_6611469.out -- Submitted batch job 6611469
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'RU\', false, 100, 3): output/main_effect_6611475.out -- Submitted batch job 6611475
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 3): output/main_effect_6611479.out -- Submitted batch job 6611479
+----------------
+----------------
+--- Running beta_series_corr
+----------------
+beta_series_corr.sh beta_series_corr: output/beta_series_corr_6619184.out -- Submitted batch job 6619184
+----------------
+--- Running univariate_decoder <-- EBMethod = TrustRegion2D, for real this time (mixed effects obvi)
+----------------
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619223.out -- Submitted batch job 6619223
+univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619228.out -- Submitted batch job 6619228
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619237.out -- Submitted batch job 6619237
+univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619242.out -- Submitted batch job 6619242
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619245.out -- Submitted batch job 6619245
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619248.out -- Submitted batch job 6619248
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619262.out -- Submitted batch job 6619262
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619275.out -- Submitted batch job 6619275
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619281.out -- Submitted batch job 6619281
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619284.out -- Submitted batch job 6619284
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619287.out -- Submitted batch job 6619287
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619300.out -- Submitted batch job 6619300
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619314.out -- Submitted batch job 6619314
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619317.out -- Submitted batch job 6619317
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619320.out -- Submitted batch job 6619320
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619324.out -- Submitted batch job 6619324
+----------------
+--- Running ccnl_fmri_con <-- GLM 54
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6637583.out -- Submitted batch job 6637583
+----------------
+--- Running univariate_decoder <-- no decoded regressor in random effects term! <-- nothing
+----------------
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6640131.out -- Submitted batch job 6640131
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6640136.out -- Submitted batch job 6640136
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6640138.out -- Submitted batch job 6640138
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6640142.out -- Submitted batch job 6640142
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6640148.out -- Submitted batch job 6640148
+----------------
+--- Running univariate_decoder <-- DV fixed eff; try diff lambdas <-- nothing 
+----------------
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.0001, 2, false, false, 100, 1, false): output/univariate_decoder_6649147.out -- Submitted batch job 6649147
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.001, 2, false, false, 100, 1, false): output/univariate_decoder_6649149.out -- Submitted batch job 6649149
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.01, 2, false, false, 100, 1, false): output/univariate_decoder_6649151.out -- Submitted batch job 6649151
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 0.1, 2, false, false, 100, 1, false): output/univariate_decoder_6649154.out -- Submitted batch job 6649154
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 10, 2, false, false, 100, 1, false): output/univariate_decoder_6649168.out -- Submitted batch job 6649168
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 100, 2, false, false, 100, 1, false): output/univariate_decoder_6649170.out -- Submitted batch job 6649170
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 1000, 2, false, false, 100, 1, false): output/univariate_decoder_6649173.out -- Submitted batch job 6649173
+univariate_decoder.sh univariate_decoder(47, \'DV\', 47, \'DV\', true, 10000, 2, false, false, 100, 1, false): output/univariate_decoder_6649175.out -- Submitted batch job 6649175
+----------------
+--- Running ccnl_fmri_glm_nosmooth for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm_nosmooth.sh for GLM 23, subjects 22 14 2 26 7 21 17 25 10 1 3 20 6 23 9 27 13 15 12 29 31 5 19 28 24 16 4 11 18 30 8: output/ccnl_fmri_glm_nosmooth_23_goodSubjects_.out --
+----------------
+--- Running ccnl_fmri_glm_nosmooth for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm_nosmooth.sh for GLM 23, subjects 10 13 17 12 21 19 28 26 6 14 25 24 2 8 20 30 22 27 7 1 23 4 18 16 29 11 31 9 5 3 15: output/ccnl_fmri_glm_nosmooth_23_goodSubjects_6737385.out -- Submitted batch job 6737385
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6737594.out -- Submitted batch job 6737594
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 56, subjects 30 13 10 19 18 6 2 11 29 20 15 26 4 22 28 27 12 24 16 7 21 9 8 3 31 23 1 14 5 25 17: output/ccnl_fmri_glm_56_goodSubjects_6795722.out -- Submitted batch job 6795722
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 52, subjects 10 2 4 29 21 1 5 20 24 13 16 8 18 26 15 9 14 25 30 28 27 31 6 11 23 12 3 7 19 22 17: output/ccnl_fmri_glm_52_goodSubjects_6798336.out -- Submitted batch job 6798336
+ccnl_fmri_glm.sh for GLM 53, subjects 7 12 31 24 20 3 19 13 29 8 18 4 30 16 6 21 1 25 11 2 22 5 9 17 15 10 28 26 27 23 14: output/ccnl_fmri_glm_53_goodSubjects_6798347.out -- Submitted batch job 6798347
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 55, subjects 19 22 16 14 28 4 9 31 21 1 29 26 25 2 18 8 15 17 7 20 5 10 24 27 11 3 30 23 13 6 12: output/ccnl_fmri_glm_55_goodSubjects_6798424.out -- Submitted batch job 6798424
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 57, subjects 1 11 12 14 17 27 26 10 4 16 28 30 6 25 2 31 19 20 29 8 13 9 18 22 15 23 3 5 21 24 7: output/ccnl_fmri_glm_57_goodSubjects_6802204.out -- Submitted batch job 6802204
+----------------
+--- Running ccnl_fmri_glm_nosmooth for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm_nosmooth.sh for GLM 57, subjects 4 3 5 2 19 9 1 22 31 14 21 26 11 29 24 30 18 10 13 17 16 20 15 12 28 27 25 7 8 6 23: output/ccnl_fmri_glm_nosmooth_57_goodSubjects_6802327.out -- Submitted batch job 6802327
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6908903.out -- Submitted batch job 6908903
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_6975609.out -- Submitted batch job 6975609
+----------------
+--- Running preload_betas
+----------------
+preload_betas.sh mask.nii trial_onset: output/preload_betas_.out --
+----------------
+--- Running preload_betas
+----------------
+preload_betas.sh mask.nii trial_onset: output/preload_betas_6983708.out -- Submitted batch job 6983708
+----------------
+--- Running preload_betas
+----------------
+preload_betas.sh mask.nii trial_onset: output/preload_betas_6985034.out -- Submitted batch job 6985034
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 58, subjects 27 8 6 24 30 9 29 21 19 22 16 5 7 26 3 11 10 4 15 14 23 20 31 12 13 1 17 2 18 25 28: output/ccnl_fmri_glm_58_goodSubjects_6985127.out -- Submitted batch job 6985127
+ccnl_fmri_glm.sh for GLM 59, subjects 14 16 23 22 7 13 8 20 11 15 29 6 12 21 9 5 4 17 1 31 27 25 10 2 3 28 26 19 24 18 30: output/ccnl_fmri_glm_59_goodSubjects_6985146.out -- Submitted batch job 6985146
+----------------
+--- Running multivariate_decoder <-- error
+----------------
+multivariate_decoder.sh multivariate_decoder(36, 'RU', 36, 'RU', false, 1, 0, false, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6986072.out -- Submitted batch job 6986072
+multivariate_decoder.sh multivariate_decoder(36, 'RU', 36, 'RU', false, 1, 0, true, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6986077.out -- Submitted batch job 6986077
+multivariate_decoder.sh multivariate_decoder(36, 'RU', 36, 'RU', false, 1, 0, true, false, 100, 1, true, 'ridge_CV', false): output/multivariate_decoder_6986087.out -- Submitted batch job 6986087
+multivariate_decoder.sh multivariate_decoder(36, 'RU', 36, 'RU', false, 1, 0, false, false, 100, 1, false, 'fitlm', false): output/multivariate_decoder_6986097.out -- Submitted batch job 6986097
+multivariate_decoder.sh multivariate_decoder(56, 'RU', 56, 'RU', false, 1, 0, false, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6986100.out -- Submitted batch job 6986100
+multivariate_decoder.sh multivariate_decoder(56, 'RU', 56, 'RU', false, 1, 0, true, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6986131.out -- Submitted batch job 6986131
+multivariate_decoder.sh multivariate_decoder(56, 'RU', 56, 'RU', false, 1, 0, true, false, 100, 1, true, 'ridge_CV', false): output/multivariate_decoder_6986151.out -- Submitted batch job 6986151
+multivariate_decoder.sh multivariate_decoder(56, 'RU', 56, 'RU', false, 1, 0, false, false, 100, 1, false, 'fitlm', false): output/multivariate_decoder_6986161.out -- Submitted batch job 6986161
+----------------
+--- Running univariate_decoder <-- weird; RLPFC n.s. but peak is off; mixed effects all significant w t f... but probs choice info leaking => need trial_onset_L
+----------------
+univariate_decoder.sh univariate_decoder(56, \'RU\', 56, \'RU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_6986269.out -- Submitted batch job 6986269
+univariate_decoder.sh univariate_decoder(56, \'RU\', 56, \'RU\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6986276.out -- Submitted batch job 6986276
+univariate_decoder.sh univariate_decoder(56, \'RU\', 56, \'RU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6986284.out -- Submitted batch job 6986284
+univariate_decoder.sh univariate_decoder(56, \'RU\', 56, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_6986292.out -- Submitted batch job 6986292
+----------------
+--- Running multivariate_decoder <-- error
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6987715.out -- Submitted batch job 6987715
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6987735.out -- Submitted batch job 6987735
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, 'ridge_CV', false): output/multivariate_decoder_6987739.out -- Submitted batch job 6987739
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, 'fitlm', false): output/multivariate_decoder_6987746.out -- Submitted batch job 6987746
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6987749.out -- Submitted batch job 6987749
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, 'ridge_CV', false): output/multivariate_decoder_6987758.out -- Submitted batch job 6987758
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, 'ridge_CV', false): output/multivariate_decoder_6987765.out -- Submitted batch job 6987765
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, 'fitlm', false): output/multivariate_decoder_6987776.out -- Submitted batch job 6987776
+----------------
+--- Running multivariate_decoder <-- error -- mysterious NaN or Inf error
+---------------- 
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_6988147.out -- Submitted batch job 6988147 <-- all significant
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_6988164.out -- Submitted batch job 6988164  <-- error
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_6988178.out -- Submitted batch job 6988178 <-- error
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'fitlm\', false): output/multivariate_decoder_6988187.out -- Submitted batch job 6988187 <-- all significant, less so that ridge_CV
+
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_6988200.out -- Submitted batch job 6988200 <-- all significant
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_6988206.out -- Submitted batch job 6988206 <-- error
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_6988219.out -- Submitted batch job 6988219 <-- w t f... all significant ... C ~ 1 + V + RU + VTU + decRU + (1 + V + RU + VTU + decRU|S) ......... probs b/c no trial_onset_L BUT also might be picking up choices..
+multivariate_decoder.sh multivariate_decoder(56, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'fitlm\', false): output/multivariate_decoder_6988224.out -- Submitted batch job 6988224 <-- all significant
+----------------
+--- Running is_rsa <-- GLM 57, trial_onset, unsmoothed => nothing :( (min p = 0.0093 uncorr, parcel = 97)
+----------------
+is_rsa.sh is_rsa: output/is_rsa_6992251.out -- Submitted batch job 6992251
+----------------
+--- Running ccnl_fmri_con <-- 58 & 59 lol jk not done
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_7075449.out -- Submitted batch job 7075449
+----------------
+--- Running is_rsa <-- GLM 57, nosmooth, trial_onset, cosine dist => nothing, min uncorr p = 0.02
+----------------
+is_rsa.sh is_rsa: output/is_rsa_7075631.out -- Submitted batch job 7075631
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_7187057.out -- Submitted batch job 7187057
+----------------
+--- Running is_rsa <-- GLM 57, trial_onset, smooth
+----------------
+is_rsa.sh is_rsa: output/is_rsa_7187383.out -- Submitted batch job 7187383
+----------------
+--- Running univariate_decoder <-- for GLM 58 => nah
+----------------
+univariate_decoder.sh univariate_decoder(58, \'RU\', 58, \'RU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_7199185.out -- Submitted batch job 7199185  <--- nothing... maybe thalamus (R) 
+univariate_decoder.sh univariate_decoder(58, \'RU\', 58, \'RU\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_7199189.out -- Submitted batch job 7199189 <--- nothing (same as above)
+univariate_decoder.sh univariate_decoder(58, \'RU\', 58, \'RU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7199215.out -- Submitted batch job 7199215
+univariate_decoder.sh univariate_decoder(58, \'RU\', 58, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7199226.out -- Submitted batch job 7199226
+univariate_decoder.sh univariate_decoder(58, \'TU\', 58, \'TU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_7199234.out -- Submitted batch job 7199234
+univariate_decoder.sh univariate_decoder(58, \'TU\', 58, \'TU\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_7199244.out -- Submitted batch job 7199244
+univariate_decoder.sh univariate_decoder(58, \'TU\', 58, \'TU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7199252.out -- Submitted batch job 7199252
+univariate_decoder.sh univariate_decoder(58, \'TU\', 58, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7199258.out -- Submitted batch job 7199258
+----------------
+--- Running multivariate_decoder  <-- w/ glm 57 nosmooth => maybe RLPFC ROI? BUT shouldn't be using 57 anyway; redo with 23
+
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7207744.out -- Submitted batch job 7207744   <-- all significant (random eff.) BUT only top one has BIC = 6400 !! #jackpot
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7207747.out -- Submitted batch job 7207747 <-- almost all significant (random eff + intercept) but not really b/c of BIC; also WTF BIC_orig varies => random ...
+----------------
+--- Running multivariate_decoder <-- w/ glm 57 nosmooth => not conclusive, but doesn't matter; redoing with 23
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7207932.out -- Submitted batch job 7207932  <-- almost all significant w/ BICs 
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7207942.out -- Submitted batch job 7207942 <-- almost all significant, with BICs
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7207948.out -- Submitted batch job 7207948 <-- all have BICs > 6410
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'fitlm\', false): output/multivariate_decoder_7207958.out -- Submitted batch job 7207958  <-- almost all significant, a bit less than ridge_CV
+----------------
+--- Running preload_betas <-- 23 no_smooth => done
+----------------
+preload_betas.sh mask.nii trial_onset: output/preload_betas_7213510.out -- Submitted batch job 7213510
+----------------
+--- Running multivariate_decoder <-- w/ glm 23 nosmooth <-- w t f varying BIC_origs  LOLLLLLLLLLL only took average beta.. JUST KIDDING IGNORE THESE
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7214006.out -- Submitted batch job 7214006 <-- all significant, with BICs 
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7214025.out -- Submitted batch job 7214025 <-- all significant, with BICs => why do BIC_origs sometimes differ ?????????????????
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7214037.out -- Submitted batch job 7214037 <-- all significant but all BICs > 6410
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7214050.out -- Submitted batch job 7214050 <-- all significant, with BICs
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7214059.out -- Submitted batch job 7214059 <-- all significant, but WTF varying BIC_origs
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7214071.out -- Submitted batch job 7214071 <-- all significant but w t f varying BIC_origs
+----------------
+--- Running cross_subject <-- functional connectivity w/ DV <--> w's ; ERROR => startsWith('RU' ...
+----------------
+cross_subject.sh cross_subject(47, \'DV\', 52, \'RU_betas\', 2, false, 100, false): output/cross_subject_7215384.out -- Submitted batch job 7215384
+cross_subject.sh cross_subject(47, \'DV\', 52, \'TU_betas1\', 2, false, 100, false): output/cross_subject_7215386.out -- Submitted batch job 7215386
+cross_subject.sh cross_subject(47, \'DV\', 52, \'TU_betas2\', 2, false, 100, false): output/cross_subject_7215388.out -- Submitted batch job 7215388
+cross_subject.sh cross_subject(47, \'DV\', 53, \'RU_betas\', 2, false, 100, false): output/cross_subject_7215399.out -- Submitted batch job 7215399
+cross_subject.sh cross_subject(47, \'DV\', 53, \'TU_betas1\', 2, false, 100, false): output/cross_subject_7215402.out -- Submitted batch job 7215402
+cross_subject.sh cross_subject(47, \'DV\', 53, \'TU_betas2\', 2, false, 100, false): output/cross_subject_7215418.out -- Submitted batch job 7215418
+----------------
+--- Running univariate_decoder <-- sanity, also random effects, intercept; TU DLPFC ROI is very significant (one of them), even for random effects + intercept, using BICs!!! 
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_7215570.out -- Submitted batch job 7215570 <-- as expected (repro)
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_7215573.out -- Submitted batch job 7215573 <-- same
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7215576.out -- Submitted batch job 7215576 <--  ERROR NaN or Inf; must do same as multivar... BUT RLPFC is BIC = 6438 > 6427 = BIC_orig...
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7215581.out -- Submitted batch job 7215581 <-- lol lots are significant; but BIC's are large => not really significant...
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_7215584.out -- Submitted batch job 7215584 <-- as expected (repro)
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false): output/univariate_decoder_7215588.out -- Submitted batch job 7215588 <-- same
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7215590.out -- Submitted batch job 7215590 <-- DAMN frontal_inf_oper_L super significant, BIC AND ALL!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7215595.out -- Submitted batch job 7215595 <-- frontal_INF_OPER_L super significant again!!! BIC and all!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! BIC = 6400 < 6410 = BIC_orig
+----------------
+--- Running cross_subject <-- functional connectivity w/ DV <--> w's => n.s.
+----------------
+cross_subject.sh cross_subject(47, \'DV\', 52, \'RU_betas\', 2, false, 100, false): output/cross_subject_7216329.out -- Submitted batch job 7216329 <-- n.s.
+cross_subject.sh cross_subject(47, \'DV\', 52, \'TU_betas1\', 2, false, 100, false): output/cross_subject_7216331.out -- Submitted batch job 7216331 <-- n.s.
+cross_subject.sh cross_subject(47, \'DV\', 52, \'TU_betas2\', 2, false, 100, false): output/cross_subject_7216337.out -- Submitted batch job 7216337 <-- n.s.
+cross_subject.sh cross_subject(47, \'DV\', 53, \'RU_betas\', 2, false, 100, false): output/cross_subject_7216340.out -- Submitted batch job 7216340 <-- n.s.
+cross_subject.sh cross_subject(47, \'DV\', 53, \'TU_betas1\', 2, false, 100, false): output/cross_subject_7216345.out -- Submitted batch job 7216345 <-- n.s.
+cross_subject.sh cross_subject(47, \'DV\', 53, \'TU_betas2\', 2, false, 100, false): output/cross_subject_7216353.out -- Submitted batch job 7216353 <-- n.s.
+----------------
+--- Running univariate_decoder <-- mixed eff, with attempts (like multivar) and TrustRegion2D and random starts => nothing...
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7293128.out -- Submitted batch job 7293128 <-- all BICs > BIC_orig => n.s.
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7293141.out -- Submitted batch job 7293141 <-- all BICs > BIC_orig => n.s.
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7293149.out -- Submitted batch job 7293149 <-- error => altglme has lower likelihood => put 'attempt' in 1 single loop, with both fits + compare
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7293157.out -- Submitted batch job 7293157 <-- all BICs > BIC_orig => n.s.
+----------------
+--- Running univariate_decoder <-- no random starts, no attempts; => repro TU DLPFC result
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7363609.out -- Submitted batch job 7363609 <-- same NaN or Inf error as before; but also no BIC's signifcant, all LL significant => nonspecific
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7363625.out -- Submitted batch job 7363625 <-- same as before 
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7363628.out -- Submitted batch job 7363628 <-- YEP repro TU DLPFC result nicely! BIC = 6412 < 6427 = BIC_orig
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7363661.out -- Submitted batch job 7363661 <-- repro frontal_inf_oper_L result (BIC = 6400 < 6410 = BIC_orig) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+----------------
+--- Running multivariate_decoder <-- LOL using ccnl_get_beta_series => not avg beta;  => promising TU DLPFC
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7365322.out -- Submitted batch job 7365322 <-- aaand they're all super significant, with BICs and all...
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7365325.out -- Submitted batch job 7365325 <--  still all significant, with BICs
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7365359.out -- Submitted batch job 7365359 <-- none are BIC significant... dayum EXCEPT for some, the BIC_orig is large ??????????????????
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7365363.out -- Submitted batch job 7365363 <-- ERROR failed too many times w t f... ALTGLME must have a higher maximized bla bla => put 'attempt' in 1 single loop with both fits + compare
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7365376.out -- Submitted batch job 7365376 <--  FRONTAL MID 2 L YESSSSSSSSSSSSSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!!! BIC = 6404 
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7365393.out -- Submitted batch job 7365393 <--  FRONTAL MID 2 L YESSSSSSSSSSSSSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!! BIC = 6389 < 6410 = BIC_orig; also, clearly the multivariate decoder did a crappy job with the decoding b/c the univariate decoder found a better BIC for the other DLPFC region
+
+----------------
+--- Running univariate_decoder <-- lambda = 0, trying to fix pears_rs, pears_ps issue => n.s., nothing, nil
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 0, 2, true, false, 100, 1, false): output/univariate_decoder_7418014.out -- Submitted batch job 7418014 <-- NaN or Inf error; RLPFC big BIC..
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 0, 2, true, false, 100, 1, true): output/univariate_decoder_7418015.out -- Submitted batch job 7418015 <-- n.s. (all BIC > 6410)
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 0, 2, true, false, 100, 1, false): output/univariate_decoder_7418037.out -- Submitted batch job 7418037 <-- NaN or Inf error...
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 0, 2, true, false, 100, 1, true): output/univariate_decoder_7418040.out -- Submitted batch job 7418040 <-- n.s. even for LL
+----------------
+--- Running univariate_decoder <-- do_orth = true, see if Frontal_inf_oper_L DLPFC still repros  => it doesn't
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7458954.out -- Submitted batch job 7458954 <-- nonspecific, significant for LL, not for BIC
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7458969.out -- Submitted batch job 7458969 <-- precentral_L and cingulate_mid_L; maybe RLPFC if alone, but LL only
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_7458983.out -- Submitted batch job 7458983 <-- n.s.
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, true): output/univariate_decoder_7458992.out -- Submitted batch job 7458992 <-- n.s.
+----------------
+--- Running univariate_decoder <-- flip_sign = true => RLPFC |RU| nonspecific... BUT very significant => maybe keep (makes sense)
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true): output/univariate_decoder_7459400.out -- Submitted batch job 7459400 <-- so close!!! BIC = 6426.9 < 6427; LL is obvi significant; nonspecific though.... 
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7459425.out -- Submitted batch job 7459425 <-- all signficant for LL; BICs better for Precuneus (R), Occipital (L), and Precental (L)
+----------------
+--- Running multivariate_decoder <-- ridge_CV_CV => ERROR can't do; crossval wants each fold to have same # of rows => SUPER LAME, I was using it wrong
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV_CV\', false): output/multivariate_decoder_7462743.out -- Submitted batch job 7462743
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV_CV\', false): output/multivariate_decoder_7462754.out -- Submitted batch job 7462754
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV_CV\', false): output/multivariate_decoder_7462765.out -- Submitted batch job 7462765
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV_CV\', false): output/multivariate_decoder_7462771.out -- Submitted batch job 7462771
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV_CV\', false): output/multivariate_decoder_7462783.out -- Submitted batch job 7462783
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV_CV\', false): output/multivariate_decoder_7462789.out -- Submitted batch job 7462789
+----------------
+--- Running multivariate_decoder <-- repeat attempts until BIC's are both good  => ERROR used wrong BIC idx..  promising for mixed eff, no intercept for RU
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7467234.out -- Submitted batch job 7467234
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7467236.out -- Submitted batch job 7467236 <-- promising (BIC = 6403 < 6427 for BIC_orig)
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7467238.out -- Submitted batch job 7467238  <-- not promising (BIC = 6416 vs. 6410 for BIC_orig)
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7467240.out -- Submitted batch job 7467240
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7467242.out -- Submitted batch job 7467242
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7467245.out -- Submitted batch job 7467245
+----------------
+--- Running multivariate_decoder <-- repeat attempts for both fitglme's, second try.  => OK repro'd Fronta_Mid_2_L TU result AND got consistent BIC_origs; however, only thalamus (R) is significant with BIC for RU...
+RU: thalamus only for BIC; all ROIs for LL...
+TU: frontal_mid_2_L specificity for both BIC's and LL
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7478383.out -- Submitted batch job 7478383 <-- all significant, BICs too
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7478391.out -- Submitted batch job 7478391 <-- daymn almost all significant! with BICs!
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7478397.out -- Submitted batch job 7478397 <-- all significant BUT only thalamus (R) significant with BIC...
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7478423.out -- Submitted batch job 7478423 <-- ERROR: failed too many times...
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false): output/multivariate_decoder_7478429.out -- Submitted batch job 7478429 <-- Frontal_Mid_2_L !!!!!!! BIC = 6404 < 6427 = BIC_orig
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false): output/multivariate_decoder_7478437.out -- Submitted batch job 7478437 <-- Frontal_Mid_2_L !!!!!!! BIC = 6389 < 6410 = BIC_orig
+----------------
+--- Running multivariate_decoder
+----------------
+----------------
+--- Running multivariate_decoder <-- z-score across voxels => weird result for TU => DO NOT z-score across voxels within ROIs
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, true): output/multivariate_decoder_7480120.out -- Submitted batch job 7480120 <-- all significant
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, true): output/multivariate_decoder_7480126.out -- Submitted batch job 7480126 <-- all significant, with BIC's...
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, true): output/multivariate_decoder_7480128.out -- Submitted batch job 7480128 <-- almost all significant with LL; WTF thalamus (R) NOT better BIC, but Precuneus (R) and Loc not in atlas better BICs...
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, true): output/multivariate_decoder_7480132.out -- Submitted batch job 7480132 <-- almost all significant, with BICs
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, true): output/multivariate_decoder_7480134.out -- Submitted batch job 7480134 <-- only frontal_sup_medial_L significant?? with BIC and LL?
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, true): output/multivariate_decoder_7480153.out -- Submitted batch job 7480153 <-- only frontal_sup_medial_L significant?? with BIC and LL?
+
+----------------
+--- Running multivariate_decoder <-- predict_abs: all significant for RU; probs risk-aversion kicking in => include condition in GLM; but also maybe predict_abs 
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498122.out -- Submitted batch job 7498122 <-- all significant
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498137.out -- Submitted batch job 7498137 <-- all significant, with BIC's and all!! < 6400
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498142.out -- Submitted batch job 7498142 <-- all significant with BICs!!!!! => RISK AVERSION => include condition as regressor
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498155.out -- Submitted batch job 7498155 <-- error, as before (failed too many times)
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498167.out -- Submitted batch job 7498167 <-- same; frontal_mid_2_l
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true): output/multivariate_decoder_7498172.out -- Submitted batch job 7498172 <-- same as before; frontal_mid_2_l
+----------------
+--- Running multivariate_decoder <-- predict_abs, use_smooth ERROR: betas_from_mat; jk no error  => basically same as no_smooth; did NOT get frontal_inf_oper_L for TU... weird => DO NOT use_smooth
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498289.out -- Submitted batch job 7498289 <-- al significant
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498297.out -- Submitted batch job 7498297 <-- all significant, with BIC's < 6400
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498308.out -- Submitted batch job 7498308 <-- all significant, with BICs < 6400
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498314.out -- Submitted batch job 7498314  <-- error failed too many times
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498321.out -- Submitted batch job 7498321 <-- frontal_mid_2_L BIC = 6404 < 6427 = BIC_orig
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498326.out -- Submitted batch job 7498326 <-- frontal_mid_2_L BIC = 6389 < 6410 = BIC_orig; sadly, no frontal_inf_oper_L...
+----------------
+--- Running multivariate_decoder <-- predict_abs, use_smooth 2nd try => same as above; ignore
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498559.out -- Submitted batch job 7498559
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498563.out -- Submitted batch job 7498563
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498572.out -- Submitted batch job 7498572
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498583.out -- Submitted batch job 7498583
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498594.out -- Submitted batch job 7498594
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, true, true): output/multivariate_decoder_7498617.out -- Submitted batch job 7498617
+----------------
+--- Running multivariate_decoder <-- use_smooth => basically same as nosmooth => don't smooth 
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498662.out -- Submitted batch job 7498662
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498676.out -- Submitted batch job 7498676
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498688.out -- Submitted batch job 7498688 <-- thalamus
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498699.out -- Submitted batch job 7498699
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498704.out -- Submitted batch job 7498704
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, true): output/multivariate_decoder_7498711.out -- Submitted batch job 7498711 <-- frontal_mid_2_L BIC = 6389 < 6410
+----------------
+--- Running main_effect <-- functional connectivity RU, TU ROI <--> DV ROIs => nonspecificity (almost all significant)
+----------------
+main_effect.sh main_effect(47, \'DV\', 52, \'RU_betas\', false, 100, 1): output/main_effect_7711043.out -- Submitted batch job 7711043 <-- all s.
+main_effect.sh main_effect(47, \'DV\', 52, \'TU_betas1\', false, 100, 1): output/main_effect_7711057.out -- Submitted batch job 7711057 <-- all s.
+main_effect.sh main_effect(47, \'DV\', 52, \'TU_betas2\', false, 100, 1): output/main_effect_7711076.out -- Submitted batch job 7711076 <-- all s.
+main_effect.sh main_effect(47, \'DV\', 53, \'RU_betas\', false, 100, 1): output/main_effect_7711089.out -- Submitted batch job 7711089 <-- Thalamus (R) and Cbl (L)
+main_effect.sh main_effect(47, \'DV\', 53, \'TU_betas1\', false, 100, 1): output/main_effect_7711095.out -- Submitted batch job 7711095 <-- all s.
+main_effect.sh main_effect(47, \'DV\', 53, \'TU_betas2\', false, 100, 1): output/main_effect_7711101.out -- Submitted batch job 7711101 <-- all s.
+----------------
+--- Running multivariate_decoder_bms <--- error; did not take LME of original GLM
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719300.out -- Submitted batch job 7719300
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719316.out -- Submitted batch job 7719316
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719322.out -- Submitted batch job 7719322
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719334.out -- Submitted batch job 7719334
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719339.out -- Submitted batch job 7719339
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7719345.out -- Submitted batch job 7719345
+----------------
+--- Running multivariate_decoder_bms <-- with PXP; re-running b/c results_orig is sometimes the bad one (didn't have attempts)
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735085.out -- Submitted batch job 7735085
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735086.out -- Submitted batch job 7735086 <-- WTF failed b/c original fitglme failed => random starts
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735087.out -- Submitted batch job 7735087
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735088.out -- Submitted batch job 7735088
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735090.out -- Submitted batch job 7735090 <-- WTF failed b/c original fitglme failed
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735092.out -- Submitted batch job 7735092 <-- BIC_orig is really bad 
+----------------
+--- Running multivariate_decoder_bms <-- w t f PXP of original = 1
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735283.out -- Submitted batch job 7735283
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7735284.out -- Submitted batch job 7735284
+----------------
+--- Running neurosynth_bms <-- SUPER SLOW omg => timed out, useful to look at for comparing w/ manually set lambda
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, false, false, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738686.out -- Submitted batch job 7738686
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, false, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738687.out -- Submitted batch job 7738687
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738688.out -- Submitted batch job 7738688
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, false, false, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738689.out -- Submitted batch job 7738689
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, false, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738692.out -- Submitted batch job 7738692
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_7738693.out -- Submitted batch job 7738693
+----------------
+--- Running multivariate_decoder_bms  <-- BMS "proper"; original PXP = 1 for the most part => nothing, though 1) our logliks differ from the fitglme logliks (test_loglik.m), and 2) this BMS assumes random effects, so it's even more conservative than the already conservative BIC
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765015.out -- Submitted batch job 7765015 <-- uniform PXP's
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765016.out -- Submitted batch job 7765016 <-- original PXP = 1 => SUSPICIOUS! maybe BIC calc is incorrect, b/c some (cumulative) BIC's are  way lower... okay investigated => see test_loglik.m; sometimes the manually computed loglik differs from the one returned by fitglme... w t f... anyway, i'm more confident in this one
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765017.out -- Submitted batch job 7765017 <-- original PXP = 1, only Thalamus BIC is better
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765018.out -- Submitted batch job 7765018 <-- error, last one fucked ugh BUT PXP of original GLM = 0.01!
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765020.out -- Submitted batch job 7765020 <-- original PXP = 1
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7765021.out -- Submitted batch job 7765021 <-- PXP of original = 1... (even tho Frontal_Mid_2_L is better BIC)
+----------------
+--- Running multivariate_decoder <-- MISTAKE max lambda increased (we kept hitting the ceiling); JK just re-running it ... forgot to scp => repro
+----------------
+multivariate_decoder.sh multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_7770884.out -- Submitted batch job 7770884
+multivariate_decoder.sh multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_7770886.out -- Submitted batch job 7770886
+----------------
+--- Running multivariate_decoder_bms <-- MISTAKE AGAIN max lambda = 10^25 (we kept hittin the ceiling)
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7779745.out -- Submitted batch job 7779745
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7779747.out -- Submitted batch job 7779747
+----------------
+--- Running neurosynth_bms <-- ridge, lambda = 1e5
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7780110.out -- Submitted batch job 7780110
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7780111.out -- Submitted batch job 7780111
+----------------
+--- Running multivariate_decoder_bms <-- max lambda = 10^20 (we kept hittin the ceiling), for real this time => same as before; smaller lambda range worked just as well 
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7780155.out -- Submitted batch job 7780155 <-- same as with lower lambdas (see above -- BMS "proper") => no effect, PXP = 1 for original 
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false): output/multivariate_decoder_bms_7780158.out -- Submitted batch job 7780158 <-- same as with lower lambdas (see above) => PXP = 1 for original
+----------------
+--- Running univariate_decoder <-- controls, badre ( no sign flip) => blah; need to rerun with best of 3, also in paper we flip the sign => don't even bother
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882719.out -- Submitted batch job 7882719 <-- repro; RLPFC LL but not BIC
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882721.out -- Submitted batch job 7882721 <-- NaN or Inf => random starts, best of 3... or NOT b/c we don't care about this right now => using Badre's ROI
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882723.out -- Submitted batch job 7882723 <-- nonspecific RU => insula BIC, others LL too
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882725.out -- Submitted batch job 7882725 <-- frontal_inf_oper_L repro
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882727.out -- Submitted batch job 7882727 <-- RLPFC LL but not BIC
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882729.out -- Submitted batch job 7882729 <-- n.s. yes!
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882732.out -- Submitted batch job 7882732 <-- nonspecific ... shit ... LL all, BIC none
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882734.out -- Submitted batch job 7882734 <-- LL significant... fuck
+----------------
+--- Running univariate_decoder <-- controls, badre WITH sign flip => rerunning with best of 3 b/c of second one; see others here => https://docs.google.com/presentation/d/1kSw-D4W9qatMvZUVi3LmgtMi9x4sho-aRcmZ1T_zSXQ/edit#slide=id.g568a02ef09_0_194
+----------------
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885795.out -- Submitted batch job 7885795 <-- nonspecific; RLPFC LL not BIC, Precuneus & Occipital => BIC too
+univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885796.out -- Submitted batch job 7885796 <-- NaN of Inf...
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885798.out -- Submitted batch job 7885798
+univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885800.out -- Submitted batch job 7885800
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885802.out -- Submitted batch job 7885802
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885804.out -- Submitted batch job 7885804
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885806.out -- Submitted batch job 7885806
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_7885808.out -- Submitted batch job 7885808
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 60, subjects 7 11 23 25 27 18 28 29 3 5 31 1 26 22 13 9 15 8 14 17 20 12 24 30 4 2 21 19 16 6 10: output/ccnl_fmri_glm_60_goodSubjects_7886520.out -- Submitted batch job 7886520
+ccnl_fmri_glm.sh for GLM 61, subjects 21 17 4 19 2 24 30 11 23 31 1 14 18 29 13 9 22 3 10 25 16 15 20 28 8 7 12 5 6 26 27: output/ccnl_fmri_glm_61_goodSubjects_7886522.out -- Submitted batch job 7886522
+----------------
+--- Running neurosynth_bms <-- RU = striatum, TU = DLPFC! but... ridge, lambda = 1e5; => doing ridge_CV GULP
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7909235.out -- Submitted batch job 7909235 <--- LOL we can decode RU from everywhere
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7909237.out -- Submitted batch job 7909237 <-- damn specific => 11, 115, 122, 145, 152
+----------------
+--- Running univariate_decoder_bms <-- best of 3 (random starts) => WTF TU from TU ROIs differs a lot!!!! damn it...
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920180.out -- Submitted batch job 7920180 <-- same as univariate_decoder above (nonspecific) => validated approach
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920184.out -- Submitted batch job 7920184 <-- works
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920187.out -- Submitted batch job 7920187
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920189.out -- Submitted batch job 7920189 <-- WTF very different... lame
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920192.out -- Submitted batch job 7920192
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920193.out -- Submitted batch job 7920193
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920194.out -- Submitted batch job 7920194
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7920196.out -- Submitted batch job 7920196
+----------------
+--- Running univariate_decoder_bms <-- exact copy of above? weird...
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955778.out -- Submitted batch job 7955778
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955779.out -- Submitted batch job 7955779
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955780.out -- Submitted batch job 7955780
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955781.out -- Submitted batch job 7955781
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955782.out -- Submitted batch job 7955782
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955791.out -- Submitted batch job 7955791
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955795.out -- Submitted batch job 7955795
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_bms_7955799.out -- Submitted batch job 7955799
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_7955861.out -- Submitted batch job 7955861  <-- 60, 61
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 <-- rerunning on CentOS 7
+----------------
+ccnl_fmri_glm.sh for GLM 1, subjects 8 13 5 30 1 6 31 28 14 19 26 17 18 15 20 21 10 27 4 23 16 22 24 2 11 3 25 12 9 29 7: output/ccnl_fmri_glm_1_goodSubjects_7957222.out -- Submitted batch job 7957222
+ccnl_fmri_glm.sh for GLM 2, subjects 7 12 27 31 26 6 3 16 10 29 19 21 17 20 15 23 13 25 4 5 9 30 22 11 28 24 1 2 18 14 8: output/ccnl_fmri_glm_2_goodSubjects_7957224.out -- Submitted batch job 7957224
+ccnl_fmri_glm.sh for GLM 3, subjects 16 10 21 15 14 25 30 8 22 6 24 5 11 4 26 19 18 3 9 31 2 23 1 28 27 13 20 12 17 7 29: output/ccnl_fmri_glm_3_goodSubjects_7957227.out -- Submitted batch job 7957227
+ccnl_fmri_glm.sh for GLM 4, subjects 16 7 3 5 23 10 17 27 15 20 2 26 28 24 31 19 1 29 30 6 25 14 4 18 11 12 9 22 8 13 21: output/ccnl_fmri_glm_4_goodSubjects_7957230.out -- Submitted batch job 7957230
+ccnl_fmri_glm.sh for GLM 5, subjects 12 17 28 11 19 16 31 9 6 5 2 22 21 14 24 1 18 15 26 13 10 3 7 30 20 29 25 23 4 27 8: output/ccnl_fmri_glm_5_goodSubjects_7957234.out -- Submitted batch job 7957234
+ccnl_fmri_glm.sh for GLM 6, subjects 28 2 11 30 13 21 5 17 24 3 20 18 27 6 7 1 23 22 31 4 10 16 8 9 25 19 12 14 26 15 29: output/ccnl_fmri_glm_6_goodSubjects_7957263.out -- Submitted batch job 7957263
+ccnl_fmri_glm.sh for GLM 7, subjects 24 25 30 29 9 2 28 15 1 20 3 23 12 26 7 16 5 31 17 4 22 14 19 13 10 8 21 18 27 11 6: output/ccnl_fmri_glm_7_goodSubjects_7957267.out -- Submitted batch job 7957267
+ccnl_fmri_glm.sh for GLM 8, subjects 21 31 24 20 19 25 4 15 16 14 10 9 22 28 6 8 26 18 1 13 27 12 2 29 5 17 23 3 30 11 7: output/ccnl_fmri_glm_8_goodSubjects_7957272.out -- Submitted batch job 7957272
+ccnl_fmri_glm.sh for GLM 9, subjects 4 28 2 5 12 24 13 29 27 15 1 6 7 19 3 20 17 23 25 16 26 11 14 30 10 31 8 22 21 18 9: output/ccnl_fmri_glm_9_goodSubjects_7957278.out -- Submitted batch job 7957278
+ccnl_fmri_glm.sh for GLM 10, subjects 24 29 15 26 4 9 13 5 20 17 3 11 18 8 22 28 14 30 23 6 10 7 1 2 16 19 31 21 25 27 12: output/ccnl_fmri_glm_10_goodSubjects_7957295.out -- Submitted batch job 7957295
+ccnl_fmri_glm.sh for GLM 11, subjects 27 26 4 31 6 19 7 10 12 2 5 25 18 11 22 1 28 20 24 30 23 9 3 13 14 8 16 15 21 17 29: output/ccnl_fmri_glm_11_goodSubjects_7957297.out -- Submitted batch job 7957297 <-- fail, expected
+ccnl_fmri_glm.sh for GLM 12, subjects 18 23 8 15 28 14 24 6 3 1 13 20 11 21 26 29 31 12 27 16 19 9 4 17 7 10 30 2 5 25 22: output/ccnl_fmri_glm_12_goodSubjects_7957300.out -- Submitted batch job 7957300
+ccnl_fmri_glm.sh for GLM 13, subjects 7 27 9 15 24 21 31 5 30 26 2 10 3 8 22 20 18 6 11 28 1 4 13 19 29 23 14 25 16 12 17: output/ccnl_fmri_glm_13_goodSubjects_7957306.out -- Submitted batch job 7957306
+ccnl_fmri_glm.sh for GLM 14, subjects 3 11 27 20 18 31 1 19 6 2 5 26 29 16 13 8 4 22 24 28 17 9 23 12 10 15 25 21 14 7 30: output/ccnl_fmri_glm_14_goodSubjects_7957309.out -- Submitted batch job 7957309
+ccnl_fmri_glm.sh for GLM 15, subjects 16 31 15 3 4 14 6 26 18 22 29 21 12 9 24 17 1 20 10 7 25 11 19 13 23 5 27 2 30 8 28: output/ccnl_fmri_glm_15_goodSubjects_7957315.out -- Submitted batch job 7957315
+ccnl_fmri_glm.sh for GLM 16, subjects 15 18 22 12 21 20 17 9 31 13 8 30 3 23 5 24 2 25 10 11 6 16 27 26 7 28 1 29 19 14 4: output/ccnl_fmri_glm_16_goodSubjects_7957319.out -- Submitted batch job 7957319
+ccnl_fmri_glm.sh for GLM 17, subjects 23 3 30 4 9 7 31 13 5 17 29 26 1 18 20 16 2 14 8 25 12 28 15 6 24 19 11 22 27 10 21: output/ccnl_fmri_glm_17_goodSubjects_7957324.out -- Submitted batch job 7957324
+ccnl_fmri_glm.sh for GLM 18, subjects 4 14 7 12 16 28 2 24 10 19 15 6 1 23 25 13 29 26 22 31 27 5 17 30 8 20 11 18 3 21 9: output/ccnl_fmri_glm_18_goodSubjects_7957327.out -- Submitted batch job 7957327
+ccnl_fmri_glm.sh for GLM 19, subjects 23 12 26 20 28 15 27 10 11 16 5 7 8 19 3 18 31 17 9 29 22 21 30 24 2 4 6 14 25 13 1: output/ccnl_fmri_glm_19_goodSubjects_7957334.out -- Submitted batch job 7957334
+ccnl_fmri_glm.sh for GLM 20, subjects 24 31 28 15 2 22 8 11 27 5 4 29 7 13 6 25 20 14 18 16 10 19 12 30 17 3 26 23 21 1 9: output/ccnl_fmri_glm_20_goodSubjects_7957338.out -- Submitted batch job 7957338
+ccnl_fmri_glm.sh for GLM 21, subjects 29 23 1 2 6 8 30 22 20 16 14 7 10 3 9 19 21 31 15 5 4 11 24 18 28 13 27 12 17 25 26: output/ccnl_fmri_glm_21_goodSubjects_7957344.out -- Submitted batch job 7957344
+ccnl_fmri_glm.sh for GLM 22, subjects 31 18 1 23 16 19 8 20 4 24 17 27 11 13 7 28 26 12 5 14 3 21 6 22 2 29 25 9 10 30 15: output/ccnl_fmri_glm_22_goodSubjects_7957349.out -- Submitted batch job 7957349
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 --> rerunning on CentOS 7
+----------------
+ccnl_fmri_glm.sh for GLM 24, subjects 1 6 20 12 5 21 9 2 22 26 27 3 31 15 28 17 11 7 30 24 18 4 19 23 16 14 10 25 29 13 8: output/ccnl_fmri_glm_24_goodSubjects_7957393.out -- Submitted batch job 7957393
+ccnl_fmri_glm.sh for GLM 25, subjects 2 15 17 9 13 31 14 26 18 23 1 16 6 21 10 19 25 28 29 27 4 20 5 11 3 22 7 8 24 12 30: output/ccnl_fmri_glm_25_goodSubjects_7957394.out -- Submitted batch job 7957394
+ccnl_fmri_glm.sh for GLM 26, subjects 31 28 5 11 6 15 3 23 19 27 10 12 26 29 25 16 18 30 1 13 4 20 24 22 14 21 9 8 17 2 7: output/ccnl_fmri_glm_26_goodSubjects_7957395.out -- Submitted batch job 7957395
+ccnl_fmri_glm.sh for GLM 27, subjects 6 30 16 22 29 9 19 13 1 8 21 25 3 15 23 20 26 28 24 5 4 31 27 14 7 11 12 10 2 17 18: output/ccnl_fmri_glm_27_goodSubjects_7957406.out -- Submitted batch job 7957406
+ccnl_fmri_glm.sh for GLM 28, subjects 31 4 8 3 12 30 2 9 19 29 28 13 1 5 18 11 25 7 21 27 17 20 15 10 26 14 16 23 24 6 22: output/ccnl_fmri_glm_28_goodSubjects_7957407.out -- Submitted batch job 7957407
+ccnl_fmri_glm.sh for GLM 29, subjects 30 23 13 16 24 25 6 17 12 19 10 28 5 15 3 18 9 14 7 20 21 26 4 11 1 2 29 8 22 31 27: output/ccnl_fmri_glm_29_goodSubjects_7957418.out -- Submitted batch job 7957418
+ccnl_fmri_glm.sh for GLM 30, subjects 3 10 27 18 17 30 1 16 8 20 22 6 25 13 11 2 12 28 15 4 5 24 19 7 23 26 21 9 31 14 29: output/ccnl_fmri_glm_30_goodSubjects_7957430.out -- Submitted batch job 7957430
+ccnl_fmri_glm.sh for GLM 31, subjects 16 15 21 22 26 27 29 28 8 31 4 6 30 24 1 5 12 2 11 14 19 23 20 25 7 3 13 18 17 9 10: output/ccnl_fmri_glm_31_goodSubjects_7957442.out -- Submitted batch job 7957442
+ccnl_fmri_glm.sh for GLM 32, subjects 13 23 21 25 14 22 9 15 30 29 8 6 28 10 20 3 19 18 16 31 7 11 2 17 27 4 12 5 1 24 26: output/ccnl_fmri_glm_32_goodSubjects_7957463.out -- Submitted batch job 7957463
+ccnl_fmri_glm.sh for GLM 33, subjects 16 10 30 29 18 1 20 21 26 4 22 31 12 11 2 9 15 19 7 3 27 5 24 23 6 8 25 17 14 28 13: output/ccnl_fmri_glm_33_goodSubjects_7957467.out -- Submitted batch job 7957467
+ccnl_fmri_glm.sh for GLM 34, subjects 20 13 8 24 14 30 25 16 1 23 10 2 5 31 29 22 9 15 6 17 12 28 21 11 27 3 18 26 4 7 19: output/ccnl_fmri_glm_34_goodSubjects_7957468.out -- Submitted batch job 7957468
+ccnl_fmri_glm.sh for GLM 35, subjects 15 17 28 1 7 26 6 11 2 30 21 10 8 16 9 27 14 18 22 19 23 29 24 12 25 4 5 13 20 31 3: output/ccnl_fmri_glm_35_goodSubjects_7957470.out -- Submitted batch job 7957470
+----------------
+--- Running ccnl_fmri_con <-- 1..22 , but errored out at 11
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8072305.out -- Submitted batch job 8072305
+----------------
+--- Running ccnl_fmri_con <-- 24..35 but errored out
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8073618.out -- Submitted batch job 8073618
+----------------
+--- Running multivariate_decoder_bms <-- get_null, ridge lambda = 1e5 => not super inspiring (RU nothing, TU nonspecific) => should try ridge_CV but it will take forever
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge\', true, false, false, false): output/multivariate_decoder_bms_8084111.out -- Submitted batch job 8084111 <-- all at chance
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge\', true, false, false, false): output/multivariate_decoder_bms_8084112.out -- Submitted batch job 8084112 <-- all above chance (top one esp.), also lost DLPFC => ridge_CV
+----------------
+--- Running ccnl_fmri_con <-- 24..35 whichever didn't run last time; errored at 34
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8084663.out -- Submitted batch job 8084663
+----------------
+--- Running ccnl_fmri_con <-- remaining
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8158153.out -- Submitted batch job 8158153
+----------------
+--- Running multivariate_decoder_bms <-- get_null w/ ridge_CV; will take forever
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8159333.out -- Submitted batch job 8159333
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8159336.out -- Submitted batch job 8159336
+----------------
+--- Running neurosynth_bms <-- ridge_CV; will take forever
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_8159394.out -- Submitted batch job 8159394
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_8159406.out -- Submitted batch job 8159406

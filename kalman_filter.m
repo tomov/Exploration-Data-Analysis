@@ -31,6 +31,10 @@ function latents = kalman_filter(data)
             err = r - m(c);            % prediction error
             m(c) = m(c) + k*err;       % posterior mean
             s(c) = s(c) - k*s(c);      % posterior variance
+
+            latents.rpe(n,:) = err;
+        else
+            latents.rpe(n,:) = NaN;
         end
         
     end

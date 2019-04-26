@@ -12,7 +12,7 @@
 %     how = chosen -> 1 = chosen, 2 = unchosen
 %     how = abs -> return abs value; option varies depending on quantity
 %
-function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials, how, fixed)
+function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w, RPE] = get_latents(data, subj, which_trials, how, fixed)
     if ~exist('fixed', 'var')
         fixed = false; % do random effects by default
     end
@@ -41,6 +41,7 @@ function [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, st
     QR = latents.m(which_trials,2);
     stdL = sqrt(latents.s(which_trials,1));
     stdR = sqrt(latents.s(which_trials,2));
+    RPE = latents.rpe(which_trials);
 
     % sanity check
     if ~fixed
