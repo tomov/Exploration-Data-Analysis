@@ -3,7 +3,7 @@
 %
 % see if activation in ROI predicts choices better than regressor from model
 %
-function neurosynth_bms(regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
+function neurosynth_bms(regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, parcel_idxs, lateralized)
 
 printcode;
 
@@ -39,19 +39,27 @@ end
 if ~exist('use_smooth', 'var')
     use_smooth = false; % whether to use smooth activations
 end
-
-
-filename = sprintf('neurosynth_bms_%s_orth=%d_standardize=%d_mixed=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d.mat', regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth);
-disp(filename);
+if ~exist('lateralized', 'var')
+    lateralized = false;
+end
 
 % get ROIs
 group_mask_filename = fullfile('masks', 'mask.nii');
 
-parcellation_file = fullfile('masks', 'Neurosynth Parcellation_2.nii');
+if lateralized
+    parcellation_file = fullfile('masks', 'Neurosynth Parcellation_2_lateralized.nii');
+else
+    parcellation_file = fullfile('masks', 'Neurosynth Parcellation_2.nii');
+end
+
 [~, Vparcel, parcellation_vol] = ccnl_load_mask(parcellation_file);
 parcellation_vol = round(parcellation_vol);
 
 parcel_idxs = unique(parcellation_vol(:));
+
+
+filename = sprintf('neurosynth_bms_%s_orth=%d_standardize=%d_mixed=%d_intercept=%d_method=%s_getnull=%d_zav=%d_pa=%d_us=%d_pi=%d_l=%d.mat', regressor, do_orth, standardize, mixed_effects, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth, length(parcel_idxs), lateralized);
+disp(filename);
 
 
 % define behavioral / hybrid GLM formulas
