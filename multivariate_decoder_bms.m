@@ -134,16 +134,20 @@ results_orig
 
 LMEs = [-0.5 * BICs];
 
+
 % fit behavioral GLM with activations
 %
 ps = [];
+null_ps = [];
 for c = 1:numel(masks)
     mask = masks{c};
     [~, masknames{c}, ~] = fileparts(mask);
-    disp(region{c});
+
+    fprintf('Region: %s\n', region{c});
 
     dec = [];
     mse = [];
+    null_p = [];
     for s = 1:length(data)
         % get beta series
         B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', masks{c});
@@ -223,7 +227,7 @@ for c = 1:numel(masks)
             null_mse = [];
             for i = 1:null_iters
                 y = y(randperm(length(y)));
-                [~, m] = multilinear_fit(X, y, X, method, data(s).run(~data(s).exclude));
+                [~, m] = multilinear_fit(X, y, X, method, data(s).run, data(s).exclude);
                 null_mse = [null_mse, m];
             end
             data(s).null_mse{c} = null_mse;
@@ -232,10 +236,15 @@ for c = 1:numel(masks)
             null_mse = [null_mse mse(s)];
             null_mse = sort(null_mse);
             idx = find(null_mse == mse(s));
-            p = idx / length(null_mse);
+            p = idx(1) / length(null_mse);
             fprintf('                    subj %d null mse p = %.4f\n', s, p);
             data(s).null_p{c} = p;
+            null_p(s) = p;
         end
+    end
+
+    if get_null
+        null_ps = [null_ps; null_p];
     end
 
     tbl_dec = augment_table_with_decoded_regressor(tbl, regressor, dec, standardize, exclude, V_all);
@@ -349,9 +358,7 @@ save(filename, '-v7.3');
 fprintf('BOR = %.6f\n', bor);
 fprintf('PXP of original GLM = %.6f\n', pxp(1));
 pxp = pxp(2:end);
-if size(pxp,1) == 1
-    pxp = pxp';
-end
+pxp = pxp';
 
 reg_idx = find(contains(reg_names.Name, 'dec'));
 
@@ -360,5 +367,12 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
 p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
-table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
+
+
+if get_null
+    frac_s = mean(null_ps < 0.05, 2); % fraction of participants whose null distribution p-value is < 0.05, i.e. we can significantly decode regressor
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax, frac_s)
+else
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
+end
 
