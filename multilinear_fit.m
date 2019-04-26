@@ -7,6 +7,8 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
         foldid = foldid(~exclude);
     end
 
+    % TODO all MSE's should be computed with CV (like fitnet)
+
     % Fit y = X * b using different methods.
     % Return mean-squared error (mse) and pred = Xtest * b.
     % foldid is only required for cross-validation
@@ -115,6 +117,16 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             pred = Xtest * coef + coef0;
             mse = immse(y, X * coef + coef0);
 
+        case 'fitnet'
+
+            % compute predictions
+            pred = fitnet_pred(X, y, Xtest);
+
+            % compute CV MSE
+            cv = cvpartition_from_folds(foldid);
+            f = @(XTRAIN,ytrain,XTEST) fitnet_pred(XTRAIN,ytrain,XTEST);
+            mse = crossval('mse', X, y, 'Predfun', f);
+
         otherwise
             assert(false);
     end
@@ -128,3 +140,17 @@ function pred = ridgepred(X, y, Xtest, Lambda)
     Xtest = [ones(size(Xtest, 1), 1), Xtest]; % include intercept term
     pred = Xtest * coef;
 end
+
+function pred = fitnet_pred(X, y, Xtest)
+    X = X';
+    y = y';
+    Xtest = Xtest';
+    net = fitnet(10);
+    net = configure(net, X, y);
+    net.trainParam.showWindow = false;
+    net = train(net, X, y);
+
+    pred = net(Xtest);
+    pred = pred';
+end
+
