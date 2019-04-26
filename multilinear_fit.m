@@ -66,6 +66,8 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
 
         case 'ridge_CV'
             cv = cvpartition_from_folds(foldid);
+
+            % find best lambda using CV
             Lambda = logspace(-10,20,30);
             m = [];
             for i = 1:length(Lambda)
@@ -75,8 +77,11 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             [~, idx] = min(m);
             fprintf('      min lambda(%d) = %f\n', idx, Lambda(idx));
 
+            % compute predictions
             pred = ridgepred(X, y, Xtest, Lambda(idx));
-            mse = immse(y, ridgepred(X, y, X, Lambda(idx)));
+
+            % use CV MSE...
+            mse = m(idx); %immse(y, ridgepred(X, y, X, Lambda(idx))); <-- ...NOT the whole-data MSE
 
         case 'ridge_CV_CV'
             % actually use CV predictions & results
