@@ -48,6 +48,12 @@ end
 if ~exist('flip_sign', 'var')
     flip_sign = false; % flip the sign of the decoded |RU|, |V|, |DV|, etc based on the sign of RU
 end
+if ~exist('do_CV', 'var')
+    do_CV = false;  % cross-validate betas, i.e. beta for each run = avg beta from all other runs
+end
+if ~exist('get_null', 'var')
+    get_null = false;  % generate null distribution
+end
 
 GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
@@ -81,20 +87,13 @@ formula_both
 formula_orig
 
 
-% decode regressor 
-for c = 1:length(masks)
-    for s = 1:length(data)
-        dec = ccnl_decode_regressor(EXPT, glmodel, regressor, masks{c}, lambda, s);
-        data(s).all_act{c} = dec{1};
-    end
-end
-
-% massage decoded regressors
+% decode regressors
 % e.g. make them match the rows in the data table (NaNs for missing runs)
 % or flip RU based on sign, etc
 %
 V_all = [];
 DV_all = [];
+null_ps = [];
 for s = 1:length(data)
     modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
     load(fullfile(modeldir,'SPM.mat'));
@@ -108,16 +107,65 @@ for s = 1:length(data)
     V_all = [V_all; V(~data(s).timeout)];
     DV_all = [DV_all; DV(~data(s).timeout)];
 
+    null_p = [];
     for c = 1:length(masks)
+        % decode regressor
+        dec = ccnl_decode_regressor(EXPT, glmodel, regressor, masks{c}, lambda, s);
+        dec = mean(dec{1}, 2); % average across voxels
+
         % pick trial_onset activations only
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
-        act{c} = data(s).all_act{c}(which_act,:); % only consider 1 activation for each trial
 
-        % average across voxels in ROI
-        % notice not all runs were used in the GLMs
-        data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
+        % subset activations & trials
+        % on the left, we only assign to runs that were used in the GLM
+        % on the right, we only take decoded regressor from trial onsets (+ 5 sec HRF offset)
+        data(s).act(~data(s).bad_runs,c) = dec(which_act,:);
 
+        % optionally flip sign
         data(s).act(:,c) = adjust_sign(data(s), data(s).act(:,c), regressor, flip_sign);
+
+        % optionally generate null distribution
+        if get_null
+            % decode w/ CV
+            [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, regressor, masks{c}, lambda, s, true, null_iters, nTRs);
+            dec = dec{1};
+            dec_null = dec_null{1};
+
+            % init empty decoded regressors (for all trials)
+            dec_CV = nan(length(data(s).run), 1);
+            dec_CV_null = nan(length(data(s).run), null_iters);
+            % subset activations & trials
+            dec_CV(~data(s).bad_runs,:) = dec(which_act,:);
+            dec_CV_null(~data(s).bad_runs,:) = dec_null(which_act,:);
+
+            % get MSE for decoder (CV'd)
+            mse_CV = calc_mse(data(s), dec_CV, regressor, flip_sign);
+            data(s).mse_CV{c} = mse_CV;
+
+            % get null distr MSEs
+            null_mse = [];
+            for i = 1:null_iters
+                m = calc_mse(data(s), dec_CV_null(:,i), regressor, flip_sign);
+                null_mse = [null_mse, m];
+            end
+            data(s).null_mse{c} = null_mse;
+
+
+            % calculate p-value based on null distribution
+            null_mse = [null_mse mse_CV];
+            null_mse = sort(null_mse);
+            idx = find(null_mse == mse_CV);
+            p = idx(1) / length(null_mse);
+            fprintf('                    subj %d null mse p = %.4f\n', s, p);
+            data(s).null_p{c} = p;
+            null_p(c,:) = p; % note flippped s and c, compared to multivariate_decoder_bms... TODO
+
+            save w00t.mat;
+        end
+    end
+
+    if get_null
+        null_ps = [null_ps, null_p]; % note flipped s and c TODO
     end
 end
 
@@ -311,7 +359,14 @@ p_corr = 1 - (1 - p_uncorr) .^ numel(p_uncorr);
 BIC_orig = BIC(:,1);
 BIC_both = BIC(:,2);
 p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
-table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
+
+
+if get_null
+    frac_s = mean(null_ps < 0.05, 2); % fraction of participants whose null distribution p-value is < 0.05, i.e. we can significantly decode regressor
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax, frac_s)
+else
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
+end
 
 end
 
