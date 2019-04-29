@@ -5,7 +5,7 @@
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 % TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
 
-function univariate_decoder_bms(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
+function univariate_decoder_bms(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
 
 printcode;
 
@@ -18,8 +18,6 @@ EXPT = exploration_expt();
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 
 data = load_data;
-
-null_iters = 100;
 
 if ~exist('do_orth', 'var')
     do_orth = false;
@@ -117,7 +115,24 @@ for s = 1:length(data)
         % notice not all runs were used in the GLMs
         data(s).act(~data(s).bad_runs,c) = mean(act{c}, 2);
 
-        data(s).act(:,c) = adjust_sign(data(s), data(s).act(:,c), regressor, flip_sign);
+        % flip the sign of the decoded regressor
+        % while this may seem like double dipping / cheating, we are including RU, V, etc in the GLM, so this sign flip does not add new information
+        if flip_sign
+            % adjust for fact that the regressor was |RU|
+            if strcmp(regressor, 'RU')
+                data(s).act(:,c) = data(s).act(:,c) .* (RU >= 0) + (-data(s).act(:,c)) .* (RU < 0);
+            end
+
+            % adjust for fact that the regressor was |V|
+            if strcmp(regressor, 'V')
+                data(s).act(:,c) = data(s).act(:,c) .* (V >= 0) + (-data(s).act(:,c)) .* (V < 0);
+            end
+
+            % adjust for fact that the regressor was |DV|
+            if strcmp(regressor, 'DV')
+                data(s).act(:,c) = data(s).act(:,c) .* (DV >= 0) + (-data(s).act(:,c)) .* (DV < 0);
+            end
+        end
     end
 end
 
@@ -168,7 +183,29 @@ for c = 1:numel(masks)
     for s = 1:length(data)
         act = [act; data(s).act(~data(s).timeout, c)]; % even though neural GLMs includes timeouts, we exclude them for fitting the behavioral GLMs
 
-        mse(s) = calc_mse(data(s), data(s).act(:,c), regressor, flip_sign);
+        which = ~data(s).bad_runs & ~data(s).timeout;
+        switch regressor % TODO act is still whitened & filtered => MSE might be wrong
+            case 'RU'
+                if flip_sign
+                    mse(s) = immse(data(s).RU(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).RU(which)), data(s).act(which, c));
+                end
+            case 'TU'
+                mse(s) = immse(data(s).TU(which), data(s).act(which, c));
+            case 'V'
+                if flip_sign
+                    mse(s) = immse(data(s).V(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).V(which)), data(s).act(which, c));
+                end
+            case 'DV'
+                if flip_sign
+                    mse(s) = immse(data(s).DV(which), data(s).act(which, c));
+                else
+                    mse(s) = immse(abs(data(s).DV(which)), data(s).act(which, c));
+                end
+        end
     end
     assert(all(isnan(act(exclude))));
     assert(all(~isnan(act(~exclude))));
@@ -313,56 +350,3 @@ BIC_both = BIC(:,2);
 p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
 table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
 
-end
-
-
-% pass data(s)
-%
-function mse = calc_mse(data, dec, regressor, flip_sign)
-    which = ~data.bad_runs & ~data.timeout;
-    switch regressor % TODO act is still whitened & filtered => MSE might be wrong
-        case 'RU'
-            if flip_sign
-                mse = immse(data.RU(which), dec(which);
-            else
-                mse = immse(abs(data.RU(which)), dec(which);
-            end
-        case 'TU'
-            mse = immse(data.TU(which), dec(which);
-        case 'V'
-            if flip_sign
-                mse = immse(data.V(which), dec(which);
-            else
-                mse = immse(abs(data.V(which)), dec(which);
-            end
-        case 'DV'
-            if flip_sign
-                mse = immse(data.DV(which), dec(which);
-            else
-                mse = immse(abs(data.DV(which)), dec(which));
-            end
-    end
-end
-
-
-% pass data(s)
-%
-function dec = adjust_sign(data, dec, regressor, flip_sign)
-    % flip the sign of the decoded regressor
-    % while this may seem like double dipping / cheating, we are including RU, V, etc in the GLM, so this sign flip does not add new information
-    if flip_sign
-        switch regressor
-            case 'RU'
-                % adjust for fact that the regressor was |RU|
-                dec = dec .* (data.RU >= 0) + (-dec) .* (data.RU < 0);
-            case 'V'
-
-                % adjust for fact that the regressor was |V|
-                dec = dec .* (data.V >= 0) + (-dec) .* (data.V < 0);
-
-            case 'DV'
-                % adjust for fact that the regressor was |DV|
-                dec = dec .* (data.DV >= 0) + (-dec) .* (data.DV < 0);
-        end
-    end
-end
