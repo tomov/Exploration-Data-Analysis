@@ -189,6 +189,8 @@ for i = 1:length(parcel_idxs)
     mse = [];
     null_p = [];
     for s = 1:length(data)
+        s
+
         % get beta series
         B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', mask);
         assert(size(B,1) > 1);
@@ -236,7 +238,9 @@ for i = 1:length(parcel_idxs)
 
         % predict, excluding bad trials (timeouts & bad runs) 
         % for CV, one run per fold
+        tic
         [pred, mse(s)] = multilinear_fit(X, y, X, method, data(s).run, data(s).exclude);
+        toc
         data(s).mse{c} = mse(s);
 
         % pad up predictions with nan's for bad trials 

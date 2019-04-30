@@ -8,6 +8,7 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
     end
 
     % TODO all MSE's should be computed with CV (like fitnet)
+    % TODO rm Xtest -- sometimes we predict based on X only ... (e.g. CV_CV)
 
     % Fit y = X * b using different methods.
     % Return mean-squared error (mse) and pred = Xtest * b.
@@ -97,7 +98,9 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             %fprintf('                                                                  min lambda = %d (%e)\n', idx, Lambda(idx));
 
             f = @(XTRAIN,ytrain,XTEST,ytest) ridgepred(XTRAIN,ytrain,XTEST, Lambda(idx));
+
             % TODO FIXME this is wrong -- it expects you to compute e.g. a classification accuracy for each fold, not the actual predictions.. see docs
+            % see elasticnet_CV_CV
             pred = crossval(f, X, y);
             pred = pred';
             pred = pred(:);
@@ -131,6 +134,46 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             cv = cvpartition_from_folds(foldid);
             f = @(XTRAIN,ytrain,XTEST) fitnet_pred(XTRAIN,ytrain,XTEST);
             mse = crossval('mse', X, y, 'Predfun', f);
+
+        case 'elasticnet_CV'
+
+            % hybrid ridge / lasso regression
+            % lambda picked using CV
+            cv = cvpartition_from_folds(foldid);
+            [B, FitInfo] = lasso(X, y, 'Alpha', 0.5, 'CV', cv, 'NumLambda', 20);
+
+            % no CV for prediciton
+            idx = FitInfo.Index1SE;
+            coef = B(:, idx);
+            coef0 = FitInfo.Intercept(idx);
+
+            pred = Xtest * coef + coef0;
+
+            save wtf.mat
+            mse = immse(y, X * coef + coef0);
+
+        case 'elasticnet_CV_CV'
+
+            % CV both to pick lambda, and to generate predictions later
+
+            % pick lambda
+            cv = cvpartition_from_folds(foldid);
+            [B, FitInfo] = lasso(X, y, 'Alpha', 0.5, 'CV', cv, 'NumLambda', 20);
+            Lambda = FitInfo.Lambda1SE;
+
+            % predict
+            kfold = length(unique(foldid));
+            for k = 1:kfold
+                which = training(cv, k);
+                [B, FitInfo] = lasso(X(which,:), y(which,:), 'Alpha', 0.5, 'Lambda', Lambda);
+
+                coef = B(:, 1);
+                coef0 = FitInfo.Intercept(1);
+
+                pred(~which,:) = X(~which,:) * coef + coef0;
+            end
+
+            mse = immse(pred, y);
 
         otherwise
             assert(false);
