@@ -178,7 +178,14 @@ successes = 0;
 results_orig = [];
 for attempt = 1:100
     try
-        res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
+        if attempt == successes + 1
+            StartMethod = 'default'; % prefer default start method, unless it's failing on us
+        else
+            StartMethod = 'random'; % if it's failing, try random start method
+        end
+        StartMethod
+
+        res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', StartMethod);
         res 
 
         if isempty(results_orig) || results_orig.LogLikelihood < res.LogLikelihood
