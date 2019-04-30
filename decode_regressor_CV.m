@@ -1,5 +1,7 @@
 function [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, regressor, mask, lambda, subjects, do_CV, null_iters, nTRs)
 
+    rmpath('/n/sw/helmod/apps/centos7/Core/spm/12.7487-fasrc01/external/fieldtrip/compat/matlablt2016b/'); % so endsWith works...
+
     % copied & modified from ccnl_decode_regressor; might update in ccnl-fmri later 
 
     % Invert the GLM (using ridge regression) to decode a regressor from the neural data.
@@ -75,9 +77,9 @@ function [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, regressor, mask, l
         %
         if do_CV
             B_CV = B;
-            for i = 1:size(SPM.xX.name)
+            for i = 1:length(SPM.xX.name)
                 name = SPM.xX.name{i};
-                assert(startsWith(name, 'Sn ('));
+                assert(startsWith(name, 'Sn('));
 
                 k = strfind(name, ' ');
                 suffix = name(k(1)-1:end); % ') blabla*bf(1)'
@@ -115,11 +117,18 @@ function [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, regressor, mask, l
         dec_null{s} = [];
         assert(mod(size(act,1), nTRs) == 0);
         nruns = size(X,1) / nTRs;
-        for r = 1:nruns
-            idx = (r - 1) * nTRs + 1 : r * nTRs;
-            act(idx,:) = act(randperm(idx,:))
+        for i = 1:null_iters
+            % shuffle each run separately!
+            for r = 1:nruns
+                % find rows for given run
+                idx = (r - 1) * nTRs + 1 : r * nTRs;
+                % randomize them
+                rand_idx = idx(randperm(length(idx)));
+                act(idx,:) = act(rand_idx,:);
+            end
 
-            dec_null{s}(:,i) = (act - X_noreg * B_noreg) .* B_reg ./ (B_reg.^2 + lambda);
-            dec_null{s}(:,i) = mean(dec_null{s}(:,i), 2);
+            % decode
+            dec_null_allvox = (act - X_noreg * B_noreg) .* B_reg ./ (B_reg.^2 + lambda);
+            dec_null{s} = [dec_null{s}, mean(dec_null_allvox, 2)];
         end
     end

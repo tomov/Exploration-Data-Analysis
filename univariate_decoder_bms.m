@@ -59,7 +59,7 @@ GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
 
-filename = sprintf('univariate_decoder_bms_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign);
+filename = sprintf('univariate_decoder_bms_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
 disp(filename);
 
 % get ROIs
@@ -160,7 +160,6 @@ for s = 1:length(data)
             data(s).null_p{c} = p;
             null_p(c,:) = p; % note flippped s and c, compared to multivariate_decoder_bms... TODO
 
-            save w00t.mat;
         end
     end
 
@@ -378,21 +377,21 @@ function mse = calc_mse(data, dec, regressor, flip_sign)
     switch regressor % TODO act is still whitened & filtered => MSE might be wrong
         case 'RU'
             if flip_sign
-                mse = immse(data.RU(which), dec(which);
+                mse = immse(data.RU(which), dec(which));
             else
-                mse = immse(abs(data.RU(which)), dec(which);
+                mse = immse(abs(data.RU(which)), dec(which));
             end
         case 'TU'
-            mse = immse(data.TU(which), dec(which);
+            mse = immse(data.TU(which), dec(which));
         case 'V'
             if flip_sign
-                mse = immse(data.V(which), dec(which);
+                mse = immse(data.V(which), dec(which));
             else
-                mse = immse(abs(data.V(which)), dec(which);
+                mse = immse(abs(data.V(which)), dec(which));
             end
         case 'DV'
             if flip_sign
-                mse = immse(data.DV(which), dec(which);
+                mse = immse(data.DV(which), dec(which));
             else
                 mse = immse(abs(data.DV(which)), dec(which));
             end
