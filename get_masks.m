@@ -48,8 +48,12 @@ switch contrast
         end
         direct = '+/-';
 
-        % TODO HACK FIXME
+        % TODO HACK FIXME for DV
         if ismember(glmodel, [47])
+            direct = '-';
+        end
+        % TODO HACK FIXME for RU
+        if ismember(glmodel, [36]) && strcmp(contrast, 'RU') && clusterFWEcorrect
             direct = '-';
         end
 

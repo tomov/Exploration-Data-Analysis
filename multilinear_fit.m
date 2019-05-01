@@ -18,6 +18,13 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
     %   [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid)
     %
 
+    % remap foldid's from 1..k
+    %
+    fid = unique(foldid);
+    for k = 1:length(fid)
+        foldid(foldid == fid(k)) = k;
+    end
+
     switch method
         case 'fitlm'
             mdl = fitlm(X, y, 'Intercept', true);
