@@ -269,9 +269,15 @@ for i = 1:length(parcel_idxs)
         % optionally generate null distribution
         if get_null
             null_mse = [];
+            runs = unique(data(s).run);
             for i = 1:null_iters
-                y = y(randperm(length(y)));
-                [~, m] = multilinear_fit(X, y, X, method, data(s).run, data(s).exclude);
+                % shuffle runs !!! non-exchangeability at single trial level, even at block level
+                % b/c they're dependent
+                runs_perm = runs(randperm(length(runs)));
+                for r = 1:length(runs_perm)
+                    y_perm(data(s).run == runs(r),:) = y(data(s).run == runs_perm(r),:);
+                end
+                [~, m] = multilinear_fit(X, y_perm, X, method, data(s).run, data(s).exclude);
                 null_mse = [null_mse, m];
             end
             data(s).null_mse{c} = null_mse;

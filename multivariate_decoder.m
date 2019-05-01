@@ -220,8 +220,8 @@ for c = 1:numel(masks)
         if get_null
             null_mse = [];
             for i = 1:null_iters
-                y = y(randperm(length(y)));
-                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude));
+                y = y(randperm(length(y))); INCORRECT -- non exchangeable
+                [~, m] = multilinear_fit(X, y, data(s).betas{c}, method, data(s).run(~data(s).exclude)); BROKEN
                 null_mse = [null_mse, m];
             end
             data(s).null_mse{c} = null_mse;
