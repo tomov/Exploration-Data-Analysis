@@ -1,4 +1,5 @@
 scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
+#scp univariate_decoder_bms.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/ccnl_dec_wtf.mat .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/jobs.txt .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/output.tar.gz .

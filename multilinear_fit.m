@@ -85,29 +85,33 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             mse = m(idx); %immse(y, ridgepred(X, y, X, Lambda(idx))); <-- ...NOT the whole-data MSE
 
         case 'ridge_CV_CV'
-            % actually use CV predictions & results
-            %
+
+            % use CV to pick lambda & then generate predictions
+
+            % pick lambda
             cv = cvpartition_from_folds(foldid);
-            Lambda = logspace(-10,10,21);
+            Lambda = logspace(-10,20,30);
             m = [];
             for i = 1:length(Lambda)
                 f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
-                m(i) = crossval('mse', X, y, 'Predfun', f);
+                m(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
             end
             [~, idx] = min(m);
-            %fprintf('                                                                  min lambda = %d (%e)\n', idx, Lambda(idx));
+            fprintf('                                                                  min lambda(%d) = %f\n', idx, Lambda(idx));
 
-            f = @(XTRAIN,ytrain,XTEST,ytest) ridgepred(XTRAIN,ytrain,XTEST, Lambda(idx));
+            % predict
+            kfold = length(unique(foldid));
+            for k = 1:kfold
+                which = training(cv, k);
+                pred(~which,:) = ridgepred(X(which,:), y(which,:), X(~which,:), Lambda(idx));
+            end
+            mse = immse(pred, y);
 
-            % TODO FIXME this is wrong -- it expects you to compute e.g. a classification accuracy for each fold, not the actual predictions.. see docs
-            % see elasticnet_CV_CV
-            pred = crossval(f, X, y);
-            pred = pred';
-            pred = pred(:);
-
-            mse = immse(y, pred);
-            %mse = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
-            %fprintf('                                                                  mse sanity: %e vs. %e\n', mse, immse(pred, y));
+            fprintf('                                                                  mse sanity: %f vs. %f\n', mse, m(idx));
+            if abs(mse - m(idx)) > 1e-10
+                save fuck.mat
+                assert(abs(mse - m(idx)) < 1e-10);
+            end
 
 
         case 'lasso'
@@ -137,6 +141,8 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
 
         case 'elasticnet_CV'
 
+            % TODO it's broken for subject 3, FitInfo has NaNs, so can't select lambda .... w t f
+
             % hybrid ridge / lasso regression
             % lambda picked using CV
             cv = cvpartition_from_folds(foldid);
@@ -153,6 +159,8 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
             mse = immse(y, X * coef + coef0);
 
         case 'elasticnet_CV_CV'
+
+            % TODO it's broken for subject 3, FitInfo has NaNs, so can't select lambda .... w t f
 
             % CV both to pick lambda, and to generate predictions later
 
