@@ -1,4 +1,4 @@
-function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
+function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclude, Lambda)
 
     if exist('exclude', 'var')
         X = X(~exclude, :);
@@ -24,6 +24,8 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
     for k = 1:length(fid)
         foldid(foldid == fid(k)) = k;
     end
+
+    mses = [];
 
     switch method
         case 'fitlm'
@@ -119,6 +121,32 @@ function [pred, mse] = multilinear_fit(X, y, Xtest, method, foldid, exclude)
                 save fuck.mat
                 assert(abs(mse - m(idx)) < 1e-10);
             end
+
+        case 'ridge_CV_1'
+
+            % first half of ridge_CV_CV -- try different lambdas
+
+            cv = cvpartition_from_folds(foldid);
+
+            if ~exist('Lambda', 'var')
+                Lambda = logspace(-10,20,30);
+            end
+
+            for i = 1:length(Lambda)
+                f = @(XTRAIN,ytrain,XTEST) ridgepred(XTRAIN,ytrain,XTEST, Lambda(i));
+                mses(i) = crossval('mse', X, y, 'Predfun', f, 'partition', cv);
+            end
+
+        case 'ridge_CV_2'
+
+            % second half of ridge_CV_CV -- use given lambda to predict
+
+            kfold = length(unique(foldid));
+            for k = 1:kfold
+                which = training(cv, k);
+                pred(~which,:) = ridgepred(X(which,:), y(which,:), X(~which,:), Lambda);
+            end
+            mse = immse(pred, y);
 
 
         case 'lasso'
