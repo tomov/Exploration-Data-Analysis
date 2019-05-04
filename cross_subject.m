@@ -69,6 +69,8 @@ for c = 1:length(masks)
         [r, p] = corr(w(:,2), b');
     elseif startsWith(regressor, 'TU')
         [r, p] = corr(w(:,3), b');
+    elseif startsWith(regressor, 'V')
+        [r, p] = corr(w(:,1), b');
     else
         assert(false);
     end
