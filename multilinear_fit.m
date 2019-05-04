@@ -26,6 +26,8 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
     end
 
     mses = [];
+    pred = [];
+    mse = [];
 
     switch method
         case 'fitlm'
@@ -140,6 +142,8 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
         case 'ridge_CV_2'
 
             % second half of ridge_CV_CV -- use given lambda to predict
+
+            cv = cvpartition_from_folds(foldid);
 
             kfold = length(unique(foldid));
             for k = 1:kfold

@@ -119,6 +119,13 @@ successes = 0;
 results_orig = [];
 for attempt = 1:100
     try
+        if attempt == successes + 1
+            StartMethod = 'default'; % prefer default start method, unless it's failing on us
+        else
+            StartMethod = 'random'; % if it's failing, try random start method
+        end
+        StartMethod
+
         res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
         res 
 
@@ -356,6 +363,13 @@ for i = 1:length(parcel_idxs)
     p_comp(c,:) = NaN;
     for attempt = 1:100
         try
+            if attempt == successes + 1
+                StartMethod = 'default'; % prefer default start method, unless it's failing on us
+            else
+                StartMethod = 'random'; % if it's failing, try random start method
+            end
+            StartMethod
+            
             res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
             [w, names, stats] = fixedEffects(res);
             res

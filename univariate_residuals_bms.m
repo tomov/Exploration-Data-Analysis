@@ -1,11 +1,8 @@
-% univariate decoder analysis 
-% see if activation in ROI predicts choices better than regressor from model
+% same as univariate decoder analysis , except w/ residuals
 %
-% TODO dedupe with activations_analysis.m
-% TODO dedupe with badre_2012_residuals_analysis_glm.m
-% TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
+% TODO dedupe with univariate_decoder_bms.m
 
-function univariate_decoder_bms(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
+function univariate_residuals_bms(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
 
 printcode;
 
@@ -59,7 +56,7 @@ GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
 
-filename = sprintf('univariate_decoder_bms_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
+filename = sprintf('univariate_residuals_bms_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
 disp(filename);
 
 % get ROIs
@@ -110,7 +107,7 @@ for s = 1:length(data)
     null_p = [];
     for c = 1:length(masks)
         % decode regressor
-        dec = ccnl_decode_regressor(EXPT, glmodel, ['x', regressor, '^'], masks{c}, lambda, s);
+        dec = ccnl_get_residuals(EXPT, glmodel, masks{c}, s);
         dec = mean(dec{1}, 2); % average across voxels
 
         % pick trial_onset activations only
@@ -127,7 +124,7 @@ for s = 1:length(data)
         % optionally generate null distribution
         if get_null
             % decode w/ CV
-            [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, ['x', regressor, '^'], masks{c}, lambda, s, true, null_iters, nTRs);
+            [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, regressor, masks{c}, lambda, s, true, null_iters, nTRs);
             dec = dec{1};
             dec_null = dec_null{1};
 
