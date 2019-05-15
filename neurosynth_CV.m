@@ -166,7 +166,6 @@ for i = 1:length(parcel_idxs)
     end
 
     i
-    c = c + 1;
     region = [region; parcel_idx];
     fprintf('parcel = %d\n', parcel_idx);
 
@@ -193,9 +192,16 @@ for i = 1:length(parcel_idxs)
     %
     mask = mask & group_mask;
 
+    if sum(mask(:)) == 0
+        disp('skipping parcel -- empty mask');
+        continue; % some masks are already lateralized
+    end
 
     % first pass -- compute MSE for different lambdas
     %
+
+    % ok we're sure we're using this mask
+    c = c + 1;
 
     fprintf('      first pass\n');
 
@@ -209,7 +215,7 @@ for i = 1:length(parcel_idxs)
         B = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', mask);
         toc
         assert(size(B,1) > 1);
-        assert(size(B,2) > 1);
+        assert(size(B,2) == sum(mask(:)));
 
         % exclude nan voxels
         which_nan = any(isnan(B), 1); % exclude nan voxels (ignoring bad runs and timeouts; we exclude those in the GLMs)
@@ -317,7 +323,7 @@ for i = 1:length(parcel_idxs)
         if get_null
             null_mse = [];
             runs = unique(data(s).run);
-            for i = 1:null_iters
+            for iter = 1:null_iters
                 % shuffle runs !!! non-exchangeability at single trial level, even at block level
                 % b/c they're dependent
                 runs_perm = runs(randperm(length(runs)));
