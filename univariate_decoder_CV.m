@@ -1,11 +1,11 @@
-% univariate decoder analysis from univarite_decoder_bms.m, but refactored like neurosynth_CV.m (TODO dedupe)
+% univariate decoder analysis from univarite_decoder_refactored.m, but with CV like neurosynth_CV.m (TODO dedupe)
 % see if activation in ROI predicts choices better than regressor from model
 %
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 % TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
 
-function univariate_decoder_refactored(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
+function univariate_decoder_CV(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
 
 printcode;
 
@@ -23,9 +23,6 @@ null_iters = 100;
 
 if ~exist('do_orth', 'var')
     do_orth = false;
-end
-if ~exist('lambda', 'var')
-    lambda = 1;
 end
 if ~exist('standardize', 'var')
     standardize = false;
@@ -59,7 +56,7 @@ GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
 
-filename = sprintf('univariate_decoder_refactored_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
+filename = sprintf('univariate_decoder_CV_roiglm%d_%s_glm%d_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
 disp(filename);
 
 
@@ -155,7 +152,9 @@ results_orig
 
 LMEs = [-0.5 * BICs];
 
+Lambda = logspace(-10,20,31);
 
+formula_both_fixed = remove_random_effects(formula_both);
 
 % fit behavioral GLM with activations
 %
@@ -165,7 +164,9 @@ for c = 1:numel(masks)
 
     disp(masks{c});
 
-    % TODO first pass -- compute (random effects) hybrid GLM loglik for different lambdas
+    logliks{c} = []; % analogous to mses in neurosynth_CV
+
+    % first pass -- compute (random effects) hybrid GLM loglik for different lambdas
     %
     null_p = [];
     for s = 1:length(data)
@@ -173,8 +174,9 @@ for c = 1:numel(masks)
         load(fullfile(modeldir,'SPM.mat'));
 
         % decode regressor
-        dec = ccnl_decode_regressor(EXPT, glmodel, ['x', regressor, '^'], masks{c}, lambda, s);
+        dec = ccnl_decode_regressor(EXPT, glmodel, ['x', regressor, '^'], masks{c}, Lambda, s);
         dec = mean(dec{1}, 2); % average across voxels
+        dec = squeeze(dec); % so its [TRs, lambdas]
 
         % pick trial_onset activations only
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
@@ -182,46 +184,29 @@ for c = 1:numel(masks)
         % subset activations & trials
         % on the left, we only assign to runs that were used in the GLM
         % on the right, we only take decoded regressor from trial onsets (+ 5 sec HRF offset)
-        data(s).act(~data(s).bad_runs,c) = dec(which_act,:);
+        data(s).act(~data(s).bad_runs,:,c) = dec(which_act,:);
 
         % optionally flip sign
-        data(s).act(:,c) = adjust_sign(data(s), data(s).act(:,c), regressor, flip_sign);
+        data(s).act(:,:,c) = adjust_sign(data(s), data(s).act(:,:,c), regressor, flip_sign);
+
+        % for each lambda, fit augmented GLM (for that subject only) and get loglik
+        %
+        tbl_s = data2table(data(s), standardize, 0);
+
+        for l = 1:length(Lambda)
+
+            tbl_s_dec = augment_table_with_decoded_regressor(tbl_s, regressor, data(s).act(:,l,c), standardize, data(s).excluded, data(s).V);
+
+            % assume won't fail b/c no random effects
+            res_s = fitglme(tbl_s_dec, formula_both_fixed, 'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',data(s).exclude, 'StartMethod', 'default'); 
+
+            data(s).loglik(l,c) = res_s.LogLikelihood;
+            logliks{c}(s,l) = res_s.LogLikelihood;
+        end
 
         % optionally generate null distribution
         if get_null
-            % decode w/ CV
-            [dec, dec_null] = decode_regressor_CV(EXPT, glmodel, ['x', regressor, '^'], masks{c}, lambda, s, true, null_iters, nTRs);
-            dec = dec{1};
-            dec_null = dec_null{1};
-
-            % init empty decoded regressors (for all trials)
-            dec_CV = nan(length(data(s).run), 1);
-            dec_CV_null = nan(length(data(s).run), null_iters);
-            % subset activations & trials
-            dec_CV(~data(s).bad_runs,:) = dec(which_act,:);
-            dec_CV_null(~data(s).bad_runs,:) = dec_null(which_act,:);
-
-            % get MSE for decoder (CV'd)
-            mse_CV = calc_mse(data(s), dec_CV, regressor, flip_sign);
-            data(s).mse_CV{c} = mse_CV;
-
-            % get null distr MSEs
-            null_mse = [];
-            for i = 1:null_iters
-                m = calc_mse(data(s), dec_CV_null(:,i), regressor, flip_sign);
-                null_mse = [null_mse, m];
-            end
-            data(s).null_mse{c} = null_mse;
-
-
-            % calculate p-value based on null distribution
-            null_mse = [null_mse mse_CV];
-            null_mse = sort(null_mse);
-            idx = find(null_mse == mse_CV);
-            p = idx(1) / length(null_mse);
-            fprintf('                    subj %d null mse p = %.4f\n', s, p);
-            data(s).null_p{c} = p;
-            null_p(s) = p;
+            assert(false, 'unsupported'); 
         end
     end
 
@@ -230,13 +215,21 @@ for c = 1:numel(masks)
     end
 
 
-    % TODO second pass -- decode using best lambda from other subjects
+    % second pass -- decode using best lambda from other subjects
     %
 
     act = [];
     mse = [];
     for s = 1:length(data)
-        act = [act; data(s).act(:, c)];
+        % find lambda that gives best total loglik for other subjects
+        total_loglik = sum(logliks{c}([1:s-1 s+1:end],:), 1); % analogous to avg_mse in neurosynth_CV
+        [~, idx] = min(total_loglik);
+        Lambda_idxs{c}(s) = idx;
+
+        fprintf('                        subj %d -- lambda(%d) = %f\n', s, idx, Lambda(idx));
+
+        % use that lambda for decoding
+        act = [act; data(s).act(:, idx, c)];
 
         mse(s) = calc_mse(data(s), data(s).act(:,c), regressor, flip_sign);
     end
@@ -448,4 +441,20 @@ function dec = adjust_sign(data, dec, regressor, flip_sign)
                 dec = dec .* (data.DV >= 0) + (-dec) .* (data.DV < 0);
         end
     end
+end
+
+% remove random effects component from fitglme formula
+%
+function formula = remove_random_effects(formula)
+
+    st = strfind(formula, '(');
+    if ~isempty(st) % no random effects component
+        return; 
+    end
+    assert(length(st) == 1);
+
+    en = strfind(formula, ')');
+    assert(length(en) == 1);
+
+    formula = erase(formula, formula(st:en));
 end
