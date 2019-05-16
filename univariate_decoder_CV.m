@@ -227,7 +227,7 @@ for c = 1:numel(masks)
         % use that lambda for decoding
         act = [act; data(s).act(:, idx, c)];
 
-        mse(s) = calc_mse(data(s), data(s).act(:,c), regressor, flip_sign);
+        mse(s) = calc_mse(data(s), data(s).act(:, idx, c), regressor, flip_sign);
     end
     assert(all(~isnan(act(~exclude))));
 
