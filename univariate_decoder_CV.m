@@ -5,7 +5,7 @@
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 % TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
 
-function univariate_decoder_CV(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
+function univariate_decoder_CV(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, get_null)
 
 printcode;
 
@@ -45,18 +45,16 @@ end
 if ~exist('flip_sign', 'var')
     flip_sign = false; % flip the sign of the decoded |RU|, |V|, |DV|, etc based on the sign of RU
 end
-if ~exist('do_CV', 'var')
-    do_CV = false;  % cross-validate betas, i.e. beta for each run = avg beta from all other runs
-end
 if ~exist('get_null', 'var')
     get_null = false;  % generate null distribution
 end
 
+Lambda = logspace(-10,10,21);
+
 GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
-
-filename = sprintf('univariate_decoder_CV_roiglm%d_%s_glm%d_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
+filename = sprintf('univariate_decoder_CV_roiglm%d_%s_glm%d_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, get_null);
 disp(filename);
 
 
@@ -94,7 +92,7 @@ for s = 1:length(data)
     exclude = [exclude; data(s).exclude];
 
     % initialize empty decoded array
-    data(s).act = nan(length(data(s).run), length(masks));
+    data(s).act = nan(length(data(s).run), length(Lambda), length(masks));
 
     % figure out which TRs toughly correspond to trial_onsets (with HRF offset & stuff)
     %
@@ -146,13 +144,11 @@ for attempt = 1:100
 end
 assert(attempt < 100, 'failed too many times...');
 
-[BICs, logliks] = get_subj_bics(results_orig, tbl, exclude);
+BICs = get_subj_bics(results_orig, tbl, exclude);
 disp('Original behavioral GLM');
 results_orig
 
 LMEs = [-0.5 * BICs];
-
-Lambda = logspace(-10,20,31);
 
 formula_both_fixed = remove_random_effects(formula_both);
 
@@ -195,7 +191,7 @@ for c = 1:numel(masks)
 
         for l = 1:length(Lambda)
 
-            tbl_s_dec = augment_table_with_decoded_regressor(tbl_s, regressor, data(s).act(:,l,c), standardize, data(s).excluded, data(s).V);
+            tbl_s_dec = augment_table_with_decoded_regressor(tbl_s, regressor, data(s).act(:,l,c), standardize, data(s).exclude, data(s).V);
 
             % assume won't fail b/c no random effects
             res_s = fitglme(tbl_s_dec, formula_both_fixed, 'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',data(s).exclude, 'StartMethod', 'default'); 
@@ -223,7 +219,7 @@ for c = 1:numel(masks)
     for s = 1:length(data)
         % find lambda that gives best total loglik for other subjects
         total_loglik = sum(logliks{c}([1:s-1 s+1:end],:), 1); % analogous to avg_mse in neurosynth_CV
-        [~, idx] = min(total_loglik);
+        [~, idx] = max(total_loglik);
         Lambda_idxs{c}(s) = idx;
 
         fprintf('                        subj %d -- lambda(%d) = %f\n', s, idx, Lambda(idx));
@@ -447,8 +443,8 @@ end
 %
 function formula = remove_random_effects(formula)
 
-    st = strfind(formula, '(');
-    if ~isempty(st) % no random effects component
+    st = strfind(formula, '+ (');
+    if isempty(st) % no random effects component
         return; 
     end
     assert(length(st) == 1);
