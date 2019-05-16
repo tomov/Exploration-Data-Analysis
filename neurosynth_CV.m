@@ -82,9 +82,7 @@ else
 end
 
 
-% extract behavioral regressors
-% e.g. make them match the rows in the data table (NaNs for missing runs)
-% or flip RU based on sign, etc
+% extract behavioral regressors & stuff
 %
 V_all = [];
 DV_all = [];
@@ -111,7 +109,9 @@ save(filename, '-v7.3');
 
 best_of = 3; % get best model (BIC-wise) out of how many
 
+%
 % original behavioral glm   
+%
 
 tbl = data2table(data, standardize, 0); % include all trials; we exclude bad runs and timeouts manually
 
