@@ -1,6 +1,3 @@
-% sanity checking univariate decoder assumptions
-% does decoded RU correlate with RU regressor, even before subsampling/deconvolution?
-% => only for some subjects! at least for peak voxel
 
 EXPT = exploration_expt();
 glmodel = 36;

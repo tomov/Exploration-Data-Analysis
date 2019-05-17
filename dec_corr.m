@@ -1,4 +1,5 @@
 % toy example sanity checking univariate decoder
+% => it works
 
 clear;
 
