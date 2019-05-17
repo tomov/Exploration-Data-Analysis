@@ -46,7 +46,7 @@ switch contrast
         if ~exist('Num', 'var')
             Num = 1; % # peak voxels per cluster; default in bspmview is 3
         end
-        direct = '+/-';
+        direct = '+';
 
         % TODO HACK FIXME for DV
         if ismember(glmodel, [47])

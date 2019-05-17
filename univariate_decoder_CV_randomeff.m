@@ -1,6 +1,8 @@
 % univariate decoder analysis from univarite_decoder_refactored.m, but with CV like neurosynth_CV.m (TODO dedupe)
 % see if activation in ROI predicts choices better than regressor from model
 %
+% pick based lambda based on independent GLMs for each other subject (rather than mixed effects) => doesn't really work, probs not enough power in each subject
+%
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 % TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
@@ -54,7 +56,7 @@ Lambda = logspace(-10,10,21);
 GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
-filename = sprintf('univariate_decoder_CV_roiglm%d_%s_glm%d_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, get_null);
+filename = sprintf('univariate_decoder_CV_randomeff_roiglm%d_%s_glm%d_%s_orth=%d_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, get_null);
 disp(filename);
 
 
@@ -162,10 +164,8 @@ for c = 1:numel(masks)
 
     logliks{c} = []; % analogous to mses in neurosynth_CV
 
-    save univ_dec_CV.mat
-
-    % decode regressor for each subj
-    % 
+    % first pass -- compute (random effects) hybrid GLM loglik for different lambdas
+    %
     null_p = [];
     for s = 1:length(data)
         modeldir = fullfile(EXPT.modeldir,['model',num2str(glmodel)],['subj',num2str(s)]);
@@ -187,6 +187,21 @@ for c = 1:numel(masks)
         % optionally flip sign
         data(s).act(:,:,c) = adjust_sign(data(s), data(s).act(:,:,c), regressor, flip_sign);
 
+        % for each lambda, fit augmented GLM (for that subject only) and get loglik
+        %
+        tbl_s = data2table(data(s), standardize, 0);
+
+        for l = 1:length(Lambda)
+
+            tbl_s_dec = augment_table_with_decoded_regressor(tbl_s, regressor, data(s).act(:,l,c), standardize, data(s).exclude, data(s).V);
+
+            % assume won't fail b/c no random effects
+            res_s = fitglme(tbl_s_dec, formula_both_fixed, 'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',data(s).exclude, 'StartMethod', 'default'); 
+
+            data(s).loglik(l,c) = res_s.LogLikelihood;
+            logliks{c}(s,l) = res_s.LogLikelihood;
+        end
+
         % optionally generate null distribution
         if get_null
             assert(false, 'unsupported'); 
@@ -197,50 +212,18 @@ for c = 1:numel(masks)
         null_ps = [null_ps; null_p];
     end
 
-    % concatenate all subjects
+
+    % second pass -- decode using best lambda from other subjects
     %
-    act_l = [];
-    for s = 1:length(data)
-        act_l = [act_l; data(s).act(:,:,c)];
-    end
 
-    % create separate table for each lambda
-    %
-    for l = 1:length(Lambda)
-        tbl_dec_l{l} = augment_table_with_decoded_regressor(tbl, regressor, act_l(:,l), standardize, exclude, V_all);
-    end
-
-    % compute BIC for each subject for each lambda
-    % by fitting GLM for all other subjects
-    %
-    for s = 1:length(data)
-        for l = 1:length(Lambda)
-            tbl_dec_s_l = tbl_dec_l{l}(tbl_dec_l{l}.S ~= s, :);
-
-            success = false;
-            try
-                res_s_l = fitglme(tbl_dec_s_l, formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude(tbl_dec_l{l}.S ~= s), 'StartMethod', 'default');
-                success = true;
-            catch e
-                fprintf('             failed fitting s=%d,l=%d,c=%d \n', s, l, c);
-                disp(e)
-            end
-
-            if success
-                bics_s_l(s, l, c) = res_s_l.ModelCriterion.BIC;
-            else
-                bics_s_l(s, l, c) = Inf;
-            end
-        end
-    end
-
-    % decode using best lambda from other subjects
-    %
     act = [];
     mse = [];
     for s = 1:length(data)
-        % find lambda that gives best BIC loglik for other subjects
-        [~, idx] = min(bics_s_l(s, :, c));
+        % find lambda that gives best total loglik for other subjects
+        total_loglik = sum(logliks{c}([1:s-1 s+1:end],:), 1); % analogous to avg_mse in neurosynth_CV
+        %[~, idx] = max(total_loglik);
+        idx = 11; % TODO sanity
+
         Lambda_idxs{c}(s) = idx;
 
         fprintf('                        subj %d -- lambda(%d) = %f\n', s, idx, Lambda(idx));
@@ -282,7 +265,7 @@ for c = 1:numel(masks)
 
             assert(res.LogLikelihood >= results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
-            save wtf_CV.mat
+            save wtf.mat
             if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
                 results_both{c} = res;
 
