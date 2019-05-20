@@ -1,6 +1,6 @@
 function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclude, Lambda)
 
-    if exist('exclude', 'var')
+    if exist('exclude', 'var') && ~isempty(exclude)
         X = X(~exclude, :);
         y = y(~exclude);
         Xtest = Xtest(~exclude, :);
@@ -35,7 +35,7 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
             pred = predict(mdl, Xtest);
             mse = mdl.MSE;
 
-        case 'fitrlinear_ridge'
+        case 'fitrlinear_ridge' % better than ridge for high-dimensional data
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge');
             mdl
             pred = predict(mdl, Xtest);
@@ -69,6 +69,33 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
             mdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'lasso', 'Lambda', Lambda(idx));
             pred = predict(mdl, Xtest);
             mse = loss(mdl, X, y);
+
+        case 'fitrlinear_CV_1' % like ridge_CV_1
+
+            % compute MSE for different lambdas
+
+            cv = cvpartition_from_folds(foldid);
+
+            if ~exist('Lambda', 'var')
+                Lambda = logspace(-10,20,30);
+            end
+
+            cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
+
+            mse = kfoldLoss(cvmdl);
+
+
+        case 'fitrlinear_CV_2' % like ridge_CV_2
+
+            % use given lambda for prediction
+            % TODO redundant to re-fit -- we already fitted this model in fitrlinear_CV_1; just reuse it
+
+            cv = cvpartition_from_folds(foldid);
+
+            cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
+
+            pred = kfoldPredict(cvmdl);
+            mse = kfoldLoss(cvmdl);
 
         case 'ridge'
             Lambda = 1e5;

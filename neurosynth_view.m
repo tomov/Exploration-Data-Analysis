@@ -1,7 +1,8 @@
-load neurosynth_bms_TU_orth=0_standardize=0_mixed=1_intercept=1_method=ridge_getnull=0_zav=0_pa=0_us=0.mat
-%load neurosynth_bms_RU_orth=0_standardize=0_mixed=1_intercept=1_method=ridge_getnull=0_zav=0_pa=0_us=0.mat
+%load('neurosynth_CV_RU_orth=0_standardize=0_mixed=1_intercept=1_method=ridge_CV_1,ridge_CV_2_getnull=0_zav=0_pa=0_us=0_l=1_pi=355.mat')
+load('neurosynth_CV_TU_orth=0_standardize=0_mixed=1_intercept=1_method=ridge_CV_1,ridge_CV_2_getnull=0_zav=0_pa=0_us=0_l=1_pi=355.mat')
+
 V = Vparcel;
-V.fname = 'masks/neurosynth_bms_RU_BICdiff.nii';
+V.fname = 'masks/neurosynth_bms_TU_BICdiff.nii';
 
 
 
@@ -27,6 +28,8 @@ T = table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_co
 
 BIC_diff = BIC_orig - BIC_both;
 idx = find(BIC_diff > 0);
+
+assert(length(idx) > 0, 'No regions improve predictions! yikes...');
 
 
 mask = parcellation_vol;

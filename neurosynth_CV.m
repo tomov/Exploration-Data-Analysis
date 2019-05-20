@@ -150,7 +150,7 @@ results_orig
 
 LMEs = [-0.5 * BICs];
 
-Lambda = logspace(0,20,20);
+Lambda = logspace(-10,20,31);
 
 % fit behavioral GLM with activations
 %
@@ -415,22 +415,42 @@ for i = 1:length(parcel_idxs)
 
 
     % sanity check -- activations should correlate with regressor
-    switch regressor
-        case 'RU'
-            RU = table2array(tbl(:,'RU'));
-            [r,p] = corr(RU(~exclude), dec(~exclude));
-        case 'TU'
-            TU = table2array(tbl(:,'TU'));
-            [r,p] = corr(TU(~exclude), dec(~exclude));
-        case 'V'
-            V = table2array(tbl(:,'V'));
-            [r,p] = corr(V(~exclude), dec(~exclude));
-        case 'DV'
-            [r,p] = corr(DV_all(~exclude), dec(~exclude));
+    % IMPORTANT -- correlate within each run (fold) separately
+    % then do t-test on correlation coefficients
+    rs = [];
+    ps = [];
+    for s = 1:length(data)
+        for r = 1:max(data(s).run)
+            which = ~exclude & tbl.S == s & tbl.run == r;
+            if sum(which) == 0
+                continue; % bad run
+            end
+            switch regressor
+                case 'RU'
+                    RU = table2array(tbl(:,'RU'));
+                    [r,p] = corr(RU(which), dec(which));
+                case 'TU'
+                    TU = table2array(tbl(:,'TU'));
+                    [r,p] = corr(TU(which), dec(which));
+                case 'V'
+                    V = table2array(tbl(:,'V'));
+                    [r,p] = corr(V(which), dec(which));
+                case 'DV'
+                    [r,p] = corr(DV_all(which), dec(which));
+            end
+            rs = [rs r];
+            ps = [ps p];
+        end
     end
 
+    pears_rs_all{c} = rs;
+    pears_ps_all{c} = ps;
 
-    pears_rs(c,:) = r;
+    pears_rs(c,:) = mean(rs); % take mean r before Fisher z transform
+
+    rs = atanh(rs);
+    [h, p, ci, stat] = ttest(rs);
+
     pears_ps(c,:) = p;
 
     % correlate MSE with behavioral weights across subjects
