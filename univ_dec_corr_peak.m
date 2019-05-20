@@ -1,12 +1,12 @@
 % take peak voxel for each subject => it's worse than taking the same voxel (univ_dec_corr)
 %
-% find(dec_ps < 0.5)   => 12 subjects
-% 1     3     6    10    14    16    17    20    22    28    30    31
+% find(dec_ps < 0.05)   => 9 subjects
+% 2     6    12    16    17    20    23    28    31 
 
 EXPT = exploration_expt();
 glmodel = 36;
 regressor = 'RU';
-mask = 'sphere_glm36_RU_34_48_-8_r=1mm.nii';
+mask = 'sphere_glm36_RU_34_48_-8_r=10mm.nii';
 lambda = 0;
 
 
@@ -60,6 +60,14 @@ for s = 1:length(subjects)
     % separate X's and betas into matrices that do or don't have our regressor
     B_noreg = B(~which_reg, :);
     B_reg = B(which_reg, :);
+
+    % choose peak voxel, based on betas averaged across runs
+    [~, peak] = max(mean(B_reg, 1));
+
+    % condense activations and betas to that voxel
+    act = act(:,peak);
+    B_noreg = B_noreg(:,peak);
+    B_reg = B_reg(:,peak);
 
 
     % are betas positive for that subject? if not, use different subject

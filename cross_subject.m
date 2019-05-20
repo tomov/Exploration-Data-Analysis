@@ -1,4 +1,4 @@
-function cross_subject(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)
+function cross_subject(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs, take_peak)
 
     % correlate neural betas with behaviora weights (betas)
 
@@ -17,6 +17,9 @@ end
 if ~exist('odd_runs', 'var')
     odd_runs = false;  % all runs
 end
+if ~exist('take_peak', 'var')
+    take_peak = false; % take peak voxel? (with largest |beta|)
+end
 
 what = 'sphere';
 
@@ -24,7 +27,7 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-filename = sprintf('cross_subject_roiglm%d_%s_glm%d_%s_%s_standardize=%d_corr=%d_extent=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, what, standardize, clusterFWEcorrect, extent);
+filename = sprintf('cross_subject_roiglm%d_%s_glm%d_%s_%s_standardize=%d_corr=%d_extent=%d_tp=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, what, standardize, clusterFWEcorrect, extent, take_peak);
 disp(filename);
 
 
@@ -60,7 +63,15 @@ for c = 1:length(masks)
 
     clear b;
     for s = 1:length(data)
-        b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
+        if take_peak
+            % take largest beta (by absolute value)
+            betas = ccnl_get_beta(EXPT, glmodel, regressor, mask, s);
+            [~, idx] = max(abs(betas));
+            b(s) = betas(idx);
+        else
+            % just average betas across voxels
+            b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
+        end
     end
     all_b{c} = b;
 

@@ -418,7 +418,6 @@ for i = 1:length(parcel_idxs)
     % IMPORTANT -- correlate within each run (fold) separately
     % then do t-test on correlation coefficients
     rs = [];
-    ps = [];
     for s = 1:length(data)
         for r = 1:max(data(s).run)
             which = ~exclude & tbl.S == s & tbl.run == r;
@@ -439,13 +438,10 @@ for i = 1:length(parcel_idxs)
                     [r,p] = corr(DV_all(which), dec(which));
             end
             rs = [rs r];
-            ps = [ps p];
         end
     end
 
     pears_rs_all{c} = rs;
-    pears_ps_all{c} = ps;
-
     pears_rs(c,:) = mean(rs); % take mean r before Fisher z transform
 
     rs = atanh(rs);

@@ -82,7 +82,7 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
 
             cvmdl = fitrlinear(X, y, 'ObservationsIn', 'rows', 'Learner', 'leastsquares', 'Regularization', 'ridge', 'CVPartition', cv, 'Lambda', Lambda);
 
-            mse = kfoldLoss(cvmdl);
+            mses = kfoldLoss(cvmdl);
 
 
         case 'fitrlinear_CV_2' % like ridge_CV_2
