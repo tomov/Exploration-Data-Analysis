@@ -1,12 +1,12 @@
-% take peak voxel for each subject => it's worse than taking the same voxel (univ_dec_corr)
+% take peak voxel for each subject for each run
+% shitty (only 7 subjects with find(dec_ps < 0.05))
 %
-% find(dec_ps < 0.5)   => 12 subjects
-% 1     3     6    10    14    16    17    20    22    28    30    31
+
 
 EXPT = exploration_expt();
 glmodel = 36;
 regressor = 'RU';
-mask = 'sphere_glm36_RU_34_48_-8_r=1mm.nii';
+mask = 'sphere_glm36_RU_34_48_-8_r=10mm.nii';
 lambda = 0;
 
 
@@ -62,12 +62,6 @@ for s = 1:length(subjects)
     B_reg = B(which_reg, :);
 
 
-    % are betas positive for that subject? if not, use different subject
-    B_reg
-    mean(B_reg)
-    [h,p,ci,stat] = ttest(B_reg);
-    fprintf('B_reg mean = %f, tstat = %f, p = %f\n', mean(B_reg), stat.tstat, p);
-
 
     % separate X's and betas into matrices that do or don't have our regressor
     B_reg = repelem(B_reg, size(X, 1) / size(B_reg, 1), 1); % we need one for each TR b/c we're doing element-wise divison by b_RU
@@ -78,37 +72,32 @@ for s = 1:length(subjects)
 
     % is RU (from X, i.e. convolved with hrf) correlated w/ activation
     RU = sum(X_reg, 2);
-    [r,p] = corr(RU, act);
+    [r,p] = corr(RU, mean(act, 2));
 
     act_rs(s) = r;
     act_ps(s) = p;
 
-    fprintf('corr RU act: r = %f, p = %f\n', r, p);
+    fprintf('corr RU mean act: r = %f, p = %f\n', r, p);
 
-
-    nTRs = 242;
-    assert(mod(size(act,1), nTRs) == 0);
-    assert(size(act,2) == 1, 'only 1 voxel for now; otherwise, do mean');
-    nruns = size(act,1) / nTRs;
-
-    %{
-    rs = []; ps = [];
-    for i = 1:nruns
-        st = (i-1)*nTRs + 1;
-        en = i * nTRs;
-        x = X_reg(st:en, i);
-        [r, p] = corr(x, act(st:en,:));
-        rs = [rs r];
-        ps = [ps p];
-    end
-
-    rs
-    ps
-    %}
 
 
     % decode regressor
-    dec = (act - X_noreg * B_noreg) .* B_reg ./ (B_reg.^2 + lambda);
+    dec_all = (act - X_noreg * B_noreg) .* B_reg ./ (B_reg.^2 + lambda);
+
+    % condense to single value, with peak voxel from each run
+    dec = [];
+
+    nTRs = 242;
+    assert(mod(size(act,1), nTRs) == 0);
+    nruns = size(act,1) / nTRs;
+
+    % pick peak voxel from each run
+    for i = 1:nruns
+        [~, peak] = max(B_reg(i,:));
+        st = (i-1)*nTRs + 1;
+        en = i * nTRs;
+        dec(st:en, :) = dec_all(st:en, peak);
+    end
 
 
     % is decoded regressor correlated with RU?

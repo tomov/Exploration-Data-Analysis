@@ -229,13 +229,6 @@ function [pred, mse, mses] = multilinear_fit(X, y, Xtest, method, foldid, exclud
 end
 
 
-
-function pred = ridgepred(X, y, Xtest, Lambda)
-    coef = ridge(y, X, Lambda, 0);
-    Xtest = [ones(size(Xtest, 1), 1), Xtest]; % include intercept term
-    pred = Xtest * coef;
-end
-
 function pred = fitnet_pred(X, y, Xtest)
     X = X';
     y = y';
