@@ -1,8 +1,12 @@
 % sanity checking univariate decoder assumptions
 % does decoded RU correlate with RU regressor, even before subsampling/deconvolution?
 %
+% GLM 36: 
 % find(dec_ps < 0.05)   => 12 subjects
 %  1     3     6    10    14    16    17    20    22    28    30    31
+%
+% GLM 39: 9 subj
+% 1     2     5    11    16    17    20    22    31
 
 EXPT = exploration_expt();
 glmodel = 36;

@@ -1,10 +1,14 @@
 % take peak voxel for each subject => it's worse than taking the same voxel (univ_dec_corr)
 %
+% GLM 36:
 % find(dec_ps < 0.05)   => 9 subjects
 % 2     6    12    16    17    20    23    28    31 
+%
+% GLM 39: 8 subj
+% 1     6    12    16    19    20    28    30
 
 EXPT = exploration_expt();
-glmodel = 36;
+glmodel = 39;
 regressor = 'RU';
 mask = 'sphere_glm36_RU_34_48_-8_r=10mm.nii';
 lambda = 0;
