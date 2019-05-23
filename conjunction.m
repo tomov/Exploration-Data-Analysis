@@ -12,19 +12,19 @@ clusterFWEcorrect = true;
 extent = [];
 
 
-con(1).glmodel = 39;
+con(1).glmodel = 36;
 con(1).contrast = 'RU';
 con(1).direct = '-';
 
-con(2).glmodel = 40;
+con(2).glmodel = 36;
 con(2).contrast = 'TU';
 con(2).direct = '+/-';
 
+%{
 con(3).glmodel = 41;
 con(3).contrast = 'V';
 con(3).direct = '-';
 
-%{
 con(4).glmodel = 47;
 con(4).contrast = 'DV';
 con(4).direct = '-';
@@ -45,7 +45,7 @@ end
 
 
 V = con(1).V;
-V.fname = 'masks/conj_3.nii'; % change immediately!
+V.fname = 'masks/conj_36.nii'; % change immediately!
 
 spm_write_vol(V, conj);
 

@@ -67,6 +67,27 @@ function tbl = augment_table_with_decoded_regressor(tbl, regressor, dec, standar
             tbl = [tbl table(decV_orth)];
 
 
+        case 'VTU'
+            decVTU = dec;
+            if standardize == 1
+                decVTU(~exclude) = zscore(decVTU(~exclude));
+            elseif standardize == 2
+                decVTU(~exclude) = decVTU(~exclude) / norm(decVTU(~exclude));
+            end
+            tbl = [tbl table(decVTU)];
+
+            % orthogonalized version
+            tmp = spm_orth([tbl.VTU(~exclude), decVTU(~exclude)]);
+            decVTU_orth = decVTU;
+            decVTU_orth(~exclude) = tmp(:,end);
+            if standardize == 1
+                decVTU_orth(~exclude) = zscore(decVTU_orth(~exclude));
+            elseif standardize == 2
+                decVTU_orth(~exclude) = decVTU_orth(~exclude) / norm(decVTU_orth(~exclude));
+            end
+            tbl = [tbl table(decVTU_orth)];
+
+
         case 'DV'
             decDV = dec;
             if standardize == 1

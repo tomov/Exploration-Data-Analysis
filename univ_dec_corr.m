@@ -4,9 +4,16 @@
 % GLM 36: 
 % find(dec_ps < 0.05)   => 12 subjects
 %  1     3     6    10    14    16    17    20    22    28    30    31
+% corr dec_all & RU_all : r = -0.000302, p = 0.942031
+% mean(dec_rs) = -0.0094, mean(b) = 0.0757
 %
 % GLM 39: 9 subj
 % 1     2     5    11    16    17    20    22    31
+%
+% GLM 36, with mean(B_reg,1):  save('univ_dec_corr_36_meanBreg.mat')
+% 6    17    27    28    30
+% corr dec_all & RU_all : r = 0.019071, p = 0.000004
+% mean(dec_rs) = -0.0139 .... but why is mean(b) = 0.0757 ???
 
 EXPT = exploration_expt();
 glmodel = 36;
@@ -25,6 +32,9 @@ end
 if ~exist('subjects', 'var')
     subjects = 1:length(EXPT.subject);
 end
+
+dec_all = [];
+RU_all = [];
 
 
 for s = 1:length(subjects)
@@ -72,6 +82,10 @@ for s = 1:length(subjects)
     mean(B_reg)
     [h,p,ci,stat] = ttest(B_reg);
     fprintf('B_reg mean = %f, tstat = %f, p = %f\n', mean(B_reg), stat.tstat, p);
+    b(s) = mean(B_reg);
+
+    % average betas across runs
+    %B_reg = mean(B_reg,1);
 
 
     % separate X's and betas into matrices that do or don't have our regressor
@@ -119,6 +133,9 @@ for s = 1:length(subjects)
     % is decoded regressor correlated with RU?
     [r, p] = corr(RU, dec);
 
+    RU_all = [RU_all; RU];
+    dec_all = [dec_all; dec];
+
     fprintf('corr dec & RU : r = %f, p = %f\n', r, p);
 
     RUs{s} = RU;
@@ -130,6 +147,8 @@ for s = 1:length(subjects)
 
 end
 
+[r, p] = corr(RU_all, dec_all);
+fprintf('corr dec_all & RU_all : r = %f, p = %f\n', r, p);
 
 %{
 % repeat w/ fixed effects design matrix => nothing...

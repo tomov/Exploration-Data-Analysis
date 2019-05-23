@@ -52,6 +52,23 @@ switch regressor
             formula_orig = 'C ~ -1 + V + RU + VTU';
         end
 
+    case 'VTU'
+        if mixed_effects
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decVTU_orth + (-1 + V + RU + VTU + decVTU_orth|S)';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decVTU + (-1 + V + RU + VTU + decVTU|S)';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
+        else
+            if do_orth
+                formula_both = 'C ~ -1 + V + RU + VTU + decVTU_orth';
+            else
+                formula_both = 'C ~ -1 + V + RU + VTU + decVTU';
+            end
+            formula_orig = 'C ~ -1 + V + RU + VTU';
+        end
+
     case 'DV'
         if mixed_effects
             if do_orth

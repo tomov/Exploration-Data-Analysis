@@ -1,4 +1,8 @@
-function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, extent, Num)
+function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, extent, Num, sphere)
+
+    if ~exist('sphere', 'var')
+        sphere = 10; % 10 mm radius by default
+    end
 
     EXPT = exploration_expt();
 
@@ -6,17 +10,33 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
     switch contrast
         case 'badre'
             % clusters = masks from paper
-            masks = badre_2012_create_masks(false);
+            masks = badre_2012_create_masks(false, sphere);
             %masks = masks(1); % TODO use all masks
 
         case 'dlpfc'
             % clusters = masks from paper
-            masks = dlpfc_2012_create_masks(false);
+            masks = dlpfc_2012_create_masks(false, sphere);
             %masks = masks(1); % TODO use all masks
 
         case 'tommy'
             % clusters = masks from paper
-            masks = tommy_2017_create_masks(false);
+            masks = tommy_2017_create_masks(false, sphere);
+
+        case 'conj_3'
+            % conjunction of RU (GLM 39), TU (GLM 40), and V (GLM 41)
+            
+            files = dir(fullfile('masks', 'ClusterMask_conj_3_*.nii'));
+            for i = 1:length(files)
+                masks{i} = fullfile('masks', files(i).name);
+            end
+
+        case 'conj_36'
+            % conjunction of RU (GLM 36), TU (GLM 36)
+            
+            files = dir(fullfile('masks', 'ClusterMask_conj_36_*.nii'));
+            for i = 1:length(files)
+                masks{i} = fullfile('masks', files(i).name);
+            end
 
         otherwise
 
@@ -55,7 +75,7 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
 
                 [V, Y, C, CI, region, extent, stat, mni, cor, results_table] = ccnl_extract_clusters(EXPT, glmodel, contrast, p, direct, alpha, Dis, Num, clusterFWEcorrect, extent);
 
-                r = 10 / 1.5; % 10 mm radius
+                r = sphere / 1.5; % 10 mm radius
 
                 % create spherical masks around peak voxel of each cluster (intersected with cluster)
                 %

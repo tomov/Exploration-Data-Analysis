@@ -5,7 +5,7 @@
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 % TODO dedupe w/ multivariate_decoder_bms and univariate_decoder
 
-function univariate_decoder_refactored(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null)
+function univariate_decoder_refactored(roi_glmodel, roi_contrast, glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null, sphere)
 
 printcode;
 
@@ -54,12 +54,15 @@ end
 if ~exist('get_null', 'var')
     get_null = false;  % generate null distribution
 end
+if ~exist('sphere', 'var')
+    sphere = 10; % 10 mm sphere by default
+end
 
 GLM_has_timeouts = true; % does glmodel include timeout trials?
 assert(GLM_has_timeouts, 'sorry this is a hardcoded assumption');
 
 
-filename = sprintf('univariate_decoder_refactored_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null);
+filename = sprintf('univariate_decoder_refactored_roiglm%d_%s_glm%d_%s_orth=%d_lambda=%f_standardize=%d_mixed=%d_corr=%d_extent=%d_Num=%d_intercept=%d_flip=%d_doCV=%d_gn=%d_s=%.1f.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign, do_CV, get_null, sphere);
 disp(filename);
 
 
@@ -70,7 +73,8 @@ formula_orig
 
 
 % get ROIs
-[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
+[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num, sphere);
+masks'
 
 
 % extract behavioral regressors & stuff
@@ -85,6 +89,7 @@ for s = 1:length(data)
     data(s).RU = RU;
     data(s).TU = TU;
     data(s).V = V;
+    data(s).VTU = VTU;
     data(s).DV = DV;
     V_all = [V_all; V];
     DV_all = [DV_all; DV];
@@ -255,6 +260,8 @@ for c = 1:numel(masks)
     results_both{c} = [];
     BIC(c,:) = [NaN NaN]; % in case it doesn't work
     p_comp(c,:) = NaN;
+    ps(c,:) = NaN;
+    pxp(
     for attempt = 1:100
         try
             if attempt == successes + 1
@@ -321,6 +328,13 @@ for c = 1:numel(masks)
                 V = abs(tbl.V);
             end
             [r,p] = corr(V(~exclude), act(~exclude));
+        case 'VTU'
+            if flip_sign
+                VTU = tbl.VTU;
+            else
+                VTU = abs(tbl.VTU);
+            end
+            [r,p] = corr(VTU(~exclude), act(~exclude));
         case 'DV'
             if flip_sign
                 DV = tbl.DV;
@@ -351,6 +365,8 @@ for c = 1:numel(masks)
         case 'RU'
             [r, p] = corr(abs(w(:,2)), mse');
         case 'TU'
+            [r, p] = corr(abs(w(:,3)), mse');
+        case 'VTU'
             [r, p] = corr(abs(w(:,3)), mse');
         case 'V'
             [r, p] = corr(abs(w(:,1)), mse');
@@ -391,9 +407,9 @@ p_comp_corr = 1 - (1 - p_comp) .^ numel(p_comp);
 
 if get_null
     frac_s = mean(null_ps < 0.05, 2); % fraction of participants whose null distribution p-value is < 0.05, i.e. we can significantly decode regressor
-    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax, frac_s)
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, p_ax, r_ax, frac_s)
 else
-    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, pxp, p_ax, r_ax)
+    table(region, p_uncorr, p_corr, pears_rs, pears_ps, BIC_orig, BIC_both, p_comp, p_comp_corr, p_ax, r_ax)
 end
 
 end
@@ -418,6 +434,12 @@ function mse = calc_mse(data, dec, regressor, flip_sign)
             else
                 mse = immse(abs(data.V(which)), dec(which));
             end
+        case 'VTU'
+            if flip_sign
+                mse = immse(data.VTU(which), dec(which));
+            else
+                mse = immse(abs(data.VTU(which)), dec(which));
+            end
         case 'DV'
             if flip_sign
                 mse = immse(data.DV(which), dec(which));
@@ -438,10 +460,14 @@ function dec = adjust_sign(data, dec, regressor, flip_sign)
             case 'RU'
                 % adjust for fact that the regressor was |RU|
                 dec = dec .* (data.RU >= 0) + (-dec) .* (data.RU < 0);
-            case 'V'
 
+            case 'V'
                 % adjust for fact that the regressor was |V|
                 dec = dec .* (data.V >= 0) + (-dec) .* (data.V < 0);
+
+            case 'VTU'
+                % adjust for fact that the regressor was |VTU|
+                dec = dec .* (data.VTU >= 0) + (-dec) .* (data.VTU < 0);
 
             case 'DV'
                 % adjust for fact that the regressor was |DV|

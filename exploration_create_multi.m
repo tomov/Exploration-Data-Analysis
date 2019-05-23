@@ -14,7 +14,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %   multi - a structure with the folloowing fields
     %        .names{i}
     %        .onsets{i}
-    %        .durations{i}
+    %        .duratlsions{i}
     %        optional:
     %        .pmod(i).name
     %        .pmod(i).param
@@ -2735,7 +2735,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 36 without V/TU b/c that's pointless
         %
-        case 64
+        case 64 % <-- same as 36
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
@@ -2771,7 +2771,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
         % 64 with 1/TU
         %
-        case 65
+        case 65 % <-- nothing for 1/TU
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 

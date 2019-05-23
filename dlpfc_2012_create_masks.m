@@ -1,6 +1,6 @@
 % create RLPFC masks based on Badre et al. 2012
 %
-function masks = dlpfc_2012_create_mask(do_create)
+function masks = dlpfc_2012_create_mask(do_create, sphere)
 
 % RLPFC from Badre et al. 2012
 mni = [40 30 34; ... % TU @ trial onset; neutrally defined DLPFC (from Fig 5)
@@ -9,7 +9,7 @@ mni = [40 30 34; ... % TU @ trial onset; neutrally defined DLPFC (from Fig 5)
        46 14 28];
 
 
-r = 10 / 1.5; % 10 mm sphere
+r = sphere / 1.5; % 10 mm sphere
 
 [mask, V, Y] = load_mask('masks/mask.nii');
 V.fname = 'masks/badre_dlpfc.nii'; % change immediately!
@@ -17,7 +17,7 @@ V.fname = 'masks/badre_dlpfc.nii'; % change immediately!
 for i = 1:size(mni, 1)
     cor = mni2cor(mni(i,:), V.mat);
 
-    V.fname = fullfile('masks', sprintf('badre_dlpfc_%d_%d_%d_r=10mm.nii', mni(i,:)));
+    V.fname = fullfile('masks', sprintf('badre_dlpfc_%d_%d_%d_r=%.1fmm.nii', mni(i,1), mni(i,2), mni(i,3), sphere));
 
     if do_create
         [sphere_mask] = ccnl_create_spherical_mask(cor(1), cor(2), cor(3), r);
