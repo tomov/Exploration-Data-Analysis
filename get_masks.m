@@ -38,6 +38,14 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
                 masks{i} = fullfile('masks', files(i).name);
             end
 
+        case 'conj_45'
+            % conjunction of RU (GLM 36), TU (GLM 36)
+            
+            files = dir(fullfile('masks', 'ClusterMask_conj_45_*.nii'));
+            for i = 1:length(files)
+                masks{i} = fullfile('masks', files(i).name);
+            end
+
         otherwise
 
 

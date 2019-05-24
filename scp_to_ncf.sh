@@ -1,6 +1,6 @@
 scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univ_dec_corr.m  .
-#scp masks/badre*.nii masks/Cluster*.nii masks/dlpfc*.nii masks/tommy*.nii mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks
+#scp masks/Cluster*.nii  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks
 #scp exploration_expt_fir.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univ_dec_corr*.m .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/neurosynth_CV_TU_orth=0_standardize=0_mixed=1_intercept=1_method=ridge_CV_1,ridge_CV_2_getnull=0_zav=0_pa=0_us=0_l=1_pi=355.mat .
