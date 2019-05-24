@@ -1,5 +1,5 @@
-#scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
-scp  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univ_dec_corr.m  .
+scp *.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
+#scp  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univ_dec_corr.m  .
 #scp masks/badre*.nii masks/Cluster*.nii masks/dlpfc*.nii masks/tommy*.nii mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks
 #scp exploration_expt_fir.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univ_dec_corr*.m .

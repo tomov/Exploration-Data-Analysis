@@ -260,8 +260,6 @@ for c = 1:numel(masks)
     results_both{c} = [];
     BIC(c,:) = [NaN NaN]; % in case it doesn't work
     p_comp(c,:) = NaN;
-    ps(c,:) = NaN;
-    pxp(
     for attempt = 1:100
         try
             if attempt == successes + 1
@@ -279,7 +277,10 @@ for c = 1:numel(masks)
 
             assert(res.LogLikelihood >= results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
-            save wtf.mat
+            if attempt == 1
+                ps(c,:) = nan(size(stats.pValue')); % initialize, in case we find nothing
+            end
+
             if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
                 results_both{c} = res;
 
