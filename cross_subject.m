@@ -65,12 +65,12 @@ for c = 1:length(masks)
     for s = 1:length(data)
         if take_peak
             % take largest beta (by absolute value)
-            betas = ccnl_get_beta(EXPT, glmodel, regressor, mask, s);
+            betas = ccnl_get_beta(EXPT, glmodel, ['x', regressor], mask, s);
             [~, idx] = max(abs(betas));
             b(s) = betas(idx);
         else
             % just average betas across voxels
-            b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
+            b(s) = mean(ccnl_get_beta(EXPT, glmodel, ['x', regressor], mask, s));
         end
     end
     all_b{c} = b;

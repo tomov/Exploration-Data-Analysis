@@ -1,4 +1,4 @@
-function main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent, Num)
+function main_effect(roi_glmodel, roi_contrast, glmodel, regressor, clusterFWEcorrect, extent, Num, sphere)
 
 
 printcode;
@@ -17,13 +17,16 @@ end
 if ~exist('Num', 'var')
     Num = 1; % # peak voxels per cluster; default in bspmview is 3
 end
+if ~exist('sphere', 'var')
+    sphere = 10; % 10 mm sphere by default
+end
 
 
-filename = sprintf('main_effect_roiglm%d_%s_glm%d_%s_corr=%d_extent=%d_Num=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, clusterFWEcorrect, extent, Num);
+filename = sprintf('main_effect_roiglm%d_%s_glm%d_%s_corr=%d_extent=%d_Num=%d_s=%.1f.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, regressor, clusterFWEcorrect, extent, Num, sphere);
 disp(filename);
 
 % get ROIs
-[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num);
+[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent, Num, sphere);
 
 
 
@@ -33,7 +36,7 @@ for i = 1:length(masks)
 
     clear b;
     for s = 1:length(data)
-        b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
+        b(s) = mean(ccnl_get_beta(EXPT, glmodel, ['x', regressor], mask, s));
     end
 
     [h, p, ci, stats] = ttest(b);

@@ -61,7 +61,7 @@ for c = 1:length(masks)
 
     clear b;
     for s = 1:length(data)
-        b(s) = mean(ccnl_get_beta(EXPT, glmodel, regressor, mask, s));
+        b(s) = mean(ccnl_get_beta(EXPT, glmodel, ['x', regressor], mask, s));
     end
     all_b{c} = b;
 
