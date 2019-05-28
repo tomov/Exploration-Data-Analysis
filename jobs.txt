@@ -1906,7 +1906,7 @@ univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 36, \'TU\', true, 1, 2, 
 main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 3): output/main_effect_66927630.out -- Submitted batch job 66927630
 main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 3): output/main_effect_66927632.out -- Submitted batch job 66927632
 main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 3): output/main_effect_66927633.out -- Submitted batch job 66927633
-main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3): output/main_effect_66927634.out -- Submitted batch job 66927634
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3): output/main_effect_66927634.out -- Submitted batch job 66927634 <-- UGH n.s.... but
 ----------------
 --- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
 ----------------
@@ -2213,10 +2213,10 @@ univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, fal
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221524.out -- Submitted batch job 6221524
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221528.out -- Submitted batch job 6221528
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221531.out -- Submitted batch job 6221531
-univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221534.out -- Submitted batch job 6221534
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221534.out -- Submitted batch job 6221534 <---- error
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221540.out -- Submitted batch job 6221540
 univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221544.out -- Submitted batch job 6221544
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221547.out -- Submitted batch job 6221547
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6221547.out -- Submitted batch job 6221547 <-- top p = 0.0001
 ----------------
 --- Running univariate_decoder <-- w/ timeouts, fixed effects (repro!)
 ----------------
@@ -2278,10 +2278,10 @@ univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, tru
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321505.out -- Submitted batch job 6321505
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321513.out -- Submitted batch job 6321513
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321518.out -- Submitted batch job 6321518
-univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321524.out -- Submitted batch job 6321524
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321524.out -- Submitted batch job 6321524 <-- error
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321530.out -- Submitted batch job 6321530
 univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321540.out -- Submitted batch job 6321540
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321550.out -- Submitted batch job 6321550
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6321550.out -- Submitted batch job 6321550 <-- top p = 0.0001, BIC same
 ----------------
 --- Running cross_subj_perf <---- YAS
 ----------------
@@ -2299,8 +2299,8 @@ cross_subj_lik.sh cross_subj_lik(36, \'TU\', 36, \'TU\', 2, false, 100, false): 
 ----------------
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357858.out -- Submitted batch job 6357858
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357862.out -- Submitted batch job 6357862
-univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357865.out -- Submitted batch job 6357865
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357874.out -- Submitted batch job 6357874
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357865.out -- Submitted batch job 6357865 <-- error
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357874.out -- Submitted batch job 6357874 <-- top p = 0.0001, BIC same
 univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357881.out -- Submitted batch job 6357881
 univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357889.out -- Submitted batch job 6357889
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6357893.out -- Submitted batch job 6357893
@@ -2323,7 +2323,7 @@ ccnl_fmri_glm.sh for GLM 51, subjects 17 24 9 10 29 27 20 4 3 28 5 7 18 22 19 15
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388248.out -- Submitted batch job 6388248
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388257.out -- Submitted batch job 6388257
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388276.out -- Submitted batch job 6388276
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388288.out -- Submitted batch job 6388288
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388288.out -- Submitted batch job 6388288 <-- p = 0.0001, same BIC
 univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388301.out -- Submitted batch job 6388301
 univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388313.out -- Submitted batch job 6388313
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6388317.out -- Submitted batch job 6388317
@@ -2339,7 +2339,7 @@ ccnl_fmri_glm.sh for GLM 53, subjects 23 2 19 26 3 15 10 9 31 27 20 21 8 28 4 18
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459969.out -- Submitted batch job 6459969
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459981.out -- Submitted batch job 6459981
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459986.out -- Submitted batch job 6459986
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459989.out -- Submitted batch job 6459989
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6459989.out -- Submitted batch job 6459989 <-- p = 0.02
 univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460000.out -- Submitted batch job 6460000
 univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'TU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460010.out -- Submitted batch job 6460010
 univariate_decoder.sh univariate_decoder(-1, \'badre\', 36, \'RU\', true, 1, 2, false, false, 100, 1, false): output/univariate_decoder_6460019.out -- Submitted batch job 6460019
@@ -2411,16 +2411,16 @@ main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 3): output/mai
 ----------------
 beta_series_corr.sh beta_series_corr: output/beta_series_corr_6619184.out -- Submitted batch job 6619184
 ----------------
---- Running univariate_decoder <-- EBMethod = TrustRegion2D, for real this time (mixed effects obvi)
+--- Running univariate_decoder <-- EBMethod = TrustRegion2D, for real this time (mixed effects obvi) => nonspecific
 ----------------
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619223.out -- Submitted batch job 6619223
 univariate_decoder.sh univariate_decoder(45, \'RU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619228.out -- Submitted batch job 6619228
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619237.out -- Submitted batch job 6619237
 univariate_decoder.sh univariate_decoder(45, \'TU\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619242.out -- Submitted batch job 6619242
-univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619245.out -- Submitted batch job 6619245
-univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619248.out -- Submitted batch job 6619248
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619262.out -- Submitted batch job 6619262
-univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619275.out -- Submitted batch job 6619275
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619245.out -- Submitted batch job 6619245 <-- top p = 0.005
+univariate_decoder.sh univariate_decoder(-1, \'badre\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619248.out -- Submitted batch job 6619248 <- nothing
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619262.out -- Submitted batch job 6619262 <-- top p = 0.01, all p's < 0.05...
+univariate_decoder.sh univariate_decoder(-1, \'dlpfc\', 45, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619275.out -- Submitted batch job 6619275 <-- top p = 0.0001
 univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619281.out -- Submitted batch job 6619281
 univariate_decoder.sh univariate_decoder(36, \'RU\', 36, \'TU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619284.out -- Submitted batch job 6619284
 univariate_decoder.sh univariate_decoder(36, \'TU\', 36, \'RU\', true, 1, 2, true, false, 100, 1, false): output/univariate_decoder_6619287.out -- Submitted batch job 6619287
@@ -2953,7 +2953,870 @@ ccnl_fmri_con.sh: output/ccnl_fmri_con_8158153.out -- Submitted batch job 815815
 multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8159333.out -- Submitted batch job 8159333
 multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8159336.out -- Submitted batch job 8159336
 ----------------
---- Running neurosynth_bms <-- ridge_CV; will take forever
+--- Running neurosynth_bms <-- CANCELLED ridge_CV; will take forever
 ----------------
 neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_8159394.out -- Submitted batch job 8159394
 neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', false, false, false, false): output/neurosynth_bms_8159406.out -- Submitted batch job 8159406
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 62, subjects 27 7 29 17 21 28 14 15 1 16 19 20 11 4 23 24 8 6 25 22 3 12 10 26 18 30 2 13 31 5 9: output/ccnl_fmri_glm_62_goodSubjects_8179477.out -- Submitted batch job 8179477
+ccnl_fmri_glm.sh for GLM 63, subjects 14 28 5 8 30 29 26 16 22 17 1 21 24 27 10 20 31 9 15 4 7 13 23 6 2 25 3 18 11 19 12: output/ccnl_fmri_glm_63_goodSubjects_8179485.out -- Submitted batch job 8179485
+----------------
+--- Running ccnl_fmri_glm_nosmooth for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm_nosmooth.sh for GLM 62, subjects 24 11 8 19 25 28 29 18 2 10 4 16 21 15 27 31 20 12 17 22 23 7 13 6 9 14 3 26 1 30 5: output/ccnl_fmri_glm_nosmooth_62_goodSubjects_8179525.out -- Submitted batch job 8179525
+ccnl_fmri_glm_nosmooth.sh for GLM 63, subjects 2 17 7 25 9 30 16 24 8 28 19 22 14 29 4 10 1 6 23 26 21 31 11 3 18 5 27 15 20 12 13: output/ccnl_fmri_glm_nosmooth_63_goodSubjects_8179537.out -- Submitted batch job 8179537
+----------------
+--- Running multivariate_decoder_bms <-- ERROR compare fitnet w/ ridge => might use that but SUPER slow (12 s per subj) => might need the parallel toolbox + GPUs
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'fitnet\', false, false, false, false): output/multivariate_decoder_bms_8186852.out -- Submitted batch job 8186852
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'fitnet\', false, false, false, false): output/multivariate_decoder_bms_8186865.out -- Submitted batch job 8186865
+----------------
+--- Running multivariate_decoder_bms <-- ridge_CV w/ get_null, CV MSE this time (as Sam said)
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8188078.out -- Submitted batch job 8188078
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', true, false, false, false): output/multivariate_decoder_bms_8188087.out -- Submitted batch job 8188087
+----------------
+--- Running neurosynth_bms <-- ERROR check laterality (no get_null, no CV)
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8192803.out -- Submitted batch job 8192803
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8192807.out -- Submitted batch job 8192807
+----------------
+--- Running neurosynth_bms <-- ERROR check laterality, ridge CV (no get_null)
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8192872.out -- Submitted batch job 8192872
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8192885.out -- Submitted batch job 8192885
+----------------
+--- Running neurosynth_bms <-- ERROR check laterality, get_null (no CV)
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8192975.out -- Submitted batch job 8192975
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8192986.out -- Submitted batch job 8192986
+----------------
+--- Running neurosynth_bms <-- ERROR check laterality, get_null, CV
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8193083.out -- Submitted batch job 8193083
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8193098.out -- Submitted batch job 8193098
+----------------
+--- Running neurosynth_bms <-- check laterality, optional CV, optional get_null (all combos) => CV for decoding too => use whatever Sam recommented
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8227209.out -- Submitted batch job 8227209
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8227211.out -- Submitted batch job 8227211
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8227212.out -- Submitted batch job 8227212
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8227219.out -- Submitted batch job 8227219
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8227225.out -- Submitted batch job 8227225
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8227232.out -- Submitted batch job 8227232
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8227244.out -- Submitted batch job 8227244 <------------------------------------------------------ need to CV, b/c we're likely overfitting to the random permutations...
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8227253.out -- Submitted batch job 8227253
+----------------
+--- Running multivariate_decoder_bms <-- compare fitnet w/ ridge => might use that but SUPER slow (12 s per subj) => might need the parallel toolbox + GPUs
+----------------
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'fitnet\', false, false, false, false): output/multivariate_decoder_bms_8230332.out -- Submitted batch job 8230332
+multivariate_decoder_bms.sh multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'fitnet\', false, false, false, false): output/multivariate_decoder_bms_8230345.out -- Submitted batch job 8230345
+----------------
+--- Running ccnl_fmri_con <-- ERROR  62, 63
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8334624.out -- Submitted batch job 8334624
+----------------
+--- Running ccnl_fmri_con_nosmooth <-- ERROR 62, 63 
+----------------
+ccnl_fmri_con_nosmooth.sh: output/ccnl_fmri_con_nosmooth_8334642.out -- Submitted batch job 8334642
+----------------
+--- Running ccnl_fmri_con <-- error on 63; 62 done
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8368278.out -- Submitted batch job 8368278
+----------------
+--- Running ccnl_fmri_con_nosmooth <-- error on 63; 62 done
+----------------
+ccnl_fmri_con_nosmooth.sh: output/ccnl_fmri_con_nosmooth_8368280.out -- Submitted batch job 8368280
+----------------
+--- Running ccnl_fmri_con_nosmooth <-- 63
+----------------
+ccnl_fmri_con_nosmooth.sh: output/ccnl_fmri_con_nosmooth_8379593.out -- Submitted batch job 8379593
+----------------
+--- Running ccnl_fmri_con <-- 63
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_8379608.out -- Submitted batch job 8379608
+----------------
+--- Running ccnl_fmri_glm_nosmooth for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 <-- idiot; you must run ccnl_fmri_glm_nosmooth.m ......
+----------------
+ccnl_fmri_glm_nosmooth.sh for GLM 62, subjects 21 31 13 19 10 27 20 9 11 7 1 26 22 23 24 8 25 18 12 16 14 2 6 30 29 3 15 17 28 4 5: output/ccnl_fmri_glm_nosmooth_62_goodSubjects_8417167.out -- Submitted batch job 8417167
+ccnl_fmri_glm_nosmooth.sh for GLM 63, subjects 5 7 18 1 15 8 13 19 31 16 9 22 11 28 10 3 14 2 29 24 25 23 17 30 12 4 27 21 6 26 20: output/ccnl_fmri_glm_nosmooth_63_goodSubjects_8417170.out -- Submitted batch job 8417170
+----------------
+--- Running univariate_decoder_bms <-- get_null CV => precentral for RU, nothing for TU and badre => re-run w/o random starts
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8428046.out -- Submitted batch job 8428046 <-- Precentral !!! o m g
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8428050.out -- Submitted batch job 8428050 <-- nothing... not okay => re-run without random starts
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8428056.out -- Submitted batch job 8428056 <-- nothing
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8428059.out -- Submitted batch job 8428059 <-- nothing
+----------------
+--- Running univariate_decoder_bms <--- get_null CV, with StartMethod = default b/c of TU  => nice! RU = Precentral, TU = DLPFC => running controls
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8560345.out -- Submitted batch job 8560345 <-- Precentral (L) with BIC = 6383 < BIC_orig = 6410
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8560348.out -- Submitted batch job 8560348 <--- left anterior DLPFC (frontal inf oper) with BIC = 6400 < BIC_orig = 6410
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8560349.out -- Submitted batch job 8560349 <-- top one is 6409, but one of the others is 6394, and another is 6399!
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, true): output/univariate_decoder_bms_8560352.out -- Submitted batch job 8560352 <-- none is better than 6410
+----------------
+--- Running neurosynth_bms <-- ERROR, elasticnet is fucked; RU w/ elasticnet, with and w/o CV, opt get_null
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'elasticnet_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8571732.out -- Submitted batch job 8571732
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'elasticnet_CV_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8571733.out -- Submitted batch job 8571733
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'elasticnet_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8571734.out -- Submitted batch job 8571734
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'elasticnet_CV_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8571735.out -- Submitted batch job 8571735
+----------------
+--- Running univariate_decoder_bms <-- controls, also default StartMethod for augmented GLMs => RU = Precentral, but nonspecific (shows up for TU too), TU = frontal_inf_oper
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614612.out -- Submitted batch job 8614612 <-- YES Precentral = 6383 (vs. 6410)
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614622.out -- Submitted batch job 8614622 <-- YES, nothing!
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614635.out -- Submitted batch job 8614635 <-- BOO, Parietal_Inf_L = 6391, Thalamus_L = 6388
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614653.out -- Submitted batch job 8614653 <-- YES, Frontal_Inf_Oper_L = 6400.3
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614665.out -- Submitted batch job 8614665 <-- top one = 6409.7; another one is 6398, yet another is 6394, most are below 6410
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614670.out -- Submitted batch job 8614670 <-- nothing, as expected
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614677.out -- Submitted batch job 8614677 <-- nothing, as expected (one is 6406 but whatevs)
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8614700.out -- Submitted batch job 8614700 <-- nothing! w t f
+----------------
+--- Running neurosynth_bms <-- MISTAKE did not shuffle runs; ridge_CV_CV get_null, will have to re-run the whole-brain thing too
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8616685.out -- Submitted batch job 8616685
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8616691.out -- Submitted batch job 8616691
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8616697.out -- Submitted batch job 8616697
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8616699.out -- Submitted batch job 8616699
+----------------
+--- Running neurosynth_bms <-- ERROR ugh foldid's... ridge_CV_CV get_null with random run reshuffle, will have to re-run the whole-brain thing too
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8621449.out -- Submitted batch job 8621449 <-- repro, checks out
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8621456.out -- Submitted batch job 8621456 <-- repro, checks out
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8621462.out -- Submitted batch job 8621462 <------------------- NONE frac_s, mother fucker
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8621467.out -- Submitted batch job 8621467 <-- NONE frac_s
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8621475.out -- Submitted batch job 8621475
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8621480.out -- Submitted batch job 8621480
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8621486.out -- Submitted batch job 8621486
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8621492.out -- Submitted batch job 8621492
+----------------
+--- Running univariate_decoder_bms <-- Num = 3, cluster FWE
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, true, [], 3, true, true, false, false): output/univariate_decoder_bms_8703861.out -- Submitted batch job 8703861
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, true, [], 3, true, true, false, false): output/univariate_decoder_bms_8703863.out -- Submitted batch job 8703863
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, true, [], 3, true, true, false, false): output/univariate_decoder_bms_8703865.out -- Submitted batch job 8703865
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, true, [], 3, true, true, false, false): output/univariate_decoder_bms_8703866.out -- Submitted batch job 8703866
+----------------
+--- Running neurosynth_bms <-- ridge_CV_CV, retry
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [18 18+200]): output/neurosynth_bms_8704558.out -- Submitted batch job 8704558
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8704560.out -- Submitted batch job 8704560
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [18 18+200]): output/neurosynth_bms_8704561.out -- Submitted batch job 8704561
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', true, false, false, false, true, [11 115 122 145 152 11+200 115+200 122+200 145+200 152+200]): output/neurosynth_bms_8704563.out -- Submitted batch job 8704563
+----------------
+--- Running cross_subject => n.s.
+----------------
+cross_subject.sh cross_subject(39, \'RU\', 39, \'RU\', 2, false, 100, false): output/cross_subject_8711994.out -- Submitted batch job 8711994 <-- n.s.
+cross_subject.sh cross_subject(40, \'TU\', 40, \'TU\', 2, false, 100, false): output/cross_subject_8711997.out -- Submitted batch job 8711997 <-- Thalamus_L ?
+cross_subject.sh cross_subject(41, \'V\', 41, \'V\', 2, false, 100, false): output/cross_subject_8712012.out -- Submitted batch job 8712012 <-- error
+----------------
+--- Running cross_subject
+----------------
+cross_subject.sh cross_subject(41, \'V\', 41, \'V\', 2, false, 100, false): output/cross_subject_8712462.out -- Submitted batch job 8712462 <-- n.s.
+----------------
+--- Running univariate_decoder_bms <-- for the single-regressor GLMs =>  RLPFC works, with BIC!!!!!!! VALIDATION! => figure out w t f is up with GLM 36
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(39, \'RU\', 39, \'RU\', false, 1, 2, true, false, 100, 3, true, true, false, false): output/univariate_decoder_bms_8713232.out -- Submitted batch job 8713232 <-- RLPFC dayum!!!!!!!!!!!!!!!!! => almost same peak => why the eff do we not get it in 36????
+univariate_decoder_bms.sh univariate_decoder_bms(40, \'TU\', 40, \'TU\', false, 1, 2, true, false, 100, 3, true, true, false, false): output/univariate_decoder_bms_8713243.out -- Submitted batch job 8713243 <-- Angular gyrus w t f, also one big ROI so fuck it.....
+univariate_decoder_bms.sh univariate_decoder_bms(41, \'V\', 41, \'V\', false, 1, 2, true, false, 100, 3, true, true, false, false): output/univariate_decoder_bms_8713254.out -- Submitted batch job 8713254 <-- LOTS improve GLM (almost all); check 'em out
+----------------
+--- Running neurosynth_bms <-- ridge_CV_CV, whole brain
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true): output/neurosynth_bms_8777340.out -- Submitted batch job 8777340
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge_CV_CV\', false, false, false, false, true): output/neurosynth_bms_8777343.out -- Submitted batch job 8777343
+----------------
+--- Running univariate_decoder_bms <-- decode by inverting 36, but using single-regressor GLM ROIs => why T F do we not get a good BIC for RU in 36? => we don't get it here either => probs the betas sheeit
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(39, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8903684.out -- Submitted batch job 8903684 <-- nothing for RLPFC, yes postcentral (R)
+univariate_decoder_bms.sh univariate_decoder_bms(40, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8903691.out -- Submitted batch job 8903691 <-- nothing
+univariate_decoder_bms.sh univariate_decoder_bms(41, \'V\', 36, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8903700.out -- Submitted batch job 8903700 <-- medial & Orb PFC (specificity!)
+----------------
+--- Running univariate_decoder_bms <-- decode by inverting 10 (only RU & TU), using single-regressor GLM ROIs => NICE it worked => something in GLM 36 is fucking things over (hope it's V/TU and not V)
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(39, \'RU\', 10, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8904031.out -- Submitted batch job 8904031 <-- NICEEEEE got the RLPFC => try removing V/TU (64)
+univariate_decoder_bms.sh univariate_decoder_bms(40, \'TU\', 10, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8904040.out -- Submitted batch job 8904040 <-- nothing
+----------------
+----------------
+--- Running univariate_decoder_bms <-- decode by inverting single-regressor GLMs, using ROIs from 36 => figuring out if it's the betas or the voxel (most likely betas)
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8904806.out -- Submitted batch job 8904806 <-- YEEES => it's the 36 betas, double dissoc
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8904813.out -- Submitted batch job 8904813 <-- nothing
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 => maybe get RU RLPFC result w/o V/TU regressor => DO IT
+----------------
+ccnl_fmri_glm.sh for GLM 64, subjects 7 26 12 19 15 13 21 28 3 10 16 9 18 6 11 4 17 14 5 25 30 27 29 31 2 22 20 1 8 24 23: output/ccnl_fmri_glm_64_goodSubjects_8906087.out -- Submitted batch job 8906087 
+----------------
+--- Running univariate_decoder_bms <-- a priori ROIs, with single-regressor GLMs => nothing (BIC-wise), suspicious
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8906323.out -- Submitted batch job 8906323 <-- nothing for top ROI, but yes for lower ROIs
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8906330.out -- Submitted batch job 8906330 <--- nothing
+----------------
+--- Running univariate_decoder_bms <--- ccnl_decode_regressor no prewhiten, no high pass filter => addres negative r's (e.g. see output/univariate_decoder_bms_8903700.out and output/univariate_decoder_bms_8903684.out and output/univariate_decoder_bms_8903691.out) -- the signs are all flipped!  => more or less same result as before => w t f
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910136.out -- Submitted batch job 8910136  <-- signs still weird!
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910143.out -- Submitted batch job 8910143
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910147.out -- Submitted batch job 8910147
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910154.out -- Submitted batch job 8910154
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910158.out -- Submitted batch job 8910158
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910165.out -- Submitted batch job 8910165
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910168.out -- Submitted batch job 8910168
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_8910174.out -- Submitted batch job 8910174
+----------------
+--- Running neurosynth_CV <-- whole brain with proper CV (across subj for lambda, across runs for fit & predict) => suspicious, pears_ps are all 0... double dipping / circular? run a sanity check, and double check code
+----------------
+neurosynth_CV.sh neurosynth_CV(\'RU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_9032505.out -- Submitted batch job 9032505 <-- crashed at 225; resuming (see neurosynth_CV_resume)
+neurosynth_CV.sh neurosynth_CV(\'TU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_9032509.out -- Submitted batch job 9032509 <-- same
+----------------
+--- Running univariate_decoder_bms <-- ERROR fuck.... xTU^, not TU, o/w gets VTU regressor too...well shit.... ... shit shit shit... all univariate_decoder analyses so far are bogus
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'xRU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034219.out -- Submitted batch job 9034219
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'xTU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034220.out -- Submitted batch job 9034220
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'xRU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034221.out -- Submitted batch job 9034221
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'xTU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034223.out -- Submitted batch job 9034223
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'xRU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034224.out -- Submitted batch job 9034224
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'xTU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034225.out -- Submitted batch job 9034225
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'xRU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034226.out -- Submitted batch job 9034226
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'xTU^\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034228.out -- Submitted batch job 9034228
+----------------
+--- Running univariate_decoder_bms <-- mixed effects with xTU^, etc (formerly fuck.... xTU^, not TU, o/w gets VTU regressor too...well shit.... ... shit shit shit... all univariate_decoder analyses so far are bogus)
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034668.out -- Submitted batch job 9034668 <-- precentral_L = 6383, precuneus_R = 6407 and occipital_mid_l = 6406
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034671.out -- Submitted batch job 9034671 <-- occipital_mid_l is at 6391
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034675.out -- Submitted batch job 9034675 <-- wow wtf lots are below 6400... 
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034678.out -- Submitted batch job 9034678 <-- frontal_mid_R_2, but nothing in left dlpfc...
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034682.out -- Submitted batch job 9034682 <-- most are below 6410, some are at 6393! promising
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034684.out -- Submitted batch job 9034684 <-- nothing, as expected (a couple at 6409)
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034686.out -- Submitted batch job 9034686 <-- last one is at 6406
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034688.out -- Submitted batch job 9034688 <-- last one is at 6399!
+----------------
+--- Running univariate_residuals_bms <-- residuals
+----------------
+univariate_residuals_bms.sh univariate_residuals_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036080.out -- Submitted batch job 9036080 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036086.out -- Submitted batch job 9036086
+univariate_residuals_bms.sh univariate_residuals_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036090.out -- Submitted batch job 9036090
+univariate_residuals_bms.sh univariate_residuals_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036092.out -- Submitted batch job 9036092 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036094.out -- Submitted batch job 9036094 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036097.out -- Submitted batch job 9036097
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036102.out -- Submitted batch job 9036102
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036105.out -- Submitted batch job 9036105 <-- nothing
+----------------
+--- Running univariate_decoder_bms <-- CANCELLED; must run ccnl_fmri_con first; GLM 64
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'RU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036347.out -- Submitted batch job 9036347
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'RU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036351.out -- Submitted batch job 9036351
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'TU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036355.out -- Submitted batch job 9036355
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'TU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036359.out -- Submitted batch job 9036359
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036362.out -- Submitted batch job 9036362
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036367.out -- Submitted batch job 9036367
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036370.out -- Submitted batch job 9036370
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9036376.out -- Submitted batch job 9036376
+----------------
+--- Running univariate_residuals_bms <-- CANCELLED -> must run ccnl_fmri_con first; res, GLM 64
+----------------
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'RU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036384.out -- Submitted batch job 9036384
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'RU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036387.out -- Submitted batch job 9036387
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'TU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036395.out -- Submitted batch job 9036395
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'TU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036402.out -- Submitted batch job 9036402
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036407.out -- Submitted batch job 9036407
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036410.out -- Submitted batch job 9036410
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036415.out -- Submitted batch job 9036415
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_9036418.out -- Submitted batch job 9036418
+----------------
+--- Running ccnl_fmri_con <-- GLM 64
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_9058926.out -- Submitted batch job 9058926
+----------------
+--- Running univariate_decoder_bms <-- ERROR rerunning fixed effects from paper w/o xTU^  decoding bug, praying to god that the TU result repros ... JK did intercept & flip_sign by accident, anyhoo...
+----------------
+-- univariate_decoder.sh         univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, false): output/univariate_decoder_7882719.out -- Submitted batch job 7882719 <-- repro; RLPFC LL but not BIC
+-- univariate_decoder.sh         univariate_decoder(36, \'RU\', 36, \'RU\', false, 1, 0, false, false, 100, 1, false): output/univariate_decoder_7215570.out -- Submitted batch job 7215570 <-- as expected (repro)
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263231.out -- Submitted batch job 10263231 <-- something's fucked; doesn't repro (oh duh intercept...)
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263234.out -- Submitted batch job 10263234
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263239.out -- Submitted batch job 10263239
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263241.out -- Submitted batch job 10263241
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263247.out -- Submitted batch job 10263247
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263251.out -- Submitted batch job 10263251
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263257.out -- Submitted batch job 10263257
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263261.out -- Submitted batch job 10263261
+----------------
+--- Running univariate_decoder_bms <-- GLM 64, mixed eff => nothing
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'RU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263520.out -- Submitted batch job 10263520 <-- temporal_pole_sup_R BIC = 6405, precentral & some other, lik test p-value
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'RU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263525.out -- Submitted batch job 10263525
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'TU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263530.out -- Submitted batch job 10263530
+univariate_decoder_bms.sh univariate_decoder_bms(64, \'TU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263536.out -- Submitted batch job 10263536 <-- nothing
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263538.out -- Submitted batch job 10263538 <-- almost all lik tests, BIC for one only
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263540.out -- Submitted batch job 10263540
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263544.out -- Submitted batch job 10263544
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_10263547.out -- Submitted batch job 10263547 <-- nothing
+----------------
+--- Running univariate_residuals_bms <-- GLM 64, mixed eff => nothing
+----------------
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'RU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263589.out -- Submitted batch job 10263589 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'RU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263594.out -- Submitted batch job 10263594
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'TU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263596.out -- Submitted batch job 10263596
+univariate_residuals_bms.sh univariate_residuals_bms(64, \'TU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263602.out -- Submitted batch job 10263602 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263603.out -- Submitted batch job 10263603 <-- nothing
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'badre\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263609.out -- Submitted batch job 10263609
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263611.out -- Submitted batch job 10263611
+univariate_residuals_bms.sh univariate_residuals_bms(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_residuals_bms_10263612.out -- Submitted batch job 10263612 <-- nothing
+----------------
+--- Running neurosynth_CV <-- FINISHED resuming 9032505 and 9032509 from where they left off => weird pears_ps = 0 everywhere => see fit_shit_repro.m
+----------------
+neurosynth_CV.sh neurosynth_CV_resume(\'RU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10273085.out -- Submitted batch job 10273085
+neurosynth_CV.sh neurosynth_CV_resume(\'TU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10273092.out -- Submitted batch job 10273092
+----------------
+--- Running univariate_decoder_bms <-- rerunning fixed effects w/ params from paper; see if TU repros (w/ correct decoding) => it doesn't... => paper is off; BUT it does repro with Badre's TU ROI (likelihood ratio test, ofc) => support for Badre's story!!! worse comes to worst, use prior ROIs...
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275241.out -- Submitted batch job 10275241 <-- p_comp = 0.04 as in paper
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275250.out -- Submitted batch job 10275250
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275256.out -- Submitted batch job 10275256
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275284.out -- Submitted batch job 10275284 <-- nothing... hot dayum
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275289.out -- Submitted batch job 10275289 <-- p_comp = 0.01
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275296.out -- Submitted batch job 10275296 <-- nothing, phew
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275313.out -- Submitted batch job 10275313 <-- nothing! yes!
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275317.out -- Submitted batch job 10275317 <-- p_comp = 0.002 for second ROI, which is almost identical as first ROI 
+----------------
+--- Running neurosynth_CV_random <-- random betas, see if still all p's = 0... (testing for circularity) => it does repro; see fit_shit_repro.m locally
+----------------
+neurosynth_CV.sh neurosynth_CV_random(\'RU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10393664.out -- Submitted batch job 10393664
+neurosynth_CV.sh neurosynth_CV_random(\'TU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10393666.out -- Submitted batch job 10393666
+----------------
+--- Running univariate_decoder_refactored -> fixed effects, sanity compare w/ output/univariate_decoder_bms_10275284.out => yes it repros
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10533534.out -- Submitted batch job 10533534
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10533541.out -- Submitted batch job 10533541
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10533561.out -- Submitted batch job 10533561
+----------------
+--- Running univariate_decoder_CV -> mixed eff; sucks; but this was using random effects to get the best lambda (i.e. fitting for each subject separately, but very low power => probs got shitty estimates); using mixed effects now (which takes forever tho...)
+----------------
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'RU\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547086.out -- Submitted batch job 10547086 <-- nothing; but pears_rs are positive
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'RU\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547090.out -- Submitted batch job 10547090
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'TU\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547094.out -- Submitted batch job 10547094
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'TU\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547095.out -- Submitted batch job 10547095 <-- frontal_mid_2_R BIC = 6370 << 6410 INTERESTING but nothing else
+univariate_decoder_CV.sh univariate_decoder_CV(-1, \'badre\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547102.out -- Submitted batch job 10547102 <-- some have good BICs around 6400 
+univariate_decoder_CV.sh univariate_decoder_CV(-1, \'badre\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547105.out -- Submitted batch job 10547105
+univariate_decoder_CV.sh univariate_decoder_CV(-1, \'dlpfc\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547110.out -- Submitted batch job 10547110
+univariate_decoder_CV.sh univariate_decoder_CV(-1, \'dlpfc\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10547115.out -- Submitted batch job 10547115 <-- nothing
+----------------
+--- Running univariate_decoder_CV_randomeff <-- set lambda = 1 for all as sanity check; compare w/ original  => GREAT works; now onto real deal
+----------------
+--- compare w/ output/univariate_decoder_bms_9034668.out, etc
+univariate_decoder_CV_randomeff.sh univariate_decoder_CV_randomeff(36, \'RU\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_randomeff_10635242.out -- Submitted batch job 10635242 <---- SAME as output/univariate_decoder_bms_9034668.out => phew.... ok
+univariate_decoder_CV_randomeff.sh univariate_decoder_CV_randomeff(36, \'TU\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_randomeff_10635243.out -- Submitted batch job 10635243
+univariate_decoder_CV_randomeff.sh univariate_decoder_CV_randomeff(-1, \'badre\', 36, \'RU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_randomeff_10635244.out -- Submitted batch job 10635244
+univariate_decoder_CV_randomeff.sh univariate_decoder_CV_randomeff(-1, \'dlpfc\', 36, \'TU\', false, 2, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_randomeff_10635246.out -- Submitted batch job 10635246
+----------------
+--- Running univariate_decoder_CV <-- TIMEOUT piloting the real deal => 2 days per ROI geezus
+----------------
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'RU\', 36, \'RU\', false, 0, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10638886.out -- Submitted batch job 10638886
+----------------
+--- Running univariate_decoder_both_badre <-- follow up on Badre RU & TU ROIs -- they independently improve choice predictions? => YES THEY DO !!! though need to re-run b/c loaded the wrong single-regressor files
+----------------
+univariate_decoder_both_badre.sh univariate_decoder_both_badre(36, 1, 2, false, 1, 2, false, false, 100): output/univariate_decoder_both_badre_10874447.out -- Submitted batch job 10874447 
+----------------
+--- Running univariate_decoder_refactored <-- try RU-only and TU-only GLMs, fixed effects (as in paper) => pears_rs still negative... SO WEIRD
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(40, \'TU\', 40, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10875844.out -- Submitted batch job 10875844 <-- cerebellum
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 39, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10875849.out -- Submitted batch job 10875849 <-- pears_rs still negative ... p_comp = 0.002
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 40, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10875855.out -- Submitted batch job 10875855 <-- pears_rs negative... p_comp = 0.04 (second), p = 0.1 last one..
+----------------
+--- Running ccnl_fmri_glm for subjects 1 <-- WRONG ... 36 not 64 goddamnit... #late@night ... because I fucked up and overwrote subj1 in GLM 36...
+----------------
+ccnl_fmri_glm.sh for GLM 64, subjects 1: output/ccnl_fmri_glm_64_goodSubjects_10884477.out -- Submitted batch job 10884477
+----------------
+--- Running ccnl_fmri_glm for subjects 1 <-- because I fucked up and overwrote subj1 in GLM 36...
+----------------
+ccnl_fmri_glm.sh for GLM 36, subjects 1: output/ccnl_fmri_glm_36_goodSubjects_10889060.out -- Submitted batch job 10889060
+----------------
+--- Running ccnl_fmri_con <-- con 36
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_10931247.out -- Submitted batch job 10931247
+----------------
+--- Running ccnl_fmri_glm FIR for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm_fir.sh for GLM 36, subjects 23 31 11 18 20 8 30 1 29 24 16 10 14 26 28 27 22 17 12 5 19 4 7 9 2 15 3 25 13 21 6: output/ccnl_fmri_glm_36_goodSubjects_10937587.out -- Submitted batch job 10937587
+----------------
+--- Running univariate_decoder_refactored <-- sanity after reran GLM 36 for subj 1
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10937885.out -- Submitted batch job 10937885 p = 0.01 as exptected
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10937893.out -- Submitted batch job 10937893 <-- p = 0.002, as expected
+----------------
+--- Running univariate_decoder_refactored <-- fixed effects as in paper, but w/ flip_sign => nothing => ditch fixed effects
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937926.out -- Submitted batch job 10937926 <-- nothing (+ only)
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937932.out -- Submitted batch job 10937932
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937938.out -- Submitted batch job 10937938
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937940.out -- Submitted batch job 10937940 <-- nothing 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937946.out -- Submitted batch job 10937946 <-- nothing :(
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937950.out -- Submitted batch job 10937950
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937959.out -- Submitted batch job 10937959
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937969.out -- Submitted batch job 10937969 <-- p = 0.002
+----------------
+--- Running univariate_decoder_refactored <-- mixed effects w/o intercept (for Sam), w/ flipped sign => promising!!!!!!!!!!!! BIC for RU badre ROI, and potentially TU DLPFC the last badre ROI
+---------------- 
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937988.out -- Submitted batch job 10937988 <-- BIC (tiny diff) and p_comp
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937992.out -- Submitted batch job 10937992
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10937999.out -- Submitted batch job 10937999
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938004.out -- Submitted batch job 10938004
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938011.out -- Submitted batch job 10938011 <-- BIC = 6422.7 vs. 6427.4 !!! AND p_comp ofc...
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938020.out -- Submitted batch job 10938020 <-- NOTHING!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938027.out -- Submitted batch job 10938027 <-- p = 0.03 but bad BIC!!  ...and can also decode RU from fourth one sheeit
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938031.out -- Submitted batch job 10938031 <-- p = 0.02 but bad BIC... :( not the fourth one though! BIC = 6420.2 vs. 6427.4
+----------------
+--- Running univariate_decoder_refactored <-- mixed eff w/o intercept and no sign flip (just in case) => DO flip sign (as in paper) AND DO use mixed effects
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938221.out -- Submitted batch job 10938221
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938226.out -- Submitted batch job 10938226
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938233.out -- Submitted batch job 10938233
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938239.out -- Submitted batch job 10938239
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938251.out -- Submitted batch job 10938251 <-- p = 0.003 but not BIC => DO flip the sign
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938259.out -- Submitted batch job 10938259
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938265.out -- Submitted batch job 10938265
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10938272.out -- Submitted batch job 10938272
+----------------
+--- Running univariate_decoder_CV <-- piloting the real deal => fail..... w t f.... fuck CV for lambda, it's super slow and gives us nothing
+----------------
+univariate_decoder_CV.sh univariate_decoder_CV(36, \'RU\', 36, \'RU\', false, 0, true, false, 100, 1, true, true, false): output/univariate_decoder_CV_10938342.out -- Submitted batch job 10938342 <-- p = 0.07, BIC = 6423
+----------------
+--- Running neurosynth_bms <-- no CV whatsoever; to see if we get something similar to ridge() -- btw it's just as slow as neurosynth_CV; might as well only run CV
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'fitrlinear_ridge\', false, false, false, false, true): output/neurosynth_bms_10976806.out -- Submitted batch job 10976806
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'fitrlinear_ridge\', false, false, false, false, true): output/neurosynth_bms_10976811.out -- Submitted batch job 10976811
+----------------
+--- Running neurosynth_CV <-- fitrlinear (faster, better than ridge; remember -- lasso is bad for correlated predictors)
+----------------
+neurosynth_CV.sh neurosynth_CV(\'RU\', false, 0, true, true, {\'fitrlinear_CV_1\', \'fitrlinear_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10980784.out -- Submitted batch job 10980784
+neurosynth_CV.sh neurosynth_CV(\'TU\', false, 0, true, true, {\'fitrlinear_CV_1\', \'fitrlinear_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10980786.out -- Submitted batch job 10980786
+----------------
+--- Running cross_subject <-- conjunction ROI (from separate GLMs), betas from separate GLMs, see if betas <--> w's; try mean & peak voxel => no RU, YES for TU !!!!!!!!!!!!!!!!!!!!! and for V (peak voxel) !!!!!!!! => maybe use separate GLMs
+----------------
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 39, \'RU\', 2, false, 100, false): output/cross_subject_10987647.out -- Submitted batch job 10987647 <-- r = 0.2, p = 0.8
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 40, \'TU\', 2, false, 100, false): output/cross_subject_10987650.out -- Submitted batch job 10987650 <-- r = 0.5, p = 0.003 !!!!!!!!!!!!!!!!!
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 41, \'V\', 2, false, 100, false): output/cross_subject_10987653.out -- Submitted batch job 10987653 <-- r = -0.3, p = 0.06
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 39, \'RU\', 2, false, 100, false, true): output/cross_subject_10987658.out -- Submitted batch job 10987658 <-- r = 0.01, p = 0.9
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 40, \'TU\', 2, false, 100, false, true): output/cross_subject_10987661.out -- Submitted batch job 10987661 <-- r = 0.5, p = 0.003 !!!!!!!!!!!!!!!!!!!!
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 41, \'V\', 2, false, 100, false, true): output/cross_subject_10987665.out -- Submitted batch job 10987665 <-- r = -0.4,  p = 0.05 !!!!!!!!!!!!!!!!!!!!!!!!
+----------------
+--- Running cross_subject <-- conjunction ROI (from separate GLMs), betas from GLM 36, see if betas <--> w's; try mean & peak voxel => V only, however keep in mind the conjunction ROI was made using separate GLMs => maybe use separate GLMs
+----------------
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'RU\', 2, false, 100, false): output/cross_subject_10987806.out -- Submitted batch job 10987806 <-- r = 0.08, p = 0.6 
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'TU\', 2, false, 100, false): output/cross_subject_10987817.out -- Submitted batch job 10987817 <-- r = -0.0012, p = 0.9
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'V\', 2, false, 100, false): output/cross_subject_10987823.out -- Submitted batch job 10987823 <-- r = -0.4, p = 0.01 !!!!!!!!!!!!!!!!
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'RU\', 2, false, 100, false, true): output/cross_subject_10987833.out -- Submitted batch job 10987833 <-- r = 0.1, p = 0.48
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'TU\', 2, false, 100, false, true): output/cross_subject_10987838.out -- Submitted batch job 10987838 <-- r = 0.05, p = 0.7
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, \'V\', 2, false, 100, false, true): output/cross_subject_10987847.out -- Submitted batch job 10987847 <-- r = -0.3, p = 0.1
+----------------
+--- Running main_effect <-- looking for badre DLPFC main effect => found it when no V/TU, or when TU alone => maybe use separate GLMs
+----------------
+main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 1): output/main_effect_11111656.out -- Submitted batch job 11111656 <-- p = 0.002
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 1): output/main_effect_11111657.out -- Submitted batch job 11111657 <-- p = 0.08 :( but last one p = 0.014, p = 0.042 with correction for 3 ROIs
+main_effect.sh main_effect(-1, \'badre\', 39, \'RU\', false, 100, 1): output/main_effect_11111658.out -- Submitted batch job 11111658 <-- p = 0.004
+main_effect.sh main_effect(-1, \'dlpfc\', 40, \'TU\', false, 100, 1): output/main_effect_11111659.out -- Submitted batch job 11111659 <-- FUCK YEAH! p = 0.0002 => |RU| and TU ARE correlated
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1): output/main_effect_11111660.out -- Submitted batch job 11111660 <-- p = 0.002 
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1): output/main_effect_11111661.out -- Submitted batch job 11111661 <-- p = 0.07 :( 
+main_effect.sh main_effect(-1, \'badre\', 46, \'RU\', false, 100, 1): output/main_effect_11111662.out -- Submitted batch job 11111662 <- p = 0.002
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'TU\', false, 100, 1): output/main_effect_11111663.out -- Submitted batch job 11111663 <- p = 0.1 :( => NEED choice_onset
+main_effect.sh main_effect(-1, \'badre\', 56, \'RU\', false, 100, 1): output/main_effect_11111664.out -- Submitted batch job 11111664 <- p = 0.003 =>  minimalist maybe ok
+main_effect.sh main_effect(-1, \'badre\', 62, \'RU\', false, 100, 1): output/main_effect_11111666.out -- Submitted batch job 11111666 <- p = 0.002
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'TU\', false, 100, 1): output/main_effect_11111667.out -- Submitted batch job 11111667 <- p = 0.1 => no RPEs please
+main_effect.sh main_effect(-1, \'badre\', 64, \'RU\', false, 100, 1): output/main_effect_11111668.out -- Submitted batch job 11111668 <- p = 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'TU\', false, 100, 1): output/main_effect_11111669.out -- Submitted batch job 11111669 <- p = 0.005 => FUCK V/TU!!!! <-- this is it 
+----------------
+--- Running ccnl_fmri_con <-- GLM 64
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_11118093.out -- Submitted batch job 11118093
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 65, subjects 9 30 28 29 4 18 13 15 17 21 26 19 11 3 27 12 31 23 25 8 14 20 16 22 1 6 24 2 7 10 5: output/ccnl_fmri_glm_65_goodSubjects_11118375.out -- Submitted batch job 11118375
+----------------
+--- Running univariate_decoder_refactored <-- GLM 64, fixed eff (trying to get badre's DLPFC result) => NOPE => keep V/TU
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118445.out -- Submitted batch job 11118445
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118446.out -- Submitted batch job 11118446
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118447.out -- Submitted batch job 11118447
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118448.out -- Submitted batch job 11118448
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118449.out -- Submitted batch job 11118449 <-- p = 0.01 lame
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118452.out -- Submitted batch job 11118452
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118454.out -- Submitted batch job 11118454
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_11118457.out -- Submitted batch job 11118457 <-- nothing
+----------------
+--- Running main_effect <-- controls => good!
+----------------
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 1): output/main_effect_11118769.out -- Submitted batch job 11118769 <-- nothing!
+main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 1): output/main_effect_11118771.out -- Submitted batch job 11118771 <-- nothing!
+main_effect.sh main_effect(-1, \'dlpfc\', 39, \'RU\', false, 100, 1): output/main_effect_11118772.out -- Submitted batch job 11118772 <-- nothing!
+main_effect.sh main_effect(-1, \'badre\', 40, \'TU\', false, 100, 1): output/main_effect_11118773.out -- Submitted batch job 11118773 <-- nothing!
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'RU\', false, 100, 1): output/main_effect_11118774.out -- Submitted batch job 11118774 <-- nothing
+main_effect.sh main_effect(-1, \'badre\', 45, \'TU\', false, 100, 1): output/main_effect_11118775.out -- Submitted batch job 11118775 <-- nothing
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'RU\', false, 100, 1): output/main_effect_11118779.out -- Submitted batch job 11118779
+main_effect.sh main_effect(-1, \'badre\', 46, \'TU\', false, 100, 1): output/main_effect_11118783.out -- Submitted batch job 11118783
+main_effect.sh main_effect(-1, \'dlpfc\', 56, \'RU\', false, 100, 1): output/main_effect_11118790.out -- Submitted batch job 11118790
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'RU\', false, 100, 1): output/main_effect_11118794.out -- Submitted batch job 11118794
+main_effect.sh main_effect(-1, \'badre\', 62, \'TU\', false, 100, 1): output/main_effect_11118797.out -- Submitted batch job 11118797
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'RU\', false, 100, 1): output/main_effect_11118799.out -- Submitted batch job 11118799 <- nothing!
+main_effect.sh main_effect(-1, \'badre\', 64, \'TU\', false, 100, 1): output/main_effect_11118802.out -- Submitted batch job 11118802 <- nothing!
+----------------
+--- Running univariate_decoder_refactored <-- 64, mixed eff, flip_sign => NOPE => keep V/TU
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119030.out -- Submitted batch job 11119030
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119031.out -- Submitted batch job 11119031
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119032.out -- Submitted batch job 11119032
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119033.out -- Submitted batch job 11119033
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119035.out -- Submitted batch job 11119035 <-- p = 0.0001 but not BIC
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119036.out -- Submitted batch job 11119036
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119037.out -- Submitted batch job 11119037
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119038.out -- Submitted batch job 11119038 <-- p of last = 0.01 but not BIC
+----------------
+--- Running univariate_decoder_refactored <-- 64, mixed eff, flip sign, lambda = 1/40 (fitrlinear) => NOPE => lambda = 1
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119045.out -- Submitted batch job 11119045
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'RU\', 64, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119046.out -- Submitted batch job 11119046
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119047.out -- Submitted batch job 11119047
+univariate_decoder_refactored.sh univariate_decoder_refactored(64, \'TU\', 64, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119048.out -- Submitted batch job 11119048
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119049.out -- Submitted batch job 11119049 <-- p = 0.0007 but not BIC
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 64, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119050.out -- Submitted batch job 11119050
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119052.out -- Submitted batch job 11119052
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 64, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11119053.out -- Submitted batch job 11119053 <-- nothing :( p of last = 0.01 but not BIC
+----------------
+--- Running cross_subj_lik_bic <-- conj, BIC <-> lik => GOT EM!
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, 0, false, 100, false): output/cross_subj_lik_bic_11120792.out -- Submitted batch job 11120792 <- p = 0.02, yes!
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 64, 0, false, 100, false): output/cross_subj_lik_bic_11120794.out -- Submitted batch job 11120794 <- p = same
+----------------
+--- Running cross_subj_perf_bic <-- conj, BIC <-> perf => GOT EM!
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 36, 0, false, 100, false): output/cross_subj_perf_bic_11120843.out -- Submitted batch job 11120843 <- p = 0.007!
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 64, 0, false, 100, false): output/cross_subj_perf_bic_11120845.out -- Submitted batch job 11120845 <- same
+----------------
+--- Running univariate_decoder_refactored <-- 36, mixed eff, flip sign, lambda = 1/40 (fitrlinear) => NOPE => lambda = 1
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122839.out -- Submitted batch job 11122839
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122853.out -- Submitted batch job 11122853
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122855.out -- Submitted batch job 11122855
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122864.out -- Submitted batch job 11122864
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122873.out -- Submitted batch job 11122873 <-- p = 0.0001, BIC is same
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122890.out -- Submitted batch job 11122890 <-- nothing
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'RU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122899.out -- Submitted batch job 11122899 <-- last one UGH BIC = 6242.4 < 6427.4 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1/40, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11122910.out -- Submitted batch job 11122910 <-- nothing!!!
+----------------
+--- Running ccnl_fmri_con <-- 65
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_11226118.out -- Submitted batch job 11226118
+----------------
+--- Running univariate_decoder_refactored <-- try w/ 39 and 40 mixed eff, no intercept, flip_sign (b/c reviewers will want it) => nothing for TU => don't use separate GLMs; use GLM 36
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(39, \'RU\', 39, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227936.out -- Submitted batch job 11227936 <-- top one (L RLPFC but too small, 68 vox only)
+univariate_decoder_refactored.sh univariate_decoder_refactored(40, \'RU\', 40, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227938.out -- Submitted batch job 11227938
+univariate_decoder_refactored.sh univariate_decoder_refactored(39, \'TU\', 39, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227941.out -- Submitted batch job 11227941
+univariate_decoder_refactored.sh univariate_decoder_refactored(40, \'TU\', 40, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227944.out -- Submitted batch job 11227944 <-- Occipital_mid_L, Cerebellum_8
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 39, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227946.out -- Submitted batch job 11227946 <-- BIC = 6418 < 6427!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 40, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227949.out -- Submitted batch job 11227949 <-- nothing
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 39, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227952.out -- Submitted batch job 11227952 <-- BIC = 6419 :( non specific
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 40, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11227955.out -- Submitted batch job 11227955 <-- nothing :(
+----------------
+--- Running cross_subj_lik_bic <-- all conj => promising; let's see b<->w
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'conj_3\', 36, 0, false, 100, false): output/cross_subj_lik_bic_11231911.out -- Submitted batch job 11231911 <-- almost all p < 0.05; but not after correction
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'conj_36\', 36, 0, false, 100, false): output/cross_subj_lik_bic_11231923.out -- Submitted batch job 11231923 <-- almost all p < 0.05 (circularity?), none after correction
+----------------
+--- Running cross_subj_perf_bic <-- all conj => even more promising; let's see b<->w
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'conj_3\', 36, 0, false, 100, false): output/cross_subj_perf_bic_11231978.out -- Submitted batch job 11231978 <-- all p < 0.05, after corr, 3 of them (including our fav one!)
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'conj_36\', 64, 0, false, 100, false): output/cross_subj_perf_bic_11231983.out -- Submitted batch job 11231983 <-- all p < 0.05, after corr, 2 of them
+----------------
+--- Running cross_subject <-- beta <-> w, all conj, separate GLMs => nothing for RU; TU nonspecific, V somewhat specific (with peak voxel) but r < 0.... => don't use separate GLMs, use GLM 36
+----------------
+cross_subject.sh cross_subject(-1, \'conj_3\', 39, \'RU\', 2, false, 100, false): output/cross_subject_11234885.out -- Submitted batch job 11234885 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_3\', 40, \'TU\', 2, false, 100, false): output/cross_subject_11234889.out -- Submitted batch job 11234889 <-- all of them, even after corr!! (r's > 0)
+cross_subject.sh cross_subject(-1, \'conj_3\', 41, \'V\', 2, false, 100, false): output/cross_subject_11234893.out -- Submitted batch job 11234893 <-- most < 0.05, but none after corr (r < 0??)
+cross_subject.sh cross_subject(-1, \'conj_3\', 39, \'RU\', 2, false, 100, false, true): output/cross_subject_11234897.out -- Submitted batch job 11234897 <-- nothing :(
+cross_subject.sh cross_subject(-1, \'conj_3\', 40, \'TU\', 2, false, 100, false, true): output/cross_subject_11234900.out -- Submitted batch job 11234900 <-- all of them, crazy small p-values! => use peaks!
+cross_subject.sh cross_subject(-1, \'conj_3\', 41, \'V\', 2, false, 100, false, true): output/cross_subject_11234905.out -- Submitted batch job 11234905 <-- most < 0.05, one is p = 0.01 after corr
+----------------
+--- Running cross_subject <-- beta <-> w, all conj, GLM 36 => nothing => try peak voxel
+----------------
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'RU\', 2, false, 100, false): output/cross_subject_11234942.out -- Submitted batch job 11234942 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'TU\', 2, false, 100, false): output/cross_subject_11234948.out -- Submitted batch job 11234948 <-- nothing?
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'V\', 2, false, 100, false): output/cross_subject_11234950.out -- Submitted batch job 11234950 <-- some p < 0.05, but not after corr (r < 0)
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'RU\', 2, false, 100, false, true): output/cross_subject_11234954.out -- Submitted batch job 11234954 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'TU\', 2, false, 100, false, true): output/cross_subject_11234957.out -- Submitted batch job 11234957 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_3\', 36, \'V\', 2, false, 100, false, true): output/cross_subject_11234962.out -- Submitted batch job 11234962 <-- nothing ...
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'RU\', 2, false, 100, false): output/cross_subject_11234965.out -- Submitted batch job 11234965 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'TU\', 2, false, 100, false): output/cross_subject_11234969.out -- Submitted batch job 11234969 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'V\', 2, false, 100, false): output/cross_subject_11234972.out -- Submitted batch job 11234972 <-- some p < 0.05, but not w/ corr
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'RU\', 2, false, 100, false, true): output/cross_subject_11234976.out -- Submitted batch job 11234976 <-- nothing
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'TU\', 2, false, 100, false, true): output/cross_subject_11234978.out -- Submitted batch job 11234978 <-- nothing 
+cross_subject.sh cross_subject(-1, \'conj_36\', 36, \'V\', 2, false, 100, false, true): output/cross_subject_11234981.out -- Submitted batch job 11234981 <-- nothing
+----------------
+--- Running univariate_decoder_refactored <-- 45, mixed, flip, inter =====> YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240209.out -- Submitted batch job 11240209 <-- Precentral_L BIC = 6388, others suck
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240215.out -- Submitted batch job 11240215
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240222.out -- Submitted batch job 11240222
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240228.out -- Submitted batch job 11240228 <-- one (32 42 26) is BIC = 6389
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240234.out -- Submitted batch job 11240234 <-- BIC = 6406 < 6410
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240239.out -- Submitted batch job 11240239 <-- BICs > 6410 !!!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240245.out -- Submitted batch job 11240245 <-- BICs > 6410 !!! YAY
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240252.out -- Submitted batch job 11240252 <-- BIC of 2nd one (ours!!!) = 6358 << 6410 !!! wow
+----------------
+--- Running univariate_decoder_refactored <-- 45, mixed, flip, no inter ---> W T F  don't get same TU result as w/ intercept => BUT you should use intercept b/c BIC w/ = 6410 vs. BIC w/o = 6427 => ppl clearly have a bias....
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240331.out -- Submitted batch job 11240331
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240338.out -- Submitted batch job 11240338
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240344.out -- Submitted batch job 11240344
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240348.out -- Submitted batch job 11240348
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240356.out -- Submitted batch job 11240356 <-- BIC = 6418 vs. 6427
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240363.out -- Submitted batch job 11240363 <-- nothing
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240370.out -- Submitted batch job 11240370 <-- BIC of last one = 6425 < 6427... :(
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11240376.out -- Submitted batch job 11240376 <-- BIC (of last one) = 6419 vs. 6427; WEIRD BIC of 2nd one = 6436... fuck
+----------------
+--- Running univariate_decoder_refactored <-- VTU, mixed, flip, no inter => nothing; it's a nice control tho => RU decoding is not just noise
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241230.out -- Submitted batch job 11241230 <-- BICs >= 6427, but most p-values are < 0.01
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241241.out -- Submitted batch job 11241241 <-- BICs > 6427
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241251.out -- Submitted batch job 11241251 <-- BICs >= 6427
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241260.out -- Submitted batch job 11241260 <-- BICs > 6427
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241268.out -- Submitted batch job 11241268 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241278.out -- Submitted batch job 11241278 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241288.out -- Submitted batch job 11241288 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241296.out -- Submitted batch job 11241296 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(46, \'RU\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241307.out -- Submitted batch job 11241307 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(46, \'TU\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241316.out -- Submitted batch job 11241316 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241322.out -- Submitted batch job 11241322 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11241328.out -- Submitted batch job 11241328 <- nope
+----------------
+--- Running univariate_decoder_refactored <-- VTU, mixed, flip, inter => nothing; it's a control tho
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'RU\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241438.out -- Submitted batch job 11241438 <-- 6409...
+univariate_decoder_refactored.sh univariate_decoder_refactored(36, \'TU\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241448.out -- Submitted batch job 11241448 <-- 6410...
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241453.out -- Submitted batch job 11241453 <-- 6410
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241465.out -- Submitted batch job 11241465 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241482.out -- Submitted batch job 11241482 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241490.out -- Submitted batch job 11241490 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241502.out -- Submitted batch job 11241502 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241509.out -- Submitted batch job 11241509 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(46, \'RU\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241524.out -- Submitted batch job 11241524 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(46, \'TU\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241532.out -- Submitted batch job 11241532 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241539.out -- Submitted batch job 11241539 <- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 46, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11241547.out -- Submitted batch job 11241547 <- nope
+----------------
+--- Running univariate_decoder_refactored <-- conjunctions, mixed, flip, no inter => precentral for RU, nothing for TU => try peaks
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250654.out -- Submitted batch job 11250654 <-- precentral! 6408 << 6427! some others p good too -- 6415 and 6417, 6422
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250658.out -- Submitted batch job 11250658 <-- nothing UGH
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 39, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250662.out -- Submitted batch job 11250662 <-- nothing; precentral = 6408 => single-regressor GLMs not superb 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 40, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250666.out -- Submitted batch job 11250666 <- nothing
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250670.out -- Submitted batch job 11250670 <-- precentral!! 6414 << 6427 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250678.out -- Submitted batch job 11250678 <-- nope UGH
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250682.out -- Submitted batch job 11250682 <-- precentral 6397 << 6427!!!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250686.out -- Submitted batch job 11250686 <-- nope :(
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250690.out -- Submitted batch job 11250690 <-- some are < 6427
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11250693.out -- Submitted batch job 11250693 <- nope :(
+----------------
+--- Running univariate_decoder_refactored <-- 39 and 40, mixed, flip_sign, WITH intercept (just in case) => nah 
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(39, \'RU\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11386998.out -- Submitted batch job 11386998
+univariate_decoder_refactored.sh univariate_decoder_refactored(40, \'RU\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387001.out -- Submitted batch job 11387001
+univariate_decoder_refactored.sh univariate_decoder_refactored(39, \'TU\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387005.out -- Submitted batch job 11387005
+univariate_decoder_refactored.sh univariate_decoder_refactored(40, \'TU\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387009.out -- Submitted batch job 11387009
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387012.out -- Submitted batch job 11387012 <-- 6407 < 6410
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387016.out -- Submitted batch job 11387016
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387018.out -- Submitted batch job 11387018
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11387023.out -- Submitted batch job 11387023 <-- nothing :(
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 66, subjects 2 4 15 17 30 9 18 8 26 27 23 29 31 1 3 21 10 28 25 22 12 20 6 13 19 7 24 11 14 5 16: output/ccnl_fmri_glm_66_goodSubjects_11408266.out -- Submitted batch job 11408266
+----------------
+--- Running main_effect <-- 66 badre => nah for TU...
+----------------
+main_effect.sh main_effect(-1, \'badre\', 66, \'RU\', false, 100, 1): output/main_effect_11506008.out -- Submitted batch job 11506008 <-- p = 0.002
+main_effect.sh main_effect(-1, \'badre\', 66, \'TU\', false, 100, 1): output/main_effect_11506011.out -- Submitted batch job 11506011
+main_effect.sh main_effect(-1, \'dlpfc\', 66, \'RU\', false, 100, 1): output/main_effect_11506012.out -- Submitted batch job 11506012
+main_effect.sh main_effect(-1, \'dlpfc\', 66, \'TU\', false, 100, 1): output/main_effect_11506014.out -- Submitted batch job 11506014 <-- p = 0.1 for top, p = 0.01 (uncorr) for last one
+----------------
+--- Running ccnl_fmri_con <-- 66
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_11506398.out -- Submitted batch job 11506398
+----------------
+--- Running univariate_decoder_refactored <-- 66 badre, mixed, flip, inter on => nope TU
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 66, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536617.out -- Submitted batch job 11536617
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 66, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536620.out -- Submitted batch job 11536620
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 66, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536622.out -- Submitted batch job 11536622
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 66, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536645.out -- Submitted batch job 11536645 <-- nah...
+----------------
+--- Running univariate_decoder_refactored <-- 66 badre, mixed, flip, inter off => nope TU
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 66, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11536673.out -- Submitted batch job 11536673 <-- BIC = 6417
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 66, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11536678.out -- Submitted batch job 11536678
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 66, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11536702.out -- Submitted batch job 11536702
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 66, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11536703.out -- Submitted batch job 11536703 <-- nope
+----------------
+--- Running univariate_decoder_refactored <-- conjunctions, mixed, flip, inter => struggs nothing for TU, except maybe in GLM 36 but probs a fluke
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536893.out -- Submitted batch job 11536893 <-- 6398 < 6410 for precentral (#1); 6401 for #3; 6407 for #5 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536897.out -- Submitted batch job 11536897 <-- 6406 for #5 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 39, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536906.out -- Submitted batch job 11536906 <-- nah... => use GLM w/ all for decoding
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 40, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536907.out -- Submitted batch job 11536907 <-- nah
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536909.out -- Submitted batch job 11536909 <-- 6402 for #1, 6405 for #3
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536910.out -- Submitted batch job 11536910 <-- nah... shit
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536911.out -- Submitted batch job 11536911 <-- 6389 for #1
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536912.out -- Submitted batch job 11536912 <-- nah
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536914.out -- Submitted batch job 11536914 <-- 6396 for #2 , 6400 for #8
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536917.out -- Submitted batch job 11536917 <-- nah... 
+----------------
+--- Running univariate_decoder_refactored <-- V/TU, conj, mixed, flip, inter  => nope
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536987.out -- Submitted batch job 11536987 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536989.out -- Submitted batch job 11536989 <-- npoe
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536990.out -- Submitted batch job 11536990 <-- jk no VTU here
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11536993.out -- Submitted batch job 11536993
+----------------
+--- Running univariate_decoder_refactored <-- V/TU, conj, mixed, flip, no inter => ditch VTU
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11537080.out -- Submitted batch job 11537080 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 45, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11537081.out -- Submitted batch job 11537081 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_3\', 64, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11537082.out -- Submitted batch job 11537082 <-- error, no VTU 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'conj_36\', 36, \'VTU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_11537085.out -- Submitted batch job 11537085 <-- nope
+----------------
+--- Running main_effect <-- whyyyy is TU not significant in the badre dlpfc roi... => because of xTU^ again .................... O M G ...........................
+----------------
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1, 15): output/main_effect_11562799.out -- Submitted batch job 11562799
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1, 15): output/main_effect_11562800.out -- Submitted batch job 11562800
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1, 5): output/main_effect_11562802.out -- Submitted batch job 11562802
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1, 5): output/main_effect_11562803.out -- Submitted batch job 11562803 <-- 0.07 fuck again...
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1, 1): output/main_effect_11562804.out -- Submitted batch job 11562804
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1, 1): output/main_effect_11562805.out -- Submitted batch job 11562805
+
+
+REDOING ALL main_effect, cross_subject variants, etc.......... sheeeeit
+
+----------------
+--- Running main_effect <-- xTU^ controls => nothing, as expected
+----------------
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 1): output/main_effect_11563343.out -- Submitted batch job 11563343 <-- nothing
+main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 1): output/main_effect_11563344.out -- Submitted batch job 11563344 <-- nothing
+main_effect.sh main_effect(-1, \'dlpfc\', 39, \'RU\', false, 100, 1): output/main_effect_11563345.out -- Submitted batch job 11563345 <-- n
+main_effect.sh main_effect(-1, \'badre\', 40, \'TU\', false, 100, 1): output/main_effect_11563346.out -- Submitted batch job 11563346 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'RU\', false, 100, 1): output/main_effect_11563347.out -- Submitted batch job 11563347 <-- n
+main_effect.sh main_effect(-1, \'badre\', 45, \'TU\', false, 100, 1): output/main_effect_11563348.out -- Submitted batch job 11563348 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'RU\', false, 100, 1): output/main_effect_11563349.out -- Submitted batch job 11563349 <-- n
+main_effect.sh main_effect(-1, \'badre\', 46, \'TU\', false, 100, 1): output/main_effect_11563350.out -- Submitted batch job 11563350 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 56, \'RU\', false, 100, 1): output/main_effect_11563351.out -- Submitted batch job 11563351 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'RU\', false, 100, 1): output/main_effect_11563352.out -- Submitted batch job 11563352 <-- n
+main_effect.sh main_effect(-1, \'badre\', 62, \'TU\', false, 100, 1): output/main_effect_11563353.out -- Submitted batch job 11563353 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'RU\', false, 100, 1): output/main_effect_11563354.out -- Submitted batch job 11563354 <-- n
+main_effect.sh main_effect(-1, \'badre\', 64, \'TU\', false, 100, 1): output/main_effect_11563355.out -- Submitted batch job 11563355 <-- n
+----------------
+--- Running cross_subject <-- xTU, 45 => win some lose some, nothing spectacular
+----------------
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'RU\', 2, false, 100, false): output/cross_subject_11563472.out -- Submitted batch job 11563472 <-- n
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'TU\', 2, false, 100, false): output/cross_subject_11563473.out -- Submitted batch job 11563473 <-- p=0.03 for Precentral
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'V\', 2, false, 100, false): output/cross_subject_11563476.out -- Submitted batch job 11563476 <-- p = 0.01 for precentral
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'RU\', 2, false, 100, false, true): output/cross_subject_11563477.out -- Submitted batch job 11563477 <-- n
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'TU\', 2, false, 100, false, true): output/cross_subject_11563479.out -- Submitted batch job 11563479 <-- p = 0.01 for precentral
+cross_subject.sh cross_subject(-1, \'conj_3\', 45, \'V\', 2, false, 100, false, true): output/cross_subject_11563480.out -- Submitted batch job 11563480 <-- p = 0.06 for precentral blah
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'RU\', 2, false, 100, false): output/cross_subject_11563481.out -- Submitted batch job 11563481 <-- n
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'TU\', 2, false, 100, false): output/cross_subject_11563482.out -- Submitted batch job 11563482 <-- n
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'V\', 2, false, 100, false): output/cross_subject_11563483.out -- Submitted batch job 11563483 <-- p = 0.03 for #1, 0.009 for #4, 0.01 for #5
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'RU\', 2, false, 100, false, true): output/cross_subject_11563484.out -- Submitted batch job 11563484 <-- n
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'TU\', 2, false, 100, false, true): output/cross_subject_11563486.out -- Submitted batch job 11563486 <-- p = 0.02 for #3
+cross_subject.sh cross_subject(-1, \'conj_45\', 45, \'V\', 2, false, 100, false, true): output/cross_subject_11563491.out -- Submitted batch job 11563491 <-- p = 0.009 for #5
+----------------
+--- Running cross_subj_lik_bic <--  45 => conj_45 more promising (circular?)
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'conj_3\', 45, 0, false, 100, false): output/cross_subj_lik_bic_11563524.out -- Submitted batch job 11563524 <-- p = 0.02 for #1, p = 0.008 for #2 (0.04 after corr), 0.02 for #3, 0.03 for #5, 0.04 for #6
+cross_subj_lik_bic.sh cross_subj_lik_bic(-1, \'conj_45\', 45, 0, false, 100, false): output/cross_subj_lik_bic_11563530.out -- Submitted batch job 11563530 <-- p < 0.05 for almost all of them; r's are between -0.3 and -0.5
+----------------
+--- Running cross_subj_perf_bic <-- 45 => better than lik_bic; conj_45 slightly better again
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'conj_3\', 45, 0, false, 100, false): output/cross_subj_perf_bic_11563594.out -- Submitted batch job 11563594 <-- p's < 0.05 for all of them! r's between -0.4 and -0.5
+cross_subj_perf_bic.sh cross_subj_perf_bic(-1, \'conj_45\', 45, 0, false, 100, false): output/cross_subj_perf_bic_11563618.out -- Submitted batch job 11563618 <-- p's < 0.05 for all! r's between -0.4 and -0.5
+----------------
+--- Running cross_subj_perf <-- 45
+----------------
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_3\', 45, \'RU\', 2, false, 100, false): output/cross_subj_perf_11563731.out -- Submitted batch job 11563731 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_3\', 45, \'TU\', 2, false, 100, false): output/cross_subj_perf_11563732.out -- Submitted batch job 11563732 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_3\', 45, \'V\', 2, false, 100, false): output/cross_subj_perf_11563733.out -- Submitted batch job 11563733 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_45\', 45, \'RU\', 2, false, 100, false): output/cross_subj_perf_11563734.out -- Submitted batch job 11563734 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_45\', 45, \'TU\', 2, false, 100, false): output/cross_subj_perf_11563735.out -- Submitted batch job 11563735 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'conj_45\', 45, \'V\', 2, false, 100, false): output/cross_subj_perf_11563737.out -- Submitted batch job 11563737 <-- n
+----------------
+--- Running main_effect <-- xTU^ => YES ................ this is it ................ #PAPER #MONEY => now find the conjunction
+----------------
+main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 1): output/main_effect_11719832.out -- Submitted batch job 11719832 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 1): output/main_effect_11719833.out -- Submitted batch job 11719833 <-- 0.002 for #1 and #2, 0.03 for #3, 4e-5 for #4
+main_effect.sh main_effect(-1, \'badre\', 39, \'RU\', false, 100, 1): output/main_effect_11719834.out -- Submitted batch job 11719834 <-- 0.004, 0.005, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 40, \'TU\', false, 100, 1): output/main_effect_11719835.out -- Submitted batch job 11719835 <-- all < 0.002
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1): output/main_effect_11719836.out -- Submitted batch job 11719836 <-- 0.002, 0.004, 0.002 => YAS
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1): output/main_effect_11719838.out -- Submitted batch job 11719838 <-- 0.001, 0.002, 0.03, 3e-5 => THIS IS IT
+main_effect.sh main_effect(-1, \'badre\', 46, \'RU\', false, 100, 1): output/main_effect_11719839.out -- Submitted batch job 11719839 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'TU\', false, 100, 1): output/main_effect_11719840.out -- Submitted batch job 11719840 <-- 0.004, 0.004, 0.057, 9e-6
+main_effect.sh main_effect(-1, \'badre\', 56, \'RU\', false, 100, 1): output/main_effect_11719841.out -- Submitted batch job 11719841 <-- 0.003, 0.003, 0.0008
+main_effect.sh main_effect(-1, \'badre\', 62, \'RU\', false, 100, 1): output/main_effect_11719843.out -- Submitted batch job 11719843 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'TU\', false, 100, 1): output/main_effect_11719845.out -- Submitted batch job 11719845 <-- 0.005, 0.006, 0.52, 8e-5
+main_effect.sh main_effect(-1, \'badre\', 64, \'RU\', false, 100, 1): output/main_effect_11719846.out -- Submitted batch job 11719846 <-- 0.001, 0.003, 0.0007
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'TU\', false, 100, 1): output/main_effect_11719847.out -- Submitted batch job 11719847 <-- 0.004, 0.005, 0.02, 9e-5
+----------------
+--- Running cross_subj_lik <-- DV, also badre => YES DV betas correlate w/ model lik, HOWEVER correlation is in wrong direction ?
+----------------
+cross_subj_lik.sh cross_subj_lik(29, \'DV\', 29, \'DV\', 2, false, 100, false): output/cross_subj_lik_11720737.out -- Submitted batch job 11720737 <-- precentral_L p = 0.01!!!!!!!! but r = 0.4 w t f... 
+cross_subj_lik.sh cross_subj_lik(29, \'DV\', 45, \'RU\', 2, false, 100, false): output/cross_subj_lik_11720739.out -- Submitted batch job 11720739 <-- no precentral, thalamus p = 0.002!
+cross_subj_lik.sh cross_subj_lik(29, \'DV\', 45, \'TU\', 2, false, 100, false): output/cross_subj_lik_11720743.out -- Submitted batch job 11720743 <-- no precental, precuneus p = 0.01
+cross_subj_lik.sh cross_subj_lik(29, \'DV\', 45, \'V\', 2, false, 100, false): output/cross_subj_lik_11720746.out -- Submitted batch job 11720746 <-- precentral p = 0.03, thalamus p = 0.0003!
+cross_subj_lik.sh cross_subj_lik(-1, \'badre\', 45, \'RU\', 2, false, 100, false): output/cross_subj_lik_11720750.out -- Submitted batch job 11720750 <-- n
+cross_subj_lik.sh cross_subj_lik(-1, \'badre\', 45, \'TU\', 2, false, 100, false): output/cross_subj_lik_11720753.out -- Submitted batch job 11720753
+cross_subj_lik.sh cross_subj_lik(-1, \'dlpfc\', 45, \'RU\', 2, false, 100, false): output/cross_subj_lik_11720754.out -- Submitted batch job 11720754
+cross_subj_lik.sh cross_subj_lik(-1, \'dlpfc\', 45, \'TU\', 2, false, 100, false): output/cross_subj_lik_11720755.out -- Submitted batch job 11720755 <-- n
+----------------
+--- Running cross_subject <-- badre => nope
+----------------
+cross_subject.sh cross_subject(-1, \'badre\', 45, \'RU\', 2, false, 100, false): output/cross_subject_11720796.out -- Submitted batch job 11720796 <-- n
+cross_subject.sh cross_subject(-1, \'dlpfc\', 45, \'TU\', 2, false, 100, false): output/cross_subject_11720797.out -- Submitted batch job 11720797 <-- n
+----------------
+--- Running cross_subject <-- DV => nope, but circular anyways
+----------------
+cross_subject.sh cross_subject(29, \'DV\', 45, \'RU\', 2, false, 100, false): output/cross_subject_11720812.out -- Submitted batch job 11720812 <-- n
+cross_subject.sh cross_subject(29, \'DV\', 45, \'TU\', 2, false, 100, false): output/cross_subject_11720814.out -- Submitted batch job 11720814 <-- n
+----------------
+--- Running cross_subj_perf <-- DV, badre => similar to cross_subj_lik, again r is in wrong direction
+----------------
+cross_subj_perf.sh cross_subj_perf(29, \'DV\', 29, \'DV\', 2, false, 100, false): output/cross_subj_perf_11720850.out -- Submitted batch job 11720850 <-- p = 0.02, r = 0.4 gah
+cross_subj_perf.sh cross_subj_perf(29, \'DV\', 45, \'RU\', 2, false, 100, false): output/cross_subj_perf_11720851.out -- Submitted batch job 11720851 <-- n (thalamus p = 0.002)
+cross_subj_perf.sh cross_subj_perf(29, \'DV\', 45, \'TU\', 2, false, 100, false): output/cross_subj_perf_11720852.out -- Submitted batch job 11720852 <-- n
+cross_subj_perf.sh cross_subj_perf(29, \'DV\', 45, \'V\', 2, false, 100, false): output/cross_subj_perf_11720853.out -- Submitted batch job 11720853 <-- thalamus p = 0.002
+cross_subj_perf.sh cross_subj_perf(-1, \'badre\', 45, \'RU\', 2, false, 100, false): output/cross_subj_perf_11720854.out -- Submitted batch job 11720854 <-- n
+cross_subj_perf.sh cross_subj_perf(-1, \'dlpfc\', 45, \'TU\', 2, false, 100, false): output/cross_subj_perf_11720855.out -- Submitted batch job 11720855 <-- n
+----------------
+--- Running univariate_decoder_refactored <-- DV => RU yes (nonspecific), TU no; DV error 
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11720870.out -- Submitted batch job 11720870
+univariate_decoder_refactored.sh univariate_decoder_refactored(29, \'DV\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11720871.out -- Submitted batch job 11720871 <-- nope
+univariate_decoder_refactored.sh univariate_decoder_refactored(29, \'DV\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11720873.out -- Submitted batch job 11720873 <-- YES!!! BIC_both = 6396.5 < 6410
+----------------
+--- Running cross_subj_lik_bic <-- DV => yes!!!!!!!!!!!!!!!!!
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 45, 0, false, 100, false): output/cross_subj_lik_bic_11720887.out -- Submitted batch job 11720887 <-- precentral p = 0.03 YES!!! r = -0.37 => MAKES SENSE!!
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 29, 0, false, 100, false): output/cross_subj_lik_bic_11720893.out -- Submitted batch job 11720893 <-- precentral p = 0.04 YES!!!! r = -0.36
+----------------
+--- Running cross_subj_perf_bic <-- DV => YES!!!!!!!!!!!!!!!
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 29, 0, false, 100, false): output/cross_subj_perf_bic_11720896.out -- Submitted batch job 11720896 <-- precentral p = 0.01 !! r = -0.43
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 45, 0, false, 100, false): output/cross_subj_perf_bic_11720898.out -- Submitted batch job 11720898 <-- precentral p = 0.01, r = -0.44!! (btw thalamus too)
+----------------
+--- Running univariate_decoder_refactored
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11804081.out -- Submitted batch job 11804081
+----------------
+--- Running univariate_decoder_refactored
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809041.out -- Submitted batch job 11809041
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809044.out -- Submitted batch job 11809044
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809049.out -- Submitted batch job 11809049
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809056.out -- Submitted batch job 11809056

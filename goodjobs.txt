@@ -1,0 +1,155 @@
+
+----------------
+--- Running neurosynth_bms <-- RU = striatum, TU = DLPFC! but... ridge, lambda = 1e5; => doing ridge_CV GULP
+----------------
+neurosynth_bms.sh neurosynth_bms(\'RU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7909235.out -- Submitted batch job 7909235 <--- LOL we can decode RU from everywhere
+neurosynth_bms.sh neurosynth_bms(\'TU\', false, 0, true, true, \'ridge\', false, false, false, false): output/neurosynth_bms_7909237.out -- Submitted batch job 7909237 <-- damn specific => 11, 115, 122, 145, 152
+----------------
+
+
+----------------
+--- Running univariate_decoder_bms <-- mixed effects with xTU^, 
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034668.out -- Submitted batch job 9034668 <-- precentral_L = 6383, precuneus_R = 6407 and occipital_mid_l = 6406
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034671.out -- Submitted batch job 9034671 <-- occipital_mid_l is at 6391
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034675.out -- Submitted batch job 9034675 <-- wow wtf lots are below 6400... 
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034678.out -- Submitted batch job 9034678 <-- frontal_mid_R_2, but nothing in left dlpfc...
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034682.out -- Submitted batch job 9034682 <-- most are below 6410, some are at 6393! promising. also lik p = 0.00006 for top one
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034684.out -- Submitted batch job 9034684 <-- nothing, as expected (a couple at 6409)
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034686.out -- Submitted batch job 9034686 <-- last one is at 6406
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_bms_9034688.out -- Submitted batch job 9034688 <-- last one is at 6399! also lik p = 0.02 for second one
+----------------
+
+
+----------------
+--- Running univariate_decoder_bms <-- PAPER! rerunning fixed effects w/ params from paper; see if TU repros (w/ correct decoding) => it doesn't... => paper is off; BUT it does repro with Badre's TU ROI (likelihood ratio test, ofc) => support for Badre's story!!! worse comes to worst, use prior ROIs...
+----------------
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275241.out -- Submitted batch job 10275241 <-- p_comp = 0.04 as in paper
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'RU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275250.out -- Submitted batch job 10275250
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275256.out -- Submitted batch job 10275256
+univariate_decoder_bms.sh univariate_decoder_bms(36, \'TU\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275284.out -- Submitted batch job 10275284 <-- nothing... hot dayum
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275289.out -- Submitted batch job 10275289 <-- p_comp = 0.01
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'badre\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275296.out -- Submitted batch job 10275296 <-- nothing, phew
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275313.out -- Submitted batch job 10275313 <-- nothing! yes!
+univariate_decoder_bms.sh univariate_decoder_bms(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_bms_10275317.out -- Submitted batch job 10275317 <-- p_comp = 0.002 for second ROI, which is almost identical as first ROI 
+
+
+
+----------------
+--- Running neurosynth_CV <-- FINISHED resuming 9032505 and 9032509 from where they left off => weird pears_ps = 0 everywhere => see fit_shit_repro.m
+----------------
+neurosynth_CV.sh neurosynth_CV_resume(\'RU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10273085.out -- Submitted batch job 10273085
+neurosynth_CV.sh neurosynth_CV_resume(\'TU\', false, 0, true, true, {\'ridge_CV_1\', \'ridge_CV_2\'}, false, false, false, false, true): output/neurosynth_CV_10273092.out -- Submitted batch job 10273092
+----------------
+
+
+----------------
+--- Running main_effect
+----------------
+main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 3): output/main_effect_66927630.out -- Submitted batch job 66927630
+main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 3): output/main_effect_66927632.out -- Submitted batch job 66927632
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 3): output/main_effect_66927633.out -- Submitted batch job 66927633
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 3): output/main_effect_66927634.out -- Submitted batch job 66927634 <-- UGH n.s.... shit
+
+
+
+----------------
+--- Running univariate_decoder_refactored <-- try RU-only and TU-only GLMs, fixed effects (as in paper) => pears_rs still negative... SO WEIRD
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 39, \'RU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10875849.out -- Submitted batch job 10875849 <-- pears_rs still negative ... p_comp = 0.002
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 40, \'TU\', false, 1, 2, false, false, 100, 1, false, false, false, false): output/univariate_decoder_refactored_10875855.out -- Submitted batch job 10875855 <-- pears_rs negative... p_comp = 0.04 (second)
+----------------
+
+
+----------------
+--- Running main_effect <-- looking for badre DLPFC main effect => found it when no V/TU !
+----------------
+main_effect.sh main_effect(-1, \'badre\', 39, \'RU\', false, 100, 1): output/main_effect_11111658.out -- Submitted batch job 11111658 <-- p = 0.004
+main_effect.sh main_effect(-1, \'dlpfc\', 40, \'TU\', false, 100, 1): output/main_effect_11111659.out -- Submitted batch job 11111659 <-- FUCK YEAH! p = 0.0002 => |RU| and TU ARE correlated
+main_effect.sh main_effect(-1, \'badre\', 64, \'RU\', false, 100, 1): output/main_effect_11111668.out -- Submitted batch job 11111668 <- p = 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'TU\', false, 100, 1): output/main_effect_11111669.out -- Submitted batch job 11111669 <- p = 0.005 => FUCK V/TU!!!! <-- this is it
+
+
+----------------
+--- Running main_effect <-- xTU^ controls => nothing, as expected
+----------------
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'RU\', false, 100, 1): output/main_effect_11563343.out -- Submitted batch job 11563343 <-- nothing
+main_effect.sh main_effect(-1, \'badre\', 36, \'TU\', false, 100, 1): output/main_effect_11563344.out -- Submitted batch job 11563344 <-- nothing
+main_effect.sh main_effect(-1, \'dlpfc\', 39, \'RU\', false, 100, 1): output/main_effect_11563345.out -- Submitted batch job 11563345 <-- n
+main_effect.sh main_effect(-1, \'badre\', 40, \'TU\', false, 100, 1): output/main_effect_11563346.out -- Submitted batch job 11563346 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'RU\', false, 100, 1): output/main_effect_11563347.out -- Submitted batch job 11563347 <-- n
+main_effect.sh main_effect(-1, \'badre\', 45, \'TU\', false, 100, 1): output/main_effect_11563348.out -- Submitted batch job 11563348 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'RU\', false, 100, 1): output/main_effect_11563349.out -- Submitted batch job 11563349 <-- n
+main_effect.sh main_effect(-1, \'badre\', 46, \'TU\', false, 100, 1): output/main_effect_11563350.out -- Submitted batch job 11563350 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 56, \'RU\', false, 100, 1): output/main_effect_11563351.out -- Submitted batch job 11563351 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'RU\', false, 100, 1): output/main_effect_11563352.out -- Submitted batch job 11563352 <-- n
+main_effect.sh main_effect(-1, \'badre\', 62, \'TU\', false, 100, 1): output/main_effect_11563353.out -- Submitted batch job 11563353 <-- n
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'RU\', false, 100, 1): output/main_effect_11563354.out -- Submitted batch job 11563354 <-- n
+main_effect.sh main_effect(-1, \'badre\', 64, \'TU\', false, 100, 1): output/main_effect_11563355.out -- Submitted batch job 11563355 <-- n
+
+
+
+
+
+----------------
+--- Running univariate_decoder_refactored <-- mixed effects w/o intercept (for Sam), w/ flipped sign => promising!!! BIC for RU badre ROI, and potentially TU DLPFC the last badre ROI
+---------------- 
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938011.out -- Submitted batch job 10938011 <-- BIC = 6422.7 vs. 6427.4 !!! AND p_comp ofc...
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938020.out -- Submitted batch job 10938020 <-- NOTHING!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'RU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938027.out -- Submitted batch job 10938027 <-- p = 0.03 but bad BIC!!  ...and can also decode RU from fourth one sheeit
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 36, \'TU\', false, 1, 2, true, false, 100, 1, false, true, false, false): output/univariate_decoder_refactored_10938031.out -- Submitted batch job 10938031 <-- p = 0.02 but bad BIC... :( not the fourth one though! BIC = 6420.2 vs. 6427.4
+
+
+----------------
+--- Running cross_subject <-- conjunction ROI (from separate GLMs), betas from separate GLMs, see if betas <--> w's; try mean & peak voxel => no RU, YES for TU !!!!!!!!!!!!!!!!!!!!! and for V (peak voxel) !!!!!!!!
+----------------
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 39, \'RU\', 2, false, 100, false): output/cross_subject_10987647.out -- Submitted batch job 10987647 <-- r = 0.2, p = 0.8
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 40, \'TU\', 2, false, 100, false): output/cross_subject_10987650.out -- Submitted batch job 10987650 <-- r = 0.5, p = 0.003 !!!!!!!!!!!!!!!!!
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 41, \'V\', 2, false, 100, false): output/cross_subject_10987653.out -- Submitted batch job 10987653 <-- r = -0.3, p = 0.06
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 39, \'RU\', 2, false, 100, false, true): output/cross_subject_10987658.out -- Submitted batch job 10987658 <-- r = 0.01, p = 0.9
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 40, \'TU\', 2, false, 100, false, true): output/cross_subject_10987661.out -- Submitted batch job 10987661 <-- r = 0.5, p = 0.003 !!!!!!!!!!!!!!!!!!!!
+cross_subject.sh cross_subject(-1, \'masks/ClusterMask_conj_3_x=-24_y=-2_z=68_751voxels.img\', 41, \'V\', 2, false, 100, false, true): output/cross_subject_10987665.out -- Submitted batch job 10987665 <-- r = -0.4,  p = 0.05 !!!!!!!!!!!!!!!!!!!!!!!!
+
+
+----------------
+--- Running main_effect <-- xTU^ => YES ................ this is it ................ #PAPER #MONEY => now find the conjunction
+----------------
+main_effect.sh main_effect(-1, \'badre\', 36, \'RU\', false, 100, 1): output/main_effect_11719832.out -- Submitted batch job 11719832 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 36, \'TU\', false, 100, 1): output/main_effect_11719833.out -- Submitted batch job 11719833 <-- 0.002 for #1 and #2, 0.03 for #3, 4e-5 for #4
+main_effect.sh main_effect(-1, \'badre\', 39, \'RU\', false, 100, 1): output/main_effect_11719834.out -- Submitted batch job 11719834 <-- 0.004, 0.005, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 40, \'TU\', false, 100, 1): output/main_effect_11719835.out -- Submitted batch job 11719835 <-- all < 0.002
+main_effect.sh main_effect(-1, \'badre\', 45, \'RU\', false, 100, 1): output/main_effect_11719836.out -- Submitted batch job 11719836 <-- 0.002, 0.004, 0.002 => YAS
+main_effect.sh main_effect(-1, \'dlpfc\', 45, \'TU\', false, 100, 1): output/main_effect_11719838.out -- Submitted batch job 11719838 <-- 0.001, 0.002, 0.03, 3e-5 => THIS IS IT
+main_effect.sh main_effect(-1, \'badre\', 46, \'RU\', false, 100, 1): output/main_effect_11719839.out -- Submitted batch job 11719839 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 46, \'TU\', false, 100, 1): output/main_effect_11719840.out -- Submitted batch job 11719840 <-- 0.004, 0.004, 0.057, 9e-6
+main_effect.sh main_effect(-1, \'badre\', 56, \'RU\', false, 100, 1): output/main_effect_11719841.out -- Submitted batch job 11719841 <-- 0.003, 0.003, 0.0008
+main_effect.sh main_effect(-1, \'badre\', 62, \'RU\', false, 100, 1): output/main_effect_11719843.out -- Submitted batch job 11719843 <-- 0.002, 0.004, 0.001
+main_effect.sh main_effect(-1, \'dlpfc\', 62, \'TU\', false, 100, 1): output/main_effect_11719845.out -- Submitted batch job 11719845 <-- 0.005, 0.006, 0.52, 8e-5
+main_effect.sh main_effect(-1, \'badre\', 64, \'RU\', false, 100, 1): output/main_effect_11719846.out -- Submitted batch job 11719846 <-- 0.001, 0.003, 0.0007
+main_effect.sh main_effect(-1, \'dlpfc\', 64, \'TU\', false, 100, 1): output/main_effect_11719847.out -- Submitted batch job 11719847 <-- 0.004, 0.005, 0.02, 9e-5
+
+
+----------------
+--- Running univariate_decoder_refactored <-- 45, mixed, flip, inter =====> YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240209.out -- Submitted batch job 11240209
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'RU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240215.out -- Submitted batch job 11240215
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240222.out -- Submitted batch job 11240222
+univariate_decoder_refactored.sh univariate_decoder_refactored(45, \'TU\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240228.out -- Submitted batch job 11240228
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240234.out -- Submitted batch job 11240234 <-- BIC = 6406 < 6410
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240239.out -- Submitted batch job 11240239 <-- BICs > 6410 !!!
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240245.out -- Submitted batch job 11240245 <-- BICs > 6410 !!! YAY
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11240252.out -- Submitted batch job 11240252 <-- BIC of 2nd one (ours!!!) = 6358 << 6410 !!! wow
+
+
+
+--- Running cross_subj_lik_bic <-- DV => yes!!!!!!!!!!!!!!!!!
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 45, 0, false, 100, false): output/cross_subj_lik_bic_11720887.out -- Submitted batch job 11720887 <-- precentral p = 0.03 YES!!! r = -0.37 => MAKES SENSE!!
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 29, 0, false, 100, false): output/cross_subj_lik_bic_11720893.out -- Submitted batch job 11720893 <-- precentral p = 0.04 YES!!!! r = -0.36
+
+----------------
+--- Running cross_subj_perf_bic <-- DV => YES!!!!!!!!!!!!!!!
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 29, 0, false, 100, false): output/cross_subj_perf_bic_11720896.out -- Submitted batch job 11720896 <-- precentral p = 0.01 !! r = -0.43
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 45, 0, false, 100, false): output/cross_subj_perf_bic_11720898.out -- Submitted batch job 11720898 <-- precentral p = 0.01, r = -0.44!! (btw thalamus too)
