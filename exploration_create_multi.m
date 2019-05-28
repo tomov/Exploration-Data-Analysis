@@ -1180,6 +1180,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         % |DV| @ trial_onset
         % left choice @ trial_onset
         % nuisance @ choice_onset and feedback_onset 
+        % goes w/ 45
         %
         case 29
            [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
@@ -1828,6 +1829,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
 
         % same as 36 but without timeouts  UGH
+        % goes w/ 29
         %
         case 45  %  <--- basically the same result; smaller ROIs for RU
         

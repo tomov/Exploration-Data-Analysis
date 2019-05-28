@@ -338,11 +338,11 @@ for c = 1:numel(masks)
             [r,p] = corr(VTU(~exclude), act(~exclude));
         case 'DV'
             if flip_sign
-                DV = tbl.DV;
+                DV = DV_all;
             else
-                DV = abs(tbl.DV);
+                DV = abs(DV_all);
             end
-            [r,p] = corr(DV_all(~exclude), act(~exclude));
+            [r,p] = corr(DV(~exclude), act(~exclude));
     end
 
 
