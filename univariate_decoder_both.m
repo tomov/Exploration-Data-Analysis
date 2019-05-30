@@ -209,12 +209,14 @@ results_all = results_both;
 
 %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
-load('univariate_decoder_roiglm36_RU_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
+%load('univariate_decoder_roiglm36_RU_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
+load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
 results_RU = results_both{RU_roi_idx};
 
 %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
-load('univariate_decoder_roiglm36_TU_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
+%load('univariate_decoder_roiglm36_TU_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
+load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
 results_TU = results_both{TU_roi_idx};
 
 comp_RU = compare(results_RU, results_all);

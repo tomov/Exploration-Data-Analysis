@@ -1,11 +1,12 @@
 % univariate decoder analysis for both RU & TU
-% TODO almost exactly copy of univariate_decoder_both -- dedupe
 % see if activation in ROI predicts choices better than regressor from model
+%
+% TODO actually dedupe with univariate_decoder_both.m, it's almost identical (except this one is a bit better -- with multiple starts, as in univariate_decoder_refactored)
 %
 % TODO dedupe with activations_analysis.m
 % TODO dedupe with badre_2012_residuals_analysis_glm.m
 
-function univariate_decoder_both_badre(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
+function univariate_decoder_both(glmodel, RU_roi_idx, TU_roi_idx, do_orth, lambda, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, flip_sign)
 
 printcode;
 
@@ -47,8 +48,8 @@ filename = sprintf('univariate_decoder_both_badre_glm%d_RUroi=%d_TUroi=%d_orth=%
 disp(filename);
 
 % get ROIs
-[masks_RU, region_RU] = get_masks(glmodel, 'badre', clusterFWEcorrect, extent);
-[masks_TU, region_TU] = get_masks(glmodel, 'dlpfc', clusterFWEcorrect, extent);
+[masks_RU, region_RU] = get_masks(-1, 'badre', clusterFWEcorrect, extent);
+[masks_TU, region_TU] = get_masks(-1, 'dlpfc', clusterFWEcorrect, extent);
 masks{1} = masks_RU{RU_roi_idx};
 masks{2} = masks_TU{TU_roi_idx};
 region{1,:} = region_RU{RU_roi_idx};
@@ -184,13 +185,90 @@ end
 
 save(filename, '-v7.3');
 
+% fit original GLM
+%
+best_of = 3;
+
+successes = 0;
+results_orig = [];
+for attempt = 1:100
+    try
+        if attempt == successes + 1
+            StartMethod = 'default'; % prefer default start method, unless it's failing on us
+        else
+            StartMethod = 'random'; % if it's failing, try random start method
+        end
+        StartMethod
+
+        res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random');
+        res 
+
+        if isempty(results_orig) || results_orig.LogLikelihood < res.LogLikelihood
+            results_orig = res;
+        end
+        successes = successes + 1;
+
+        if successes == best_of
+            break;
+        end
+    catch e
+        fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
+        disp(e)
+    end
+end
+assert(attempt < 100, 'failed too many times...');
+
+
+
+% fit augmented glm with decoded regressors
+%
+
+successes = 0;
+results_both = [];
+for attempt = 1:100
+    try
+        if attempt == successes + 1
+            StartMethod = 'default'; % prefer default start method, unless it's failing on us
+        else
+            StartMethod = 'random'; % if it's failing, try random start method
+        end
+        StartMethod
+
+        res = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', StartMethod);
+        [w, names, stats] = fixedEffects(res);
+        res
+        stats.pValue
+        w
+
+        assert(res.LogLikelihood >= results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
+
+        if isempty(results_both) || results_both.LogLikelihood < res.LogLikelihood
+            results_both = res;
+
+            comp = compare(results_orig, results_both); % order is important -- see docs
+            comp
+        end
+        successes = successes + 1;
+
+        if successes == best_of
+            break;
+        end
+    catch e
+        fprintf('             failed fitting "%s" on attempt %d...\n', formula_orig, attempt);
+        disp(e)
+    end
+end
+
+
+
 
 % fit behavioral GLM with activations
 %
+%{
 ps = [];
 
 % glm with both RU/TU and actRU/actTU
-results_both = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+results_both = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'EBMethod','TrustRegion2D', 'Exclude',bad_runs);
 [w, names, stats] = fixedEffects(results_both);
 results_both
 stats.pValue
@@ -198,9 +276,10 @@ w
 
 % glm with RU/TU only
 % do model comparison
-results_orig = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'Exclude',bad_runs);
+results_orig = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'CovariancePattern','diagonal', 'EBMethod','TrustRegion2D', 'Exclude',bad_runs);
 comp = compare(results_orig, results_both); % order is important -- see docs
 comp
+%}
 %p_comp(c,:) = comp.pValue(2);
 %BIC(c,:) = comp.BIC';
 
@@ -211,13 +290,13 @@ results_all = results_both;
 %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
-load('univariate_decoder_bms_roiglm-1_badre_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1_intercept=0_flip=0_doCV=0_gn=0.mat');
+load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
 results_RU = results_both{RU_roi_idx};
 
 %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
 %load('univariate_decoder_roiglm36_TU_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
-load('univariate_decoder_bms_roiglm-1_dlpfc_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1_intercept=0_flip=0_doCV=0_gn=0.mat');
+load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
 results_TU = results_both{TU_roi_idx};
 
 comp_RU = compare(results_RU, results_all);

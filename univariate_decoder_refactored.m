@@ -277,8 +277,8 @@ for c = 1:numel(masks)
 
             assert(res.LogLikelihood >= results_orig.LogLikelihood, 'Loglik of augmented model is no better than original model');
 
-            if attempt == 1
-                ps(c,:) = nan(size(stats.pValue')); % initialize, in case we find nothing
+            if size(ps,1) == 0
+                ps = nan(length(masks), length(stats.pValue));  % initialize based on # of regressors, which depend on formula; easiest to do here
             end
 
             if isempty(results_both{c}) || results_both{c}.LogLikelihood < res.LogLikelihood
