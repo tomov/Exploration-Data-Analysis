@@ -187,18 +187,18 @@ save(filename, '-v7.3');
 
 % fit original GLM
 %
-best_of = 3;
+best_of = 30;
 
 successes = 0;
 results_orig = [];
-for attempt = 1:100
+for attempt = 1:1000
     try
         if attempt == successes + 1
             StartMethod = 'default'; % prefer default start method, unless it's failing on us
         else
             StartMethod = 'random'; % if it's failing, try random start method
         end
-        StartMethod
+        StartMethod = 'random'
 
         res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random');
         res 
@@ -216,7 +216,7 @@ for attempt = 1:100
         disp(e)
     end
 end
-assert(attempt < 100, 'failed too many times...');
+assert(attempt < 1000, 'failed too many times...');
 
 
 
@@ -225,14 +225,14 @@ assert(attempt < 100, 'failed too many times...');
 
 successes = 0;
 results_both = [];
-for attempt = 1:100
+for attempt = 1:1000
     try
         if attempt == successes + 1
             StartMethod = 'default'; % prefer default start method, unless it's failing on us
         else
             StartMethod = 'random'; % if it's failing, try random start method
         end
-        StartMethod
+        StartMethod = 'random'
 
         res = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', StartMethod);
         [w, names, stats] = fixedEffects(res);

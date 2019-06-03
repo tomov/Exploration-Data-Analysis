@@ -117,7 +117,7 @@ exclude = logical(exclude);
 
 save(filename, '-v7.3');
 
-best_of = 3; % get best model (BIC-wise) out of how many
+best_of = 30; % get best model (BIC-wise) out of how many
 
 %
 % original behavioral glm   
@@ -127,14 +127,14 @@ tbl = data2table(data, standardize, 0); % include all trials; we exclude bad run
 
 successes = 0;
 results_orig = [];
-for attempt = 1:100
+for attempt = 1:1000
     try
         if attempt == successes + 1
             StartMethod = 'default'; % prefer default start method, unless it's failing on us
         else
             StartMethod = 'random'; % if it's failing, try random start method
         end
-        StartMethod
+        StartMethod = 'random'
 
         res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
         res 
@@ -152,7 +152,7 @@ for attempt = 1:100
         disp(e)
     end
 end
-assert(attempt < 100, 'failed too many times...');
+assert(attempt < 1000, 'failed too many times...');
 
 [BICs, logliks] = get_subj_bics(results_orig, tbl, exclude);
 disp('Original behavioral GLM');
@@ -260,14 +260,14 @@ for c = 1:numel(masks)
     results_both{c} = [];
     BIC(c,:) = [NaN NaN]; % in case it doesn't work
     p_comp(c,:) = NaN;
-    for attempt = 1:100
+    for attempt = 1:1000
         try
             if attempt == successes + 1
                 StartMethod = 'default'; % prefer default start method, unless it's failing on us
             else
                 StartMethod = 'random'; % if it's failing, try random start method
             end
-            StartMethod
+            StartMethod = 'random'
 
             res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', StartMethod);
             [w, names, stats] = fixedEffects(res);
