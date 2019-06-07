@@ -1,4 +1,4 @@
-function cross_subj_lik(roi_glmodel, roi_contrast, glmodel, standardize, clusterFWEcorrect, extent, odd_runs)
+function cross_subj_lik(roi_glmodel, roi_contrast, glmodel, standardize, clusterFWEcorrect, extent, odd_runs, contra)
 
     % correlate neural BIC with log likelihood of choices 
 
@@ -16,6 +16,9 @@ end
 if ~exist('odd_runs', 'var')
     odd_runs = false;  % all runs
 end
+if ~exist('contra', 'var')
+    contra = false;  % use contralateral ROIs 
+end
 
 what = 'sphere';
 
@@ -23,12 +26,16 @@ EXPT = exploration_expt();
 
 data = load_data;
 
-filename = sprintf('cross_subj_lik_bic_roiglm%d_%s_glm%d_%s_standardize=%d_corr=%d_extent=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, what, standardize, clusterFWEcorrect, extent);
+filename = sprintf('cross_subj_lik_bic_roiglm%d_%s_glm%d_%s_standardize=%d_corr=%d_extent=%d_contra=%d.mat', roi_glmodel, replace(roi_contrast, ' ', '_'), glmodel, what, standardize, clusterFWEcorrect, extent, contra);
 disp(filename);
 
 
 % get ROIs
-[masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
+if contra
+    [masks, region] = get_masks_contra(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
+else
+    [masks, region] = get_masks(roi_glmodel, roi_contrast, clusterFWEcorrect, extent);
+end
 
 % get lik
 %
