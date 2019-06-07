@@ -115,7 +115,6 @@ end
 exclude = logical(exclude);
 
 
-save(filename, '-v7.3');
 
 best_of = 3; % get best model (BIC-wise) out of how many
 
@@ -129,13 +128,6 @@ successes = 0;
 results_orig = [];
 for attempt = 1:100
     try
-        if attempt == successes + 1
-            StartMethod = 'default'; % prefer default start method, unless it's failing on us
-        else
-            StartMethod = 'random'; % if it's failing, try random start method
-        end
-        StartMethod
-
         res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
         res 
 
@@ -262,14 +254,7 @@ for c = 1:numel(masks)
     p_comp(c,:) = NaN;
     for attempt = 1:100
         try
-            if attempt == successes + 1
-                StartMethod = 'default'; % prefer default start method, unless it's failing on us
-            else
-                StartMethod = 'random'; % if it's failing, try random start method
-            end
-            StartMethod
-
-            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', StartMethod);
+            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','fsolve', 'Exclude',exclude, 'StartMethod', 'random');
             [w, names, stats] = fixedEffects(res);
             res
             stats.pValue

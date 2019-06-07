@@ -193,13 +193,6 @@ successes = 0;
 results_orig = [];
 for attempt = 1:100
     try
-        if attempt == successes + 1
-            StartMethod = 'default'; % prefer default start method, unless it's failing on us
-        else
-            StartMethod = 'random'; % if it's failing, try random start method
-        end
-        StartMethod
-
         res = fitglme(tbl,formula_orig,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random');
         res 
 
@@ -219,6 +212,8 @@ end
 assert(attempt < 100, 'failed too many times...');
 
 
+disp('fitting augmented GLM');
+
 
 % fit augmented glm with decoded regressors
 %
@@ -227,14 +222,7 @@ successes = 0;
 results_both = [];
 for attempt = 1:100
     try
-        if attempt == successes + 1
-            StartMethod = 'default'; % prefer default start method, unless it's failing on us
-        else
-            StartMethod = 'random'; % if it's failing, try random start method
-        end
-        StartMethod
-
-        res = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', StartMethod);
+        res = fitglme(tbl,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',bad_runs, 'StartMethod', 'random');
         [w, names, stats] = fixedEffects(res);
         res
         stats.pValue
@@ -290,13 +278,13 @@ results_all = results_both;
 %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
-load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
 results_RU = results_both{RU_roi_idx};
 
 %load('univariate_decoder_glm21_TU_TU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_TU_glm36_TU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
 %load('univariate_decoder_roiglm36_TU_glm36_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1.mat', 'results_both');
-load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
 results_TU = results_both{TU_roi_idx};
 
 comp_RU = compare(results_RU, results_all);
