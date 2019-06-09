@@ -2,6 +2,7 @@ function [results_V, results_VTU, results_VRU, results_VTURU ] = model_compariso
 
     % same as model_comparison but with random starts like univariate_decoder_refactored
     % => also try a bunch b/c it fails, and take bestof
+    % notice that here we DO INCLUDE bad_runs, and we do want that b/c the more behavior the better
     %
     
     tbl = data2table(data,0,1); % don't standardize, exclude timeouts

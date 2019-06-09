@@ -272,6 +272,7 @@ comp
 %BIC(c,:) = comp.BIC';
 
 
+save(filename, '-v7.3');
 
 results_all = results_both;
 

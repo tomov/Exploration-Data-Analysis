@@ -1075,34 +1075,149 @@ function show_figure(fig)
             fprintf('\\textbf{Model} & \\textbf{Regressors} & \\textbf{AIC} & \\textbf{BIC}  & \\textbf{LL}  & \\textbf{Deviance}  \\\\ \\hline\n');
 
             %load results_glme_fig3_nozscore.mat; TODO make them the same, fix everywhere
-            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            % note that we use results_orig from the decoder, which EXCLUDES bad_runs
+            % but for behavior we use all runs for more power => we're legit
+            % just clarify it
+            %
+
+            % behavioral GLM
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_orig');
             fprintf('UCB/Thompson hybrid       &  V + RU + V/TU  &  %.2f  &  %.2f  &  %.2f  & %.2f    \\\\  \\hline \\hline\n', ...
                 results_orig.ModelCriterion.AIC, results_orig.ModelCriterion.BIC, results_orig.ModelCriterion.LogLikelihood, results_orig.ModelCriterion.Deviance);
             %    results_VTURU.ModelCriterion.AIC, results_VTURU.ModelCriterion.BIC, results_VTURU.ModelCriterion.LogLikelihood, results_VTURU.ModelCriterion.Deviance);
 
 
+            % RLPFC
             fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC}} \\\\ \\hline\n');
 
             RU_roi_idx = 1;
             TU_roi_idx = 2;
-            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
             fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$   &  %.2f  &  %.2f  &  %.2f   &  %.2f     \\\\ \\hline\n', ...
                 results_both{RU_roi_idx}.ModelCriterion.AIC, results_both{RU_roi_idx}.ModelCriterion.BIC, results_both{RU_roi_idx}.ModelCriterion.LogLikelihood, results_both{RU_roi_idx}.ModelCriterion.Deviance);
 
-
-            load('univariate_decoder_refactored_roiglm-1_badre_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
             fprintf('Hybrid augmented with $\\widehat{\\text{TU}}$ & V + RU + V/TU + V/$\\widehat{\\text{TU}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f     \\\\ \\hline\n', ...
                 results_both{TU_roi_idx}.ModelCriterion.AIC, results_both{TU_roi_idx}.ModelCriterion.BIC, results_both{TU_roi_idx}.ModelCriterion.LogLikelihood, results_both{TU_roi_idx}.ModelCriterion.Deviance);
 
 
+            % DLPFC
             fprintf('\\multicolumn{6}{|c|}{\\textbf{Right DLPFC}} \\\\ \\hline\n');
-            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline\n');
-            fprintf('Hybrid augmented with $\\widehat{\\text{TU}}$ & V + RU + V/TU + V/$\\widehat{\\text{TU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline \\hline\n');
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC and DLPFC}} \\\\ \\hline\n');
-            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$ + V/$\\widehat{\\text{TU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline \\hline\n');
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Left M1}} \\\\ \\hline\n');
-            fprintf('Hybrid augmented with $\\widehat{\\text{DV}}$ & V + RU + V/TU + $\\widehat{\\text{DV}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline\n');
 
+            load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
+            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$    &   %.2f  &  %.2f  &  %.2f   &  %.2f       \\\\ \\hline\n', ...
+                results_both{RU_roi_idx}.ModelCriterion.AIC, results_both{RU_roi_idx}.ModelCriterion.BIC, results_both{RU_roi_idx}.ModelCriterion.LogLikelihood, results_both{RU_roi_idx}.ModelCriterion.Deviance);
+
+            load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
+            fprintf('Hybrid augmented with $\\widehat{\\text{TU}}$ & V + RU + V/TU + V/$\\widehat{\\text{TU}}$  &   %.2f  &  %.2f  &  %.2f   &  %.2f      \\\\ \\hline \\hline\n', ...
+                results_both{TU_roi_idx}.ModelCriterion.AIC, results_both{TU_roi_idx}.ModelCriterion.BIC, results_both{TU_roi_idx}.ModelCriterion.LogLikelihood, results_both{TU_roi_idx}.ModelCriterion.Deviance);
+
+
+            % both
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC and DLPFC}} \\\\ \\hline\n');
+            load('univariate_decoder_both_badre_glm45_RUroi=1_TUroi=2_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1.mat', 'results_both');
+            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$ + V/$\\widehat{\\text{TU}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f    \\\\ \\hline \\hline\n', ...
+                results_all.ModelCriterion.AIC, results_all.ModelCriterion.BIC, results_all.ModelCriterion.LogLikelihood, results_all.ModelCriterion.Deviance);
+
+
+            % DV
+            DV_roi_idx = 1;
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Left M1}} \\\\ \\hline\n');
+            load('univariate_decoder_refactored_roiglm29_DV_glm29_DV_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            fprintf('Hybrid augmented with $\\widehat{\\text{DV}}$ & V + RU + V/TU + $\\widehat{\\text{DV}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f    \\\\ \\hline\n', ...
+                results_both{DV_roi_idx}.ModelCriterion.AIC, results_both{DV_roi_idx}.ModelCriterion.BIC, results_both{DV_roi_idx}.ModelCriterion.LogLikelihood, results_both{DV_roi_idx}.ModelCriterion.Deviance);
+
+
+
+
+        case 'fig:DV'
+
+            % DV contrast 
+            %
+            figure('pos', [100 100 650 180]);
+            %figure;
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+          
+
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.60;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(2,1, 1, 'position', pos);
+
+            %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check ; bspmview('masks/badre_rlpfc_36_56_-8_r=10.0mm.nii', '../glmOutput/mean.nii')
+            PICpng = imread('images/DV_corr.png'); % extent >= 100
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+
+
+            title('DV (corr.)', 'FontSize', fontsize);
+
+
+            subplot(1,4,3);
+
+            DV_roi_idx = 2;
+
+            load('cross_subj_perf_bic_roiglm29_DV_glm29_sphere_standardize=0_corr=0_extent=100.mat');
+            bic = all_bic{DV_roi_idx}';
+
+            % corrs
+            %
+            [r, p] = corr(perf, bic);
+            fprintf('r = %.2f, p = %.3f, Pearson correlation across %d subjects\n', r, p, length(perf));
+
+            scatter(bic, perf);
+            hold on;
+            lsline;
+            text(-7e5, 0.69, sprintf('r = %.2f, p = %.2f', r, p));
+            hold off;
+
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XLim',[-8e5 6e5], 'Ylim', [0.64 0.9]);
+            xlabel('BIC','FontSize',axisfontsize);
+            ylabel('P(better option)','FontSize',axisfontsize);
+
+
+
+            subplot(1,4,4);
+
+            load('cross_subj_lik_bic_roiglm29_DV_glm29_sphere_standardize=0_corr=0_extent=100.mat');
+            bic = all_bic{DV_roi_idx}';
+
+            % corrs
+            %
+            [r, p] = corr(loglik, bic);
+            fprintf('r = %.2f, p = %.3f, Pearson correlation across %d subjects\n', r, p, length(loglik));
+
+            scatter(bic, loglik);
+            hold on;
+            lsline;
+            text(-7e5, -170, sprintf('r = %.2f, p = %.2f', r, p));
+            hold off;
+
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XLim',[-8e5 6e5]);
+            xlabel('BIC','FontSize',axisfontsize);
+            ylabel('Log likelihood','FontSize',axisfontsize);
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.08, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.71, 0.95, 'C', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/DV', '-dpdf');
 
 
 
