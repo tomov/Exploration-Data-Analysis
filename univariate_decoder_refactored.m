@@ -254,7 +254,7 @@ for c = 1:numel(masks)
     p_comp(c,:) = NaN;
     for attempt = 1:100
         try
-            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','fsolve', 'Exclude',exclude, 'StartMethod', 'random');
+            res = fitglme(tbl_dec,formula_both,'Distribution','Binomial','Link','Probit','FitMethod','Laplace','CovariancePattern','diagonal','EBMethod','TrustRegion2D', 'Exclude',exclude, 'StartMethod', 'random');
             [w, names, stats] = fixedEffects(res);
             res
             stats.pValue

@@ -283,6 +283,8 @@ function show_figure(fig)
             set(h,'PaperOrientation','landscape');
             print('images/vifs', '-dpdf');
 
+
+
         case 'recovery'
 
             figure('pos', [10 10 520 350]);
@@ -427,6 +429,9 @@ function show_figure(fig)
             end
 
             print('images/learning', '-dpdf');
+
+
+
 
 
         case 'psycho'
@@ -622,6 +627,8 @@ function show_figure(fig)
             print('images/psycho', '-dpdf');
 
 
+
+
         case 'task' % Figure1
             figure('pos', [10 10 520 450]);
 
@@ -742,6 +749,8 @@ function show_figure(fig)
             print('images/task', '-dpdf');
 
 
+
+
         case 'behav' % Figure2
             figure('pos', [10 10 700 200]);
 
@@ -828,8 +837,281 @@ function show_figure(fig)
 
 
 
+        case 'fig:RU'
 
-        case 'RU' % Figure3
+            % RU contrast 
+            %
+            figure('pos', [100 100 650 180]);
+            %figure;
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+          
+
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.60;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(2,1, 1, 'position', pos);
+
+            %PICpng = imread('images/badre_RLPFC.png');   %  <-- to cross-check ; bspmview('masks/badre_rlpfc_36_56_-8_r=10.0mm.nii', '../glmOutput/mean.nii')
+            %PICpng = imread('images/RU-trial.png');
+            %PICpng = imread('images/RU-trial_100.png'); % extent >= 100
+            PICpng = imread('images/RU_uncorr.png'); % extent >= 100
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+
+            % Badre ROI
+            centx = x * 0.795;
+            centy = y * 0.29;
+
+            % our ROI
+            %centx = x * 0.79;
+            %centy = y * 0.30;
+
+            r = 25;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            title('RU (uncorr.)', 'FontSize', fontsize);
+
+
+            subplot(1,4,3);
+
+            RU_roi_idx = 1;
+
+            load('main_effect_roiglm-1_badre_glm45_RU_corr=0_extent=100_Num=1_s=10.0.mat');
+            beta(1) = m(RU_roi_idx);
+            ci(1) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(1) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{1} = bs{RU_roi_idx};
+            pp(1) = p_uncorr(RU_roi_idx);
+
+            load('main_effect_roiglm-1_badre_glm45_TU_corr=0_extent=100_Num=1_s=10.0.mat');
+            beta(2) = m(RU_roi_idx);
+            ci(2) = (cis{RU_roi_idx}(2) - cis{RU_roi_idx}(1)) / 2;
+            err(2) = stat{RU_roi_idx}.sd / sqrt(stat{RU_roi_idx}.df + 1);
+            betas{2} = bs{RU_roi_idx};
+            pp(2) = p_uncorr(RU_roi_idx);
+
+
+            % t-tests
+            %
+            [h, p, ci, stats] = ttest(betas{1});
+            fprintf('t-test RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            [h, p, ci, stats] = ttest(betas{2});
+            fprintf('t-test TU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            [h, p, ci, stats] = ttest(betas{1}, betas{2});
+            fprintf('paired t-test RU - TU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            %for s = 1:length(betas{1})
+            %    plot([1 2], [betas{1}(s) betas{2}(s)], '-o', 'MarkerSize', 2,'MarkerFaceColor','k', 'Color', 'k');
+            %end
+
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+            end
+            y = max(beta + err + 0.06);
+            line([1 2], [y y], 'color', 'black');
+            text(1.45, y + 0.02, significance(p));
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.05 0.25]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title({'Main effect', 'RLPFC (R) [36 56 -8]'}, 'FontSize', axisfontsize);
+
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.08, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/RU', '-dpdf');
+
+
+
+
+
+
+
+
+
+
+        case 'fig:TU'
+
+            % TU contrast 
+            %
+            figure('pos', [100 100 650 180]);
+            %figure;
+
+            fontsize = 14;
+            axisfontsize = 11;
+            markersize = 6;
+            linewidth = 2;
+          
+
+            h = subplot(1,2,1);
+            pos = get(h, 'position');
+            pos
+            pos(1) = pos(1) * 1;
+            pos(2) = pos(2) * 0.60;
+            pos(3) = pos(3) * 1.0;
+            pos(4) = pos(4) * 1.0;
+            subplot(2,1, 1, 'position', pos);
+
+            %PICpng = imread('images/badre_DLPFC.png');   %  <-- to cross-check  ; bspmview('masks/badre_dlpfc_38_30_34_r=10.0mm.nii', '../glmOutput/mean.nii')
+            %PICpng = imread('images/TU-trial.png');
+            %PICpng = imread('images/TU-trial_100.png'); % extent >= 100
+            PICpng = imread('images/TU_uncorr.png'); % extent >= 100
+
+            [rows columns numberOfColorChannels] = size(PICpng);
+            x = columns;
+            y = rows;
+            imshow(PICpng, 'InitialMagnification', 'fit');  
+
+            % Badre ROI
+            centx = x * 0.76;
+            centy = y * 0.15;
+
+            % our ROI
+            %centx = x * 0.79;
+            %centy = y * 0.30;
+
+            r = 25;
+            hold on;
+            theta = 0 : (2 * pi / 10000) : (2 * pi);
+            pline_x = r * cos(theta) + centx;
+            pline_y = r * sin(theta) + centy;
+            k = ishold;
+            plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
+            hold off;
+
+            title('TU (uncorr.)', 'FontSize', fontsize);
+
+
+            subplot(1,4,3);
+
+            TU_roi_idx = 2;
+
+            load('main_effect_roiglm-1_dlpfc_glm45_RU_corr=0_extent=100_Num=1_s=10.0.mat');
+            beta(1) = m(TU_roi_idx);
+            ci(1) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(1) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{1} = bs{TU_roi_idx};
+            pp(1) = p_uncorr(TU_roi_idx);
+
+            load('main_effect_roiglm-1_dlpfc_glm45_TU_corr=0_extent=100_Num=1_s=10.0.mat');
+            beta(2) = m(TU_roi_idx);
+            ci(2) = (cis{TU_roi_idx}(2) - cis{TU_roi_idx}(1)) / 2;
+            err(2) = stat{TU_roi_idx}.sd / sqrt(stat{TU_roi_idx}.df + 1);
+            betas{2} = bs{TU_roi_idx};
+            pp(2) = p_uncorr(TU_roi_idx);
+
+
+            % t-tests
+            %
+            [h, p, ci, stats] = ttest(betas{1});
+            fprintf('t-test RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            [h, p, ci, stats] = ttest(betas{2});
+            fprintf('t-test TU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            [h, p, ci, stats] = ttest(betas{2}, betas{1});
+            fprintf('paired t-test TU - RU: t(%d) = %.4f, p = %.6f\n', stats.df, stats.tstat, p);
+
+            plot([0 3],[0 0],'--','LineWidth',linewidth,'Color',[0.6 0.6 0.6]);
+            hold on;
+            %for s = 1:length(betas{1})
+            %    plot([1 2], [betas{1}(s) betas{2}(s)], '-o', 'MarkerSize', 2,'MarkerFaceColor','k', 'Color', 'k');
+            %end
+
+            errorbar(beta,err,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            %errorbar(beta,ci,'ok','MarkerSize',markersize,'MarkerFaceColor','k');
+            for i = 1:2
+                text(i - 0.03 * length(significance(pp(i))), beta(i) + err(i) + 0.02, significance(pp(i)));
+            end
+            y = max(beta + err + 0.06);
+            line([1 2], [y y], 'color', 'black');
+            text(1.45, y + 0.02, significance(p));
+            hold off;
+            set(gca,'TickLabelInterpreter','latex');
+            set(gca,'FontSize',axisfontsize,'XTick', [1 2], 'XTickLabel',{'$|RU|$', '$TU$'},'XLim',[0.5 2.5], 'Ylim', [-0.05 0.25]);
+            ylabel('Neural coefficient (\beta)','FontSize',axisfontsize);
+            title({'Main effect', 'DLPFC (R) [38 30 34]'}, 'FontSize', axisfontsize);
+
+
+
+            ax1 = axes('Position',[0 0 1 1],'Visible','off');
+            axes(ax1);
+            text(0.08, 0.95, 'A', 'FontSize', 20, 'FontWeight', 'bold');
+            text(0.48, 0.95, 'B', 'FontSize', 20, 'FontWeight', 'bold');
+
+            print('images/TU', '-dpdf');
+
+
+
+        case 'tab:augmented'
+
+            fprintf('\\textbf{Model} & \\textbf{Regressors} & \\textbf{AIC} & \\textbf{BIC}  & \\textbf{LL}  & \\textbf{Deviance}  \\\\ \\hline\n');
+
+            %load results_glme_fig3_nozscore.mat; TODO make them the same, fix everywhere
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            fprintf('UCB/Thompson hybrid       &  V + RU + V/TU  &  %.2f  &  %.2f  &  %.2f  & %.2f    \\\\  \\hline \\hline\n', ...
+                results_orig.ModelCriterion.AIC, results_orig.ModelCriterion.BIC, results_orig.ModelCriterion.LogLikelihood, results_orig.ModelCriterion.Deviance);
+            %    results_VTURU.ModelCriterion.AIC, results_VTURU.ModelCriterion.BIC, results_VTURU.ModelCriterion.LogLikelihood, results_VTURU.ModelCriterion.Deviance);
+
+
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC}} \\\\ \\hline\n');
+
+            RU_roi_idx = 1;
+            TU_roi_idx = 2;
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$   &  %.2f  &  %.2f  &  %.2f   &  %.2f     \\\\ \\hline\n', ...
+                results_both{RU_roi_idx}.ModelCriterion.AIC, results_both{RU_roi_idx}.ModelCriterion.BIC, results_both{RU_roi_idx}.ModelCriterion.LogLikelihood, results_both{RU_roi_idx}.ModelCriterion.Deviance);
+
+
+            load('univariate_decoder_refactored_roiglm-1_badre_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            fprintf('Hybrid augmented with $\\widehat{\\text{TU}}$ & V + RU + V/TU + V/$\\widehat{\\text{TU}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f     \\\\ \\hline\n', ...
+                results_both{TU_roi_idx}.ModelCriterion.AIC, results_both{TU_roi_idx}.ModelCriterion.BIC, results_both{TU_roi_idx}.ModelCriterion.LogLikelihood, results_both{TU_roi_idx}.ModelCriterion.Deviance);
+
+
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right DLPFC}} \\\\ \\hline\n');
+            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline\n');
+            fprintf('Hybrid augmented with $\\widehat{\\text{TU}}$ & V + RU + V/TU + V/$\\widehat{\\text{TU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline \\hline\n');
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC and DLPFC}} \\\\ \\hline\n');
+            fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$ + V/$\\widehat{\\text{TU}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline \\hline\n');
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{Left M1}} \\\\ \\hline\n');
+            fprintf('Hybrid augmented with $\\widehat{\\text{DV}}$ & V + RU + V/TU + $\\widehat{\\text{DV}}$   &  7500.34  &  7528.96  &  -3746.17       \\\\ \\hline\n');
+
+
+
+
+
+
+
+
+
+        case 'RU_old' % Figure3
             % RU contrast 
             %
             figure('pos', [100 100 350 800]);
@@ -979,12 +1261,12 @@ function show_figure(fig)
             text(0.04, 0.52, 'B', 'FontSize', 20, 'FontWeight', 'bold');
             text(0.49, 0.52, 'C', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/RU', '-dpdf');
+            print('images/RU_old', '-dpdf');
 
 
 
 
-        case 'TU' % Figure4
+        case 'TU_old' % Figure4
             % TU contrast
             %
 
@@ -1164,7 +1446,7 @@ function show_figure(fig)
             text(0.04, 0.29, 'D', 'FontSize', 20, 'FontWeight', 'bold');
             text(0.49, 0.29, 'E', 'FontSize', 20, 'FontWeight', 'bold');
 
-            print('images/TU', '-dpdf');
+            print('images/TU_old', '-dpdf');
 
 
 

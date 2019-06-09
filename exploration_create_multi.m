@@ -11,7 +11,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %   run - integer specifying the run
     %
     % OUTPUTS:
-    %   multi - a structure with the folloowing fields
+    %   multi - a sctructure with the folloowing fields
     %        .names{i}
     %        .onsets{i}
     %        .duratlsions{i}
