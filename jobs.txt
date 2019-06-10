@@ -3810,13 +3810,67 @@ cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 29, 0, false, 100, false): 
 cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 29, 0, false, 100, false): output/cross_subj_perf_bic_11720896.out -- Submitted batch job 11720896 <-- precentral p = 0.01 !! r = -0.43
 cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 45, 0, false, 100, false): output/cross_subj_perf_bic_11720898.out -- Submitted batch job 11720898 <-- precentral p = 0.01, r = -0.44!! (btw thalamus too)
 ----------------
---- Running univariate_decoder_refactored
+--- Running univariate_decoder_refactored <-- YES DV...
 ----------------
 univariate_decoder_refactored.sh univariate_decoder_refactored(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11804081.out -- Submitted batch job 11804081
 ----------------
---- Running univariate_decoder_refactored
+--- Running univariate_decoder_refactored <-- repro, ugh still TU erroring out b/c of wrong # of rows
 ----------------
 univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809041.out -- Submitted batch job 11809041
 univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809044.out -- Submitted batch job 11809044
 univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809049.out -- Submitted batch job 11809049
 univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11809056.out -- Submitted batch job 11809056
+----------------
+--- Running univariate_decoder_both_badre => crap BIC & loglik => try StartMethod = random
+----------------
+univariate_decoder_both_badre.sh univariate_decoder_both_badre(45, 1, 2, false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_both_badre_11966801.out -- Submitted batch job 11966801 <-- BIC = 6415 >>> the one for TU..., but StartMethod = default => try random
+----------------
+--- Running univariate_decoder_refactored <-- repro, with tables => yas
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11967600.out -- Submitted batch job 11967600
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11967604.out -- Submitted batch job 11967604
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11967608.out -- Submitted batch job 11967608
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_11967617.out -- Submitted batch job 11967617
+----------------
+--- Running univariate_decoder_refactored <-- best_of = 30, attempts = 1k, startmethod = 'random'
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12089581.out -- Submitted batch job 12089581
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12089582.out -- Submitted batch job 12089582
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12089588.out -- Submitted batch job 12089588
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12089593.out -- Submitted batch job 12089593 <-- timed out
+----------------
+--- Running univariate_decoder_both_badre <-- best_of = 30, attempts = 1k, startmethod = 'random'
+----------------
+univariate_decoder_both_badre.sh univariate_decoder_both_badre(45, 1, 2, false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_both_badre_12089621.out -- Submitted batch job 12089621 <-- better BIC, still worse than TU but at least lik is better => promising!
+----------------
+--- Running univariate_decoder_refactored <-- try StartMethod = random, EBMethod = fsolve
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12399395.out -- Submitted batch job 12399395
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12399398.out -- Submitted batch job 12399398
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12399410.out -- Submitted batch job 12399410
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_12399413.out -- Submitted batch job 12399413
+----------------
+--- Running univariate_decoder_both_badre <-- StartMethod = random => error, results_both not found ugh => retry
+----------------
+univariate_decoder_both_badre.sh univariate_decoder_both_badre(45, 1, 2, false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_both_badre_12399418.out -- Submitted batch job 12399418
+----------------
+--- Running cross_subj_perf_bic <-- contra, also no cmask intersect
+----------------
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 29, 0, false, 100, false, false): output/cross_subj_perf_bic_12916935.out -- Submitted batch job 12916935
+cross_subj_perf_bic.sh cross_subj_perf_bic(29, \'DV\', 29, 0, false, 100, false, true): output/cross_subj_perf_bic_12916939.out -- Submitted batch job 12916939
+----------------
+--- Running cross_subj_lik_bic <-- contra, also no cmask intersect
+----------------
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 29, 0, false, 100, false, false): output/cross_subj_lik_bic_12916957.out -- Submitted batch job 12916957
+cross_subj_lik_bic.sh cross_subj_lik_bic(29, \'DV\', 29, 0, false, 100, false, true): output/cross_subj_lik_bic_12916963.out -- Submitted batch job 12916963
+----------------
+--- Running univariate_decoder_refactored <-- to generate the proper .mat files (last time they were w/ fsolve)
+----------------
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_13182466.out -- Submitted batch job 13182466
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'badre\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_13182467.out -- Submitted batch job 13182467
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_13182471.out -- Submitted batch job 13182471
+univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_refactored_13182472.out -- Submitted batch job 13182472
+----------------
+--- Running univariate_decoder_both_badre <-- proper .mat file
+----------------
+univariate_decoder_both_badre.sh univariate_decoder_both_badre(45, 1, 2, false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_both_badre_13290836.out -- Submitted batch job 13290836

@@ -211,7 +211,7 @@ function show_figure(fig)
             print('images/perf', '-dpdf');
 
 
-        case 'vifs'
+        case 'fig:vifs'
 
             figure('pos', [10 10 600 600]);
 
@@ -294,7 +294,7 @@ function show_figure(fig)
 
 
 
-        case 'recovery'
+        case 'fig:recovery'
 
             figure('pos', [10 10 520 350]);
 
@@ -348,7 +348,7 @@ function show_figure(fig)
             print('images/recovery', '-dpdf');
 
 
-        case 'learning'
+        case 'fig:learning'
 
             rng default;
 
@@ -443,7 +443,7 @@ function show_figure(fig)
 
 
 
-        case 'psycho'
+        case 'fig:psycho'
 
             figure('pos', [10 10 420 650]);
 
@@ -763,6 +763,8 @@ function show_figure(fig)
         case 'fig:behav' % Figure2
             figure('pos', [10 10 700 200]);
 
+            % probit regression results
+
             fontsize = 12;
             linewidth = 3;
             markersize = 6;
@@ -861,7 +863,7 @@ function show_figure(fig)
 
         case 'fig:RU'
 
-            % RU contrast 
+            % RU contrast  from GLM 45
             %
             figure('pos', [100 100 650 180]);
             %figure;
@@ -908,7 +910,7 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('RU (uncorr.)', 'FontSize', fontsize);
+            title('Relative uncertainty (uncorr.)', 'FontSize', fontsize);
 
 
             subplot(1,4,3);
@@ -981,7 +983,7 @@ function show_figure(fig)
 
         case 'fig:TU'
 
-            % TU contrast 
+            % TU contrast  from GLM 45
             %
             figure('pos', [100 100 650 180]);
             %figure;
@@ -1028,7 +1030,7 @@ function show_figure(fig)
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
 
-            title('TU (uncorr.)', 'FontSize', fontsize);
+            title('Total uncertainty (uncorr.)', 'FontSize', fontsize);
 
 
             subplot(1,4,3);
@@ -1154,7 +1156,7 @@ function show_figure(fig)
 
         case 'fig:DV'
 
-            % DV contrast 
+            % DV contrast from GLM 29
             %
             figure('pos', [100 100 650 180]);
             %figure;
@@ -1183,7 +1185,7 @@ function show_figure(fig)
             imshow(PICpng, 'InitialMagnification', 'fit');  
 
 
-            title('DV (corr.)', 'FontSize', fontsize);
+            title('Decision value (corr.)', 'FontSize', fontsize);
 
 
             subplot(1,4,3);
@@ -1812,7 +1814,7 @@ function show_figure(fig)
             print('images/Figure4', '-dpdf');
 
 
-        case 'corr' % FigureS1
+        case 'fig:corr' % FigureS1
             % corrected contrasts
             %
 
@@ -1838,13 +1840,14 @@ function show_figure(fig)
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('RU (corr.)', 'FontSize', fontsize);
+            title('Relative uncertainty (corr.)', 'FontSize', fontsize);
 
             % TODO dedupe with Figure3
             % our ROI
             centx = x * 0.79;
             centy = y * 0.30;
 
+            %{
             r = 50;
             hold on;
             theta = 0 : (2 * pi / 10000) : (2 * pi);
@@ -1853,6 +1856,7 @@ function show_figure(fig)
             k = ishold;
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
+            %}
 
 
             % TU 
@@ -1868,11 +1872,12 @@ function show_figure(fig)
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU (corr.)', 'FontSize', fontsize);
+            title('Total uncertainty (corr.)', 'FontSize', fontsize);
 
             % TODO dedupe with Figure4
             hold on;
 
+            %{
             xs = [0.09, 0.16];
             ys = [0.18, 0.17];
             colors = {[0.99 0.99 0.99], [0.50 0.99 0.50]};
@@ -1888,6 +1893,7 @@ function show_figure(fig)
                 plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', colors{i});
             end
             hold off;
+            %}
 
 
             % RU - TU
@@ -1947,8 +1953,8 @@ function show_figure(fig)
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.13, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.57, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.10, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.54, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
             %text(0.13, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
             %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
@@ -2223,7 +2229,7 @@ function show_figure(fig)
             print('images/badreTU', '-dpdf');
 
 
-        case '1reg_only'
+        case 'fig:1reg_only'
             % single-regressor GLMs 
             %
 
