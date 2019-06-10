@@ -11,7 +11,7 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
-        case 'simulate'
+        case 'fig:simulate'
 
             figure('pos', [10 10 300 200]);
 
@@ -46,7 +46,8 @@ function show_figure(fig)
             [p, anovatab, stats] = anova1(perf);
             [c,m,h,nms] = multcompare(stats);
 
-            comp_names = {'V vs. V + RU', 'V vs. V/TU', 'V + RU vs. V + RU + V/TU', 'V/TU vs. V + RU + V/TU'};
+            %comp_names = {'V vs. V + RU', 'V vs. V/TU', 'V + RU vs. V + RU + V/TU', 'V/TU vs. V + RU + V/TU'};
+            comp_names = {'softmax vs. UCB', 'softmax vs. Thompson', 'UCB vs. hybrid', 'Thompson vs. hybrid'};
             comps = [1 2; 1 3; 2 4; 3 4];
 
             fprintf('significant difference between models ($F(%d,%d) = %.2f, %s$, one-way ANOVA)\n', anovatab{2,3}, anovatab{3,3}, anovatab{2,5}, pvalue_to_latex(anovatab{2,6}));
@@ -55,11 +56,11 @@ function show_figure(fig)
                 j = find(c(:,1) == comps(i,1) & c(:,2) == comps(i,2));
                 p_string = pvalue_to_latex(c(j, end));
 
-                fprintf('%s (%s, pairwise multiple comparison test)\n', comp_names{i}, p_string);
+                fprintf('%s ($%s$, pairwise multiple comparison test)\n', comp_names{i}, p_string);
             end
 
 
-        case 'simulate_more'
+        case 'fig:simulate_more'
 
             %
             % compare perf generatively using different params
@@ -128,7 +129,7 @@ function show_figure(fig)
 
             print('images/simulate_more', '-dpdf');
 
-        case 'compare'
+        case 'tab:compare'
 
             data = load_data;
             load results_glme_fig3_nozscore.mat;
@@ -140,16 +141,18 @@ function show_figure(fig)
             comp{4} = compare(results_VTU, results_VTURU);
 
             fprintf('\n\n\n');
-            fprintf('\\textbf{Model} & \\textbf{AIC} & \\textbf{BIC} & \\textbf{LL}  \\\\ \\hline \n');
+            fprintf('\\textbf{Model} & \\textbf{Regressors} & \\textbf{AIC} & \\textbf{BIC}  & \\textbf{LL}  & \\textbf{Deviance}  \\\\ \\hline\n');
             fprintf('\n\n\n');
 
-            model_names = {'V', 'V + RU', 'V/TU', 'V + RU + V/TU'};
+            model_regs = {'V', 'V + RU', 'V/TU', 'V + RU + V/TU'};
+            model_names = {'Softmax', 'UCB', 'Thompson sampling', 'UCB/Thompson hybrid'};
             BIC = [comp{1}.BIC(1) comp{3}.BIC(1) comp{4}.BIC(1) comp{4}.BIC(2)];
             AIC = [comp{1}.AIC(1) comp{3}.AIC(1) comp{4}.AIC(1) comp{4}.AIC(2)];
             LogLik = [comp{1}.LogLik(1) comp{3}.LogLik(1) comp{4}.LogLik(1) comp{4}.LogLik(2)];
+            Dev  = [results_V.ModelCriterion.Deviance results_VRU.ModelCriterion.Deviance  results_VTU.ModelCriterion.Deviance  results_VTURU.ModelCriterion.Deviance];
 
             for i = 1:length(BIC)
-                fprintf(' %s & %.2f & %.2f & %.2f \\\\ \\hline \n', model_names{i}, BIC(i), AIC(i), LogLik(i));
+                fprintf(' %s &  %s & %.2f & %.2f & %.2f & %.2f \\\\ \\hline \n', model_names{i}, model_regs{i}, BIC(i), AIC(i), LogLik(i), Dev(i));
             end
 
 
@@ -166,7 +169,10 @@ function show_figure(fig)
             end
 
 
-        case 'perf'
+        case 'fig:perf'
+
+            % do subjects with greater w's also perform better?
+            %
 
             data = load_data;
             load results_glme_fig3_nozscore.mat;
@@ -192,14 +198,17 @@ function show_figure(fig)
 
             figure('pos', [10 10 700 200]);
 
+            titls = {'softmax', 'UCB', 'Thompson sampling'};
             for i = 1:3
                 subplot(1,3,i);
                 scatter(w(:,i), perf);
                 lsline;
-                title(sprintf('w_%d', i));
+                title(titls{i});
                 xlabel(sprintf('w_%d', i));
                 ylabel('P(better option)');
             end
+
+            print('images/perf', '-dpdf');
 
 
         case 'vifs'
@@ -751,7 +760,7 @@ function show_figure(fig)
 
 
 
-        case 'behav' % Figure2
+        case 'fig:behav' % Figure2
             figure('pos', [10 10 700 200]);
 
             fontsize = 12;
@@ -821,6 +830,19 @@ function show_figure(fig)
             set(gca,'FontSize',fontsize,'XTick',[1 2 3],'XTickLabel',{'$V$' '$RU$' '$V/TU$'},'XLim',[0.5 3.5], 'Ylim', [0 3]);
             ylabel('Regression coefficient','FontSize',fontsize);
             %}
+
+            load results_glme_fig3_nozscore; % same as TrustRegion2D
+            results = results_VTURU;
+            [beta,~,stats] = fixedEffects(results);
+            w = beta([3 1 2]);
+            se = stats.SE([3 1 2]);
+            t = stats.tStat([3 1 2]);
+            df = stats.DF([3 1 2]);
+            p = stats.pValue([3 1 2]);
+           
+            for i = 1:3
+                fprintf('w_%d = %.3f \\pm %.3f, t(%d) = %.2f, p = %s; \n', i, w(i), se(i), df(i), t(i), pvalue_to_latex(p(i)));
+            end
             
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);

@@ -272,9 +272,11 @@ comp
 %BIC(c,:) = comp.BIC';
 
 
-save(filename, '-v7.3');
 
 results_all = results_both;
+
+
+save(filename, '-v7.3');
 
 %load('univariate_decoder_glm21_RU_RU_-_trial_norm=4_orth=1_lambda=1.000000_standardize=2_mixed=0.mat', 'results_both');
 %load('univariate_decoder_roiglm36_RU_glm36_RU_orth=1_lambda=1.000000_standardize=2_mixed=0_corr=0_extent=100_Num=1.mat', 'results_both'); % preprint?
