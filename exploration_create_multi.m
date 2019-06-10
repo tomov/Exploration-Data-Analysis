@@ -10,6 +10,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
     %   subj - integer specifying which subject is being analyzed
     %   run - integer specifying the run
     %
+
     % OUTPUTS:
     %   multi - a sctructure with the folloowing fields
     %        .names{i}

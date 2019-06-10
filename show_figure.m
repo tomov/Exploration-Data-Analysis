@@ -26,7 +26,7 @@ function show_figure(fig)
             load simulate.mat
 
             perf = [perf_V perf_VRU perf_VTU perf_VTURU];
-            names = {'V', 'V + RU', 'V/TU', 'V + RU + V/TU'};
+            names = {'softmax (V)', 'UCB (V + RU)', 'Thompson (V/TU)', 'hybrid (V + RU + V/TU)'};
             m = mean(perf,1);
             se = std(perf,[],1) / sqrt(size(perf,1));
 
@@ -858,7 +858,23 @@ function show_figure(fig)
 
 
 
+        case 'tab:RU'
 
+            %ccnl_results_table('AAL2', 'peak', exploration_expt, 45, 'RU', 0.001, '-', 0.05, 20, 3, true);
+            %ccnl_results_table('AnatomyToolbox', 'peak', exploration_expt, 45, 'RU', 0.001, '-', 0.05, 20, 3, true);
+            ccnl_results_table('HarvardOxford-maxprob-thr0', 'peak', exploration_expt, 45, 'RU', 0.001, '-', 0.05, 20, 3, true);
+
+        case 'tab:TU'
+
+            ccnl_results_table('AAL2', 'peak', exploration_expt, 45, 'TU', 0.001, '+/-', 0.05, 20, 3, true);
+            %ccnl_results_table('AnatomyToolbox', 'peak', exploration_expt, 45, 'TU', 0.001, '+/-', 0.05, 20, 3, true);
+            %ccnl_results_table('HarvardOxford-maxprob-thr0', 'peak', exploration_expt, 45, 'TU', 0.001, '+/-', 0.05, 20, 3, true);
+
+        case 'tab:DV'
+
+            %ccnl_results_table('AAL2', 'peak', exploration_expt, 29, 'DV', 0.001, '-', 0.05, 20, 3, true);
+            ccnl_results_table('AnatomyToolbox', 'peak', exploration_expt, 29, 'DV', 0.001, '-', 0.05, 20, 3, true);
+            %ccnl_results_table('HarvardOxford-maxprob-thr0', 'peak', exploration_expt, 45, 'TU', 0.001, '+/-', 0.05, 20, 3, true);
 
 
         case 'fig:RU'
@@ -1112,7 +1128,7 @@ function show_figure(fig)
 
 
             % RLPFC
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC}} \\\\ \\hline\n');
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{$\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ from right RLPFC}} \\\\ \\hline\n');
 
             RU_roi_idx = 1;
             TU_roi_idx = 2;
@@ -1126,7 +1142,7 @@ function show_figure(fig)
 
 
             % DLPFC
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right DLPFC}} \\\\ \\hline\n');
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{$\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ from right DLPFC}} \\\\ \\hline\n');
 
             load('univariate_decoder_refactored_roiglm-1_dlpfc_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
             fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$    &   %.2f  &  %.2f  &  %.2f   &  %.2f       \\\\ \\hline\n', ...
@@ -1138,16 +1154,16 @@ function show_figure(fig)
 
 
             % both
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Right RLPFC and DLPFC}} \\\\ \\hline\n');
-            load('univariate_decoder_both_badre_glm45_RUroi=1_TUroi=2_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1.mat', 'results_both');
+            fprintf('\\multicolumn{6}{|c|}{\\textbf{$\\widehat{\\text{RU}}$ from right RLPFC and $\\widehat{\\text{TU}}$ from right DLPFC}} \\\\ \\hline\n');
+            load('univariate_decoder_both_badre_glm45_RUroi=1_TUroi=2_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1.mat', 'results_all');
             fprintf('Hybrid augmented with $\\widehat{\\text{RU}}$ and $\\widehat{\\text{TU}}$ & V + RU + V/TU + $\\widehat{\\text{RU}}$ + V/$\\widehat{\\text{TU}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f    \\\\ \\hline \\hline\n', ...
                 results_all.ModelCriterion.AIC, results_all.ModelCriterion.BIC, results_all.ModelCriterion.LogLikelihood, results_all.ModelCriterion.Deviance);
 
 
             % DV
             DV_roi_idx = 1;
-            fprintf('\\multicolumn{6}{|c|}{\\textbf{Left M1}} \\\\ \\hline\n');
-            load('univariate_decoder_refactored_roiglm29_DV_glm29_DV_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat');
+            fprintf('\\multicolumn{5}{|c|}{\\textbf{$\\widehat{\\text{DV}}$ from left M1}} \\\\ \\hline\n');
+            load('univariate_decoder_refactored_roiglm29_DV_glm29_DV_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat', 'results_both');
             fprintf('Hybrid augmented with $\\widehat{\\text{DV}}$ & V + RU + V/TU + $\\widehat{\\text{DV}}$   &   %.2f  &  %.2f  &  %.2f   &  %.2f    \\\\ \\hline\n', ...
                 results_both{DV_roi_idx}.ModelCriterion.AIC, results_both{DV_roi_idx}.ModelCriterion.BIC, results_both{DV_roi_idx}.ModelCriterion.LogLikelihood, results_both{DV_roi_idx}.ModelCriterion.Deviance);
 
@@ -1208,8 +1224,12 @@ function show_figure(fig)
 
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XLim',[-8e5 6e5], 'Ylim', [0.64 0.9]);
-            xlabel('BIC','FontSize',axisfontsize);
+            xlabel('GLM 2 BIC','FontSize',axisfontsize);
+            xticklabels({'-500000', '0', '500000'});
             ylabel('P(better option)','FontSize',axisfontsize);
+            %h = get(gca, 'xlabel');
+            %get(h,'Position')
+            %set(h,'Position',get(h,'Position').*[0 1 1]);
 
 
 
@@ -1231,8 +1251,9 @@ function show_figure(fig)
 
             set(gca,'TickLabelInterpreter','latex');
             set(gca,'FontSize',axisfontsize,'XLim',[-8e5 6e5]);
-            xlabel('BIC','FontSize',axisfontsize);
-            ylabel('Log likelihood','FontSize',axisfontsize);
+            xlabel('GLM 2 BIC','FontSize',axisfontsize);
+            xticklabels({'-500000', '0', '500000'});
+            ylabel('Model log likelihood','FontSize',axisfontsize);
 
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
@@ -2230,7 +2251,7 @@ function show_figure(fig)
 
 
         case 'fig:1reg_only'
-            % single-regressor GLMs 
+            % single-regressor GLMs (67 68 69 70) TODO
             %
 
             figure('pos', [100 100 520 450]);
@@ -2249,15 +2270,16 @@ function show_figure(fig)
             pos = pos .* pos_scale;
             pos(2) = pos(2) * 0.8;
             subplot(2,2, 1, 'position', pos);
-            PICpng = imread('images/RU_only_100.png');
+            PICpng = imread('images/RU_67_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('RU (uncorr.; extent >= 100)', 'FontSize', fontsize);
+            title('Relative uncertainty (corr.)', 'FontSize', fontsize);
 
             % TODO dedupe with Figure3
+            %{
             centx = x * 0.79;
             centy = y * 0.30;
 
@@ -2269,6 +2291,7 @@ function show_figure(fig)
             k = ishold;
             plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', [0.99 0.99 0.99]);
             hold off;
+            %}
 
 
           
@@ -2279,16 +2302,17 @@ function show_figure(fig)
             pos = pos .* pos_scale;
             pos(2) = pos(2) * 0.8;
             subplot(2,2, 2, 'position', pos);
-            PICpng = imread('images/TU_only_100.png');
+            PICpng = imread('images/TU_68_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('TU (uncorr.; extent >= 100)', 'FontSize', fontsize);
+            title('Total uncertainty (corr.)', 'FontSize', fontsize);
 
             hold on;
 
+            %{
             xs = [0.09, 0.16];
             ys = [0.18, 0.17];
             colors = {[0.99 0.99 0.99], [0.50 0.99 0.50]};
@@ -2304,6 +2328,7 @@ function show_figure(fig)
                 plot(pline_x, pline_y, '-', 'LineWidth', 2, 'Color', colors{i});
             end
             hold off;
+            %}
 
 
 
@@ -2314,13 +2339,13 @@ function show_figure(fig)
             pos(2) = pos(2) * 0.8;
             pos = pos .* pos_scale;
             subplot(2,2, 3, 'position', pos);
-            PICpng = imread('images/V_only_100.png');
+            PICpng = imread('images/V_69_corr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('V (uncorr.; extent >= 100)', 'FontSize', fontsize);
+            title('Value difference (corr.)', 'FontSize', fontsize);
 
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
