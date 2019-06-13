@@ -16,39 +16,39 @@ function show_figure(fig)
             data = load_data;
             tbl = data2table(data,0,1); % don't standardize!
 
+            %data = load_data_sam_2019('data_sam_2019_paper.csv');
+            %tbl = data2table_sam_2019(data,0,1); % don't standardize!
+
             figure;
 
-            subplot(1,3,1);
-            scatter(tbl.V, tbl.RU);
-            title('V vs. RU');
-            xlabel('V');
-            ylabel('RU');
-            lsline;
+            regs = {'V', 'RU', 'TU'};
 
-            [r,p] = corr(tbl.V, tbl.RU);
-            fprintf('V vs. RU: r(%d) = %.2f, %s\n', length(tbl.V) - 2, r, pvalue_to_latex(p));
+            k = 1;
+            for i = 1:3
+                for j = i+1:3
+                    
+                    A = tbl.(regs{i});
+                    B = tbl.(regs{j});
 
+                    clear rs;
+                    for s = 1:length(data)
+                        a = A(tbl.S == s);
+                        b = B(tbl.S == s);
 
-            subplot(1,3,2);
-            scatter(tbl.V, tbl.TU);
-            title('V vs. TU');
-            xlabel('V');
-            ylabel('TU');
-            lsline;
+                        [r,p] = corr(a, b);
+                        rs(s) = r;
+                    end
 
-            [r,p] = corr(tbl.V, tbl.TU);
-            fprintf('V vs. TU: r(%d) = %.2f, %s\n', length(tbl.V) - 2, r, pvalue_to_latex(p));
+                    k = k+1;
 
+                    m = mean(rs);
+                    se = std(rs) / sqrt(length(rs));
+                    [h, p, ci, stat] = ttest(atanh(rs));
+                    fprintf('%s vs. %s: r = %.2f +- %.2f, t(%d) = %.2f, p = %s\n', regs{i}, regs{j}, m, se, stat.df, stat.tstat, pvalue_to_latex(p));
 
-            subplot(1,3,3);
-            scatter(tbl.RU, tbl.TU);
-            title('RU vs. TU');
-            xlabel('RU');
-            ylabel('TU');
-            lsline;
+                end
+            end
 
-            [r,p] = corr(tbl.RU, tbl.TU);
-            fprintf('RU vs. TU: r(%d) = %.2f, %s\n', length(tbl.RU) - 2, r, pvalue_to_latex(p));
 
         case 'fig:simulate'
 
