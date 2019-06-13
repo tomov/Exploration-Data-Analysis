@@ -11,6 +11,45 @@ function show_figure(fig)
             bspmview(masks{1}, struc);
 
 
+        case 'corr_regs'
+
+            data = load_data;
+            tbl = data2table(data,0,1); % don't standardize!
+
+            figure;
+
+            subplot(1,3,1);
+            scatter(tbl.V, tbl.RU);
+            title('V vs. RU');
+            xlabel('V');
+            ylabel('RU');
+            lsline;
+
+            [r,p] = corr(tbl.V, tbl.RU);
+            fprintf('V vs. RU: r(%d) = %.2f, %s\n', length(tbl.V) - 2, r, pvalue_to_latex(p));
+
+
+            subplot(1,3,2);
+            scatter(tbl.V, tbl.TU);
+            title('V vs. TU');
+            xlabel('V');
+            ylabel('TU');
+            lsline;
+
+            [r,p] = corr(tbl.V, tbl.TU);
+            fprintf('V vs. TU: r(%d) = %.2f, %s\n', length(tbl.V) - 2, r, pvalue_to_latex(p));
+
+
+            subplot(1,3,3);
+            scatter(tbl.RU, tbl.TU);
+            title('RU vs. TU');
+            xlabel('RU');
+            ylabel('TU');
+            lsline;
+
+            [r,p] = corr(tbl.RU, tbl.TU);
+            fprintf('RU vs. TU: r(%d) = %.2f, %s\n', length(tbl.RU) - 2, r, pvalue_to_latex(p));
+
         case 'fig:simulate'
 
             figure('pos', [10 10 300 200]);
@@ -638,7 +677,7 @@ function show_figure(fig)
 
 
 
-        case 'task' % Figure1
+        case 'fig:task' % Figure1
             figure('pos', [10 10 520 450]);
 
             fontsize = 12;
@@ -716,8 +755,8 @@ function show_figure(fig)
                     legend({'RR' 'SS'},'FontSize',fontsize,'Location','southeast');
                 end
                 set(gca,'FontSize',fontsize,'XLim',[min(mu) max(mu)],'YLim',[-0.05 1.05]);
-                ylabel('P(choose left)','FontSize',fontsize);
-                xlabel({'Expected value difference,', 'V = Q(left) - Q(right)'},'FontSize',fontsize);
+                ylabel('P(choose 1)','FontSize',fontsize);
+                xlabel({'Expected value difference,', '\mu(1) - \mu(2)'},'FontSize',fontsize);
                 title(T{i},'FontSize',fontsize','FontWeight','Bold');
             end
            
@@ -2270,13 +2309,13 @@ function show_figure(fig)
             pos = pos .* pos_scale;
             pos(2) = pos(2) * 0.8;
             subplot(2,2, 1, 'position', pos);
-            PICpng = imread('images/RU_67_corr.png');
+            PICpng = imread('images/RU_67_uncorr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('Relative uncertainty (corr.)', 'FontSize', fontsize);
+            title({'Relative uncertainty alone', '(uncorr.)'}, 'FontSize', fontsize);
 
             % TODO dedupe with Figure3
             %{
@@ -2302,13 +2341,13 @@ function show_figure(fig)
             pos = pos .* pos_scale;
             pos(2) = pos(2) * 0.8;
             subplot(2,2, 2, 'position', pos);
-            PICpng = imread('images/TU_68_corr.png');
+            PICpng = imread('images/TU_68_uncorr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('Total uncertainty (corr.)', 'FontSize', fontsize);
+            title({'Total uncertainty alone', '(uncorr.)'}, 'FontSize', fontsize);
 
             hold on;
 
@@ -2339,19 +2378,19 @@ function show_figure(fig)
             pos(2) = pos(2) * 0.8;
             pos = pos .* pos_scale;
             subplot(2,2, 3, 'position', pos);
-            PICpng = imread('images/V_69_corr.png');
+            PICpng = imread('images/V_69_uncorr.png');
 
             [rows columns numberOfColorChannels] = size(PICpng);
             x = columns;
             y = rows;
             imshow(PICpng, 'InitialMagnification', 'fit');  
-            title('Value difference (corr.)', 'FontSize', fontsize);
+            title({'Value difference alone', ' (uncorr.)'}, 'FontSize', fontsize);
 
 
             ax1 = axes('Position',[0 0 1 1],'Visible','off');
             axes(ax1);
-            text(0.10, 0.85, 'A', 'FontSize', 25, 'FontWeight', 'bold');
-            text(0.55, 0.85, 'B', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.10, 0.88, 'A', 'FontSize', 25, 'FontWeight', 'bold');
+            text(0.55, 0.88, 'B', 'FontSize', 25, 'FontWeight', 'bold');
             text(0.10, 0.50, 'C', 'FontSize', 25, 'FontWeight', 'bold');
             %text(0.57, 0.50, 'D', 'FontSize', 25, 'FontWeight', 'bold');
 
