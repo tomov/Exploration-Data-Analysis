@@ -1258,7 +1258,7 @@ function show_figure(fig)
             scatter(bic, perf);
             hold on;
             lsline;
-            text(-7e5, 0.69, sprintf('r = %.2f, p = %.2f', r, p));
+            text(0, 0.88, sprintf('r = %.2f,\np = %.2f', r, p));
             hold off;
 
             set(gca,'TickLabelInterpreter','latex');
@@ -1285,7 +1285,7 @@ function show_figure(fig)
             scatter(bic, loglik);
             hold on;
             lsline;
-            text(-7e5, -170, sprintf('r = %.2f, p = %.2f', r, p));
+            text(1.5e5, -60, sprintf('r = %.2f,\np = %.2f', r, p));
             hold off;
 
             set(gca,'TickLabelInterpreter','latex');
