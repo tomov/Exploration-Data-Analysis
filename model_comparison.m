@@ -14,4 +14,14 @@ function [results_V, results_VTU, results_VRU, results_VTURU ] = model_compariso
     formula = 'C ~ -1 + V + RU + VTU + (-1 + V + RU + VTU|S)';
     results_VTURU = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal')
     
+    formula = 'C ~ -1 + V + RU + VTU2 + (-1 + V + RU + VTU2|S)';
+    results_VTU2RU = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal')
+
+    formula = 'C ~ -1 + VTU2 + RUTU2 + (-1 + VTU2 + RUTU2|S)';
+    results_VTU2RUTU2 = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal')
+
+    formula = 'C ~ -1 + VTU + RUTU + (-1 + VTU + RUTU|S)';
+    results_VTURUTU = fitglme(tbl,formula,'Distribution','Binomial','Link','Probit','FitMethod','Laplace', 'EBMethod', 'TrustRegion2D', 'CovariancePattern','diagonal')
+
     %save results_glme_fig3_nozscore_TrustRegion2D results_V results_VTU results_VRU results_VTURU
+    save results_glme_fig3_nozscore_TrustRegion2D_seq

@@ -1,6 +1,6 @@
 function multi = exploration_create_multi(glmodel, subj, run, save_output)
 
-    % Create multi structure, helper function for creating EXPT in
+    %c Create multi structure, helper function for creating EXPT in
     % exploration_expt.m
     %
     % USAGE: multi = exploration_create_multi(model,subj,run)

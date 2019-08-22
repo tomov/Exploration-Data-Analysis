@@ -49,6 +49,9 @@ function tbl = data2table(data,standardize,no_timeouts)
     
     SSV = SS.*V;
     VTU = V./TU;
+    VTU2 = V./(TU.^2);
+    RUTU = RU./TU;
+    RUTU2 = RU./(TU.^2);
     rt = log(rt);
     cond = categorical(cond);
     
@@ -56,10 +59,16 @@ function tbl = data2table(data,standardize,no_timeouts)
         VTU = zscore(VTU);
         V = zscore(V);
         RU = zscore(RU);
+        VTU2 = zscore(VTU2);
+        RUTU = zscore(RUTU);
+        RUTU2 = zscore(RUTU2);
     elseif standardize == 2
         VTU = VTU / norm(VTU);
         V = V / norm(V);
         RU = RU / norm(RU);
+        VTU2 = VTU2 / norm(VTU2);
+        RUTU = RUTU / norm(RUTU);
+        RUTU2 = RUTU2 / norm(RUTU2);
     end
     
-    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond,r1,r2,run,block,trial,mu1,mu2,r);
+    tbl = table(RS,SS,SSV,C,S,RU,VTU,V,TU,rt,risky,cond,r1,r2,run,block,trial,mu1,mu2,r,VTU2,RUTU,RUTU2);
