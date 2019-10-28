@@ -7,10 +7,15 @@ EXPT = exploration_expt();
 
 data = load_data;
 
+% compare DV region for functional connectivity ???
+%
+%[masks, region] = get_masks(47, 'DV', false, 100, 1);
+%glms = [47 61];
 
-[masks, region] = get_masks(47, 'DV', false, 100, 1);
-
-glms = [47 61];
+% compare DV vs RT in left M1
+%
+[masks, region] = get_masks(29, 'DV', true, [], 1);
+glms = [29 72];
 
 for c = 1:length(masks)
     mask = masks{c};
@@ -34,3 +39,6 @@ for c = 1:length(masks)
 end
 
 table(region, pxps)
+
+
+

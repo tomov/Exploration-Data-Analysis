@@ -440,6 +440,13 @@ function show_figure(fig)
                     end
                 end
 
+                save wtf.mat
+                % reviewer 3
+                t1 = pc(:,1,4);
+                t2 = pc(:,2,4);
+                [h,p,ci,stat] = ttest(t1,t2);
+                fprintf('SS trial 1 vs. trial 2, %s: t(%d) = %.3f, p = %.4f \n', captions{human_or_model}, stat.df, stat.tstat, p);
+
                 subplot(2,1, human_or_model);
 
                 [se,mu] = wse(pc);
@@ -476,7 +483,7 @@ function show_figure(fig)
                 fprintf('%s -> avg model reward = %.3f\n', conds{cond}, mean(r_cond(ix)));
             end
 
-            print('images/learning', '-dpdf');
+            %print('images/learning', '-dpdf');
 
 
 
