@@ -131,7 +131,7 @@ for c = 1:numel(masks)
 
         % decode regressor
         dec = ccnl_decode_regressor(EXPT, glmodel, ['x', regressor, '^'], masks{c}, lambda, s);
-        dec = mean(dec{1}, 2); % average across voxels
+        dec = nanmean(dec{1}, 2); % average across voxels
 
         % pick trial_onset activations only
         which_act = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
@@ -176,21 +176,6 @@ for c = 1:numel(masks)
 
     end
 
-
-    % TODO second pass -- decode using best lambda from other subjects
-    %
-
-    act = [];
-    mse = [];
-    for s = 1:length(data)
-        act = [act; data(s).act(:, c)];
-
-        mse(s) = calc_mse(data(s), data(s).act(:,c), regressor, flip_sign);
-    end
-    assert(all(~isnan(act(~exclude))));
-
-
-    tbl_dec = augment_table_with_decoded_regressor(tbl, regressor, act, standardize, exclude, V_all);
 
 end
 
