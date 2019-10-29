@@ -3078,6 +3078,91 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
                multi.durations{5} = zeros(size(multi.onsets{5}));
            end
 
+        % #Sam/reviewer 3
+        % glm 71 but RT @ RT
+        % |DV| @ trial_onset
+        % RT @ RT
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        %
+        case 73
+           [~, RU, TU, ~, DV] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'abs'); % exclude timeouts
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials & ~data(subj).timeout); % exclude timeouts
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'DV';
+           multi.pmod(1).param{1} = DV';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials & ~data(subj).timeout); % TODO maybe exclude timeouts for other GLMs too; though still makes sense to keep it if they timed out accidentally
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.pmod(2).name{1} = 'RT';
+           multi.pmod(2).param{1} = data(subj).RT(which_trials & ~data(subj).timeout)';
+           multi.pmod(2).poly{1} = 1;    
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           if sum(which_trials & data(subj).timeout) > 0
+               multi.names{5} = 'trial_onset_timeouts';
+               multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).timeout); % timeouts only
+               multi.durations{5} = zeros(size(multi.onsets{5}));
+           end
+
+
+        % #Sam/reviewer3
+        % |(w1+w3) V + w2 RU| @ trial_onset
+        % left choice @ trial_onset
+        % nuisance @ choice_onset and feedback_onset 
+        % copied from 29 & 44
+        %
+        case 74
+           [V, RU, TU, VTU, DV, DQ1, DQ2, Q1, Q2, std1, std2, DQL, DQR, QL, QR, stdL, stdR, w] = get_latents(data, subj, which_trials & ~data(subj).timeout, 'left'); % exclude timeouts
+
+           DV = (w(1) + w(3)) * V + w(2) * RU;
+           DV = abs(DV);
+
+
+           multi.names{1} = 'trial_onset';
+           multi.onsets{1} = data(subj).trial_onset(which_trials & ~data(subj).timeout); % exclude timeouts
+           multi.durations{1} = zeros(size(multi.onsets{1}));
+
+           multi.orth{1} = 0; % do not orthogonalise them  
+
+           multi.pmod(1).name{1} = 'DV';
+           multi.pmod(1).param{1} = DV';
+           multi.pmod(1).poly{1} = 1;    
+
+           multi.names{2} = 'choice_onset';
+           multi.onsets{2} = data(subj).choice_onset(which_trials);
+           multi.durations{2} = zeros(size(multi.onsets{2}));
+
+           multi.names{3} = 'feedback_onset';
+           multi.onsets{3} = data(subj).feedback_onset(which_trials);
+           multi.durations{3} = zeros(size(multi.onsets{3}));
+
+           multi.names{4} = 'trial_onset_L';
+           multi.onsets{4} = data(subj).trial_onset(which_trials & data(subj).choice == 1);
+           multi.durations{4} = zeros(size(multi.onsets{4}));
+
+           if sum(which_trials & data(subj).timeout) > 0
+               multi.names{5} = 'trial_onset_timeouts';
+               multi.onsets{5} = data(subj).trial_onset(which_trials & data(subj).timeout); % timeouts only
+               multi.durations{5} = zeros(size(multi.onsets{5}));
+           end
+
+
         otherwise
             assert(false, 'invalid glmodel -- should be one of the above');
 
