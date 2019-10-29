@@ -46,6 +46,9 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
                 masks{i} = fullfile('masks', files(i).name);
             end
 
+        case 'vmpfc_l'
+            masks{1} = fullfile('masks', 'vmpfc_l_resized.nii');
+
         otherwise
 
 
@@ -72,6 +75,10 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
                 end
                 direct = '+/-';
 
+                % TODO HACK FIXME for V
+                if ismember(glmodel, [69])
+                    direct = '+';
+                end
                 % TODO HACK FIXME for DV
                 if ismember(glmodel, [47, 29])
                     direct = '-';

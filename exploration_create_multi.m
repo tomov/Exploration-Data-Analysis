@@ -2929,7 +2929,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
            end
 
 
-        % copy of 45 but with TU only -- for VIFs followup 
+        % copy of 45 but with V only -- for VIFs followup 
         % same idea as 41
         %
         case 69

@@ -166,7 +166,7 @@ for c = 1:numel(masks)
 
         y = y(~data(s).bad_runs); % model V
         yhat = data(s).act(~data(s).bad_runs,c); % Vhat, decoded from the brain
-        v = data.TU(~data(s).bad_runs);
+        v = data(s).TU(~data(s).bad_runs);
 
         [r,p] = corr((y - yhat).^2, v.^2); % TODO glm not corr TODO sqrt?
 
