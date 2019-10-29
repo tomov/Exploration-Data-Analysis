@@ -2,10 +2,13 @@
 
 % is V in vmPFC?
 
-mni = [3 30 -21; ... % Daw et al 2006
-       6 36 -8];    % Lim et al 2011
+%{
+mni = [ ... %3 30 -21; ... % Daw et al 2006
+       6 36 -8 ... % Lim et al 2011
+       ];    
+       %}
+mni = [-3 47 -18];
 
-% ccnl_create_mask({'Frontal_Sup_Medial_L', 'Frontal_Sup_Medial_R', 'Frontal_Med_Orb_L', 'Frontal_Med_Orb_R', 'Rectus_L', 'Rectus_R'}, 'masks/test.nii', 'AAL2')
 
 
 sphere = 10;
@@ -26,6 +29,20 @@ for i = 1:size(mni, 1)
     masks{i} = V.fname;
 end
 
+
+
+
+
+
+
+
+
+%ccnl_create_mask({'Frontal_Sup_Medial_L', 'Frontal_Sup_Medial_R', 'Frontal_Med_Orb_L', 'Frontal_Med_Orb_R', 'Rectus_L', 'Rectus_R'}, 'masks/test.nii', 'AAL2');
+ccnl_create_mask({'Frontal_Sup_Medial_L', 'Frontal_Med_Orb_L', 'Rectus_L'}, 'masks/vmpfc_l.nii', 'AAL2');
+
+
+%masks = {'masks/value_association-test_z_FDR_0.01.nii'}
+masks = {'masks/vmpfc_l.nii'};
 
 for m = 1:length(masks)
 

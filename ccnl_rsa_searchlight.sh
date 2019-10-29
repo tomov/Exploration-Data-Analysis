@@ -13,11 +13,11 @@ echo ---------------- >> jobs.txt
 batch_size=10000;
 subbatch_size=1000;
 
-for rsa_idx in {2..2}
+for rsa_idx in {4..4}
 do
     echo -- rsa_idx ${rsa_idx} -- >> jobs.txt
 
-    for batch in {1..2}
+    for batch in {1..2} # 1..25
     do
         start_idx=$(((batch - 1) * batch_size + 1))
         end_idx=$((batch * batch_size))
@@ -33,7 +33,7 @@ do
 
         # send the job to NCF
         #
-        sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $\"$rsa_searchlight_call;exit\""`
+        sbatch_output=`sbatch -p ncf_holy --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $\"$rsa_searchlight_call;exit\""`
         # for local testing
         #sbatch_output=`echo Submitted batch job 88725418`
         echo $sbatch_output

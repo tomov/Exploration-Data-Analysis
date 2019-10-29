@@ -10,13 +10,23 @@ echo ---------------- >> jobs.txt
 #function multivariate_decoder_bms(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
 
 declare -a fn_calls=(
-                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
                      "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
                      "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
                      )
+
+#declare -a fn_calls=(
+#                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     )
+
+#declare -a fn_calls=(
+#                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder_bms(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     )
 
 #declare -a fn_calls=(
 #                     "multivariate_decoder_bms(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false)"
@@ -121,7 +131,7 @@ declare -a fn_calls=(
 for fn_call in "${fn_calls[@]}"
 do
     echo $fn_call
-    sbatch_output=`sbatch -p ncf_holy --mem 50001 -t 1-1:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'${fn_call};exit'"`
+    sbatch_output=`sbatch -p ncf_holy --mem 50001 -t 10-1:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'${fn_call};exit'"`
     sbatch_output_split=($sbatch_output)
     job_id=${sbatch_output_split[3]}
     echo $sbatch_output

@@ -14,7 +14,7 @@
 
 
 rsync -avh --rsh="/usr/local/bin/sshpass -p password ssh -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/mean.nii glmOutput/mean.nii
-for i in {29..29}
+for i in {12..13}
 do
     rsync -avh --rsh="/usr/local/bin/sshpass -p password -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/model$i/con* glmOutput/model$i/
 

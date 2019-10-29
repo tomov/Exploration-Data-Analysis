@@ -8,9 +8,28 @@ echo --- Running cross_subj_perf >> jobs.txt
 echo ---------------- >> jobs.txt
 
 #function cross_subj_perf(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)
+#declare -a fn_calls=(
+#                     "cross_subj_perf(47, \'DV\', 47, \'DV\', 2, false, 100, false)"
+#                     )
+
 declare -a fn_calls=(
-                     "cross_subj_perf(47, \'DV\', 47, \'DV\', 2, false, 100, false)"
+                     "cross_subj_perf(29, \'DV\', 29, \'DV\', 2, false, 100, false)"
+                     "cross_subj_perf(29, \'DV\', 45, \'RU\', 2, false, 100, false)"
+                     "cross_subj_perf(29, \'DV\', 45, \'TU\', 2, false, 100, false)"
+                     "cross_subj_perf(29, \'DV\', 45, \'V\', 2, false, 100, false)"
+                     "cross_subj_perf(-1, \'badre\', 45, \'RU\', 2, false, 100, false)"
+                     "cross_subj_perf(-1, \'dlpfc\', 45, \'TU\', 2, false, 100, false)"
                      )
+
+# conjunction, GLM 36, mean and peak 
+#declare -a fn_calls=(
+#                     "cross_subj_perf(-1, \'conj_3\', 45, \'RU\', 2, false, 100, false)"
+#                     "cross_subj_perf(-1, \'conj_3\', 45, \'TU\', 2, false, 100, false)"
+#                     "cross_subj_perf(-1, \'conj_3\', 45, \'V\', 2, false, 100, false)"
+#                     "cross_subj_perf(-1, \'conj_45\', 45, \'RU\', 2, false, 100, false)"
+#                     "cross_subj_perf(-1, \'conj_45\', 45, \'TU\', 2, false, 100, false)"
+#                     "cross_subj_perf(-1, \'conj_45\', 45, \'V\', 2, false, 100, false)"
+#                     )
 
 
 #function cross_subj_perf(roi_glmodel, roi_contrast, glmodel, regressor, standardize, clusterFWEcorrect, extent, odd_runs)

@@ -9,11 +9,11 @@ goodSubjects=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 subj_arg="${goodSubjects[@]}" # stringify it
 
 echo ---------------- >> jobs.txt
-echo --- Running ccnl_fmri_glm for subjects ${subj_arg} >> jobs.txt
+echo --- Running ccnl_fmri_glm FIR for subjects ${subj_arg} >> jobs.txt
 echo ---------------- >> jobs.txt
 
 
-for model in {74..74}
+for model in {36..36}
 do
     shuffledSubjects=( $(printf '%s\n' "${goodSubjects[@]}" | shuf ) )   # shuffle subjects so parallel GLM's don't use the same hard disk
     subj_arg="${shuffledSubjects[@]}" # stringify it
@@ -23,7 +23,7 @@ do
 
     # send the job to NCF
     #
-    sbatch_output=`sbatch -p ncf_holy --mem 50000 -t 2-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(exploration_expt(), $model, [$subj_arg]);exit'"`
+    sbatch_output=`sbatch -p ncf_holy --mem 50000 -t 2-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm(exploration_expt_fir(), $model, [$subj_arg]);exit'"`
     # for local testing
     #sbatch_output=`echo Submitted batch job 88725418`
     echo $sbatch_output
@@ -32,7 +32,7 @@ do
     #
     sbatch_output_split=($sbatch_output)
     job_id=${sbatch_output_split[3]}
-    echo ccnl_fmri_glm.sh for GLM ${model}, subjects ${subj_arg}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
+    echo ccnl_fmri_glm_fir.sh for GLM ${model}, subjects ${subj_arg}: ${outfileprefix}_${job_id}.out -- $sbatch_output >> jobs.txt
 
     echo watch job status with: sacct -j ${job_id}
     echo watch output with: tail -f ${outfileprefix}_${job_id}.out

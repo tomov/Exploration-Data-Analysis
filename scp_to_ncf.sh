@@ -1,7 +1,8 @@
-scp  exploration_create_multi.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  exploration_create_multi.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  vmpfc*.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  masks/value*.nii  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks
-#scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/masks/vmpfc_analysis.m  .
+scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/vmpfc_analysis.m  .
+scp    mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/*.sh .
 #scp ~/.vimrc ~/.tmux.conf  mtomov13@ncflogin.rc.fas.harvard.edu:/users/mtomov13/dotfiles_mac
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_refactored_roiglm-1_badre_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat .

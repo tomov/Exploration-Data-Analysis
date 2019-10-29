@@ -12,7 +12,7 @@ echo ---------------- >> jobs.txt
 
 # send the job to NCF
 #
-sbatch_output=`sbatch -p ncf --mem 50000 -t 1-15:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'run_ccnl_fmri_con_nosmooth;exit'"`
+sbatch_output=`sbatch -p ncf_holy --mem 50000 -t 1-15:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'run_ccnl_fmri_con_nosmooth;exit'"`
 # for local testing
 #sbatch_output=`echo Submitted batch job 88725418`
 echo $sbatch_output

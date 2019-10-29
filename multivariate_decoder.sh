@@ -10,13 +10,19 @@ echo ---------------- >> jobs.txt
 #function multivariate_decoder(roi_glmodel, roi_contrast, regressor, do_orth, standardize, mixed_effects, clusterFWEcorrect, extent, Num, intercept, method, get_null, zscore_across_voxels, predict_abs, use_smooth)
 
 declare -a fn_calls=(
-                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
                      "multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
-                     "multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
                      "multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
                      )
+
+
+#declare -a fn_calls=(
+#                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder(36, \'TU\', \'TU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, false, \'ridge_CV\', false, false, false, false)"
+#                     "multivariate_decoder(36, \'TU\', \'TU\', false, 0, true, false, 100, 1, true, \'ridge_CV\', false, false, false, false)"
+#                     )
 
 #declare -a fn_calls=(
 #                     "multivariate_decoder(36, \'RU\', \'RU\', false, 0, false, false, 100, 1, false, \'ridge_CV\', false)"

@@ -12,7 +12,7 @@ echo ---------------- >> jobs.txt
 echo --- Running ccnl_fmri_glm_nosmooth for subjects ${subj_arg} >> jobs.txt
 echo ---------------- >> jobs.txt
 
-for model in {1004..1006}
+for model in {62..63}
 do
     shuffledSubjects=( $(printf '%s\n' "${goodSubjects[@]}" | shuf ) )   # shuffle subjects so parallel GLM's don't use the same hard disk
     subj_arg="${shuffledSubjects[@]}" # stringify it
@@ -22,7 +22,7 @@ do
 
     # send the job to NCF
     #
-    sbatch_output=`sbatch -p ncf --mem 50000 -t 20-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm_nosmooth(exploration_expt(), $model, [$subj_arg]);exit'"`
+    sbatch_output=`sbatch -p ncf_holy --mem 50000 -t 2-18:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'ccnl_fmri_glm_nosmooth(exploration_expt_nosmooth(), $model, [$subj_arg]);exit'"`
     # for local testing
     #sbatch_output=`echo Submitted batch job 88725418`
     echo $sbatch_output

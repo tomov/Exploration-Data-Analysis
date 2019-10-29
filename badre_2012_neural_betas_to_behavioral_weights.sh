@@ -4,7 +4,7 @@ outfileprefix="output/badre_2012_neural_betas_to_behavioral_weights"
 echo File prefix = $outfileprefix
 
 echo ---------------- >> jobs.txt
-echo --- Running badre_2012_neural_betas_to_behavioral_weights GLM 21 max beta  >> jobs.txt
+echo --- Running badre_2012_neural_betas_to_behavioral_weights  >> jobs.txt
 echo ---------------- >> jobs.txt
 
 sbatch_output=`sbatch -p ncf --mem 50000 -t 1-15:20 -o ${outfileprefix}_%j.out -e ${outfileprefix}_%j.err --wrap="matlab -nodisplay -nosplash -nojvm -r $'badre_2012_neural_betas_to_behavioral_weights;exit'"`
