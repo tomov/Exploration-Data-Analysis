@@ -80,7 +80,7 @@ function [masks, region] = get_masks(glmodel, contrast, clusterFWEcorrect, exten
                     direct = '+';
                 end
                 % TODO HACK FIXME for DV
-                if ismember(glmodel, [47, 29])
+                if ismember(glmodel, [47, 29, 74, 75])
                     direct = '-';
                 end
                 % TODO HACK FIXME for RU

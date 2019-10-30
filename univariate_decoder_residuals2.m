@@ -147,7 +147,7 @@ for c = 1:numel(masks)
         y = data(s).res(~data(s).bad_runs,c);  % already squared -- see spm_spm.m and ccnl_get_residuals 
         v = data(s).TU(~data(s).bad_runs);
 
-        [r,p] = corr(y, v.^2); % TODO glm not corr TODO sqrt?
+        [r,p] = corr(y.^2, v.^2); % TODO glm not corr TODO sqrt?
 
         data(s).corr_r(c) = r;
         data(s).corr_p(c) = p;

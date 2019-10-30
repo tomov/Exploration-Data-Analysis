@@ -13,10 +13,10 @@
 # which sshpass <-- to find out where it is, and use that path in the --rsh thing below
 
 
-rsync -avh --rsh="/usr/local/bin/sshpass -p password ssh -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/mean.nii glmOutput/mean.nii
-for i in {12..13}
+rsync -avh --rsh="/usr/local/bin/sshpass -p password ssh -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin8.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/mean.nii glmOutput/mean.nii
+for i in {75..75}
 do
-    rsync -avh --rsh="/usr/local/bin/sshpass -p password -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/model$i/con* glmOutput/model$i/
+    rsync -avh --rsh="/usr/local/bin/sshpass -p password -o StrictHostKeyChecking=no -l mtomov13" mtomov13@ncflogin8.rc.fas.harvard.edu:/ncf/gershman/Lab/Exploration/glmOutput/model$i/con* glmOutput/model$i/
 
 # Optionally copy the subject betas too (WARNING: takes up lots of memory; I recommend using an external HDD
 #
