@@ -15,7 +15,7 @@ data = load_data;
 % compare DV vs RT in left M1
 %
 [masks, region] = get_masks(29, 'DV', true, [], 1);
-glms = [29 72];
+glms = [29 71 72];
 
 for c = 1:length(masks)
     mask = masks{c};
@@ -41,4 +41,5 @@ end
 table(region, pxps)
 
 
+save('glm_bic_bms.m');
 
