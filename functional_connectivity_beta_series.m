@@ -1,13 +1,13 @@
-% check for functional connectivity between regions by correlating their activation traces
+% check for functional connectivity between regions by correlating their beta series (i.e. deconvolved activations) 
 % WARNING: they will obviously be significant b/c we selected them to be so; we can only look at relative, trial onset vs feedback onset
-% TODO copy of funcitonal_connectivity_residuals; dedupe
+% TODO copy of functional_connectivity_activations; dedupe
 
 data = load_data;
 [~,~,goodRuns] = exploration_getSubjectsDirsAndRuns();
 EXPT = exploration_expt;
 nTRs = 242;
 
-filename = 'functional_connectivity_activations.mat'
+filename = 'functional_connectivity_beta_series.mat'
 
 ts = [];
 dfs = [];
@@ -65,32 +65,30 @@ for s = 1:length(data)
 end
 
 
+beta_series_glm = 23;
 
 for i = 1:length(region)
     for j = 1:i-1
         for s = 1:length(data)
             %act_i = {rand(nTRs*8)}; % ccnl_get_activations(EXPT, region(i).glm, region(i).mask, s);
             %act_j = {rand(nTRs*8)}; %ccnl_get_activations(EXPT, region(j).glm, region(j).mask, s);
-            act_i = ccnl_get_activations(EXPT, region(i).glm, region(i).mask, s);
-            act_j = ccnl_get_activations(EXPT, region(j).glm, region(j).mask, s);
-            act_i = squeeze(act_i);
-            act_j = squeeze(act_j);
-            act_i = nanmean(act_i, 2);
-            act_j = nanmean(act_j, 2);
-
-            % correlation of entire timecourse
-            [r,p] = corr(act_i, act_j);
-            corr_r{i,j}(s) = r;
-
-            which_to = data(s).trial_onset_act_idx(~data(s).bad_runs); % trial onset activations (excluding bad runs, which were excluded in the GLM)
-            which_fo = data(s).feedback_onset_act_idx(~data(s).bad_runs); % feedback onset activations (excluding bad runs, which were excluded in the GLM)
+            %act_i = ccnl_get_activations(EXPT, region(i).glm, region(i).mask, s);
+            %act_j = ccnl_get_activations(EXPT, region(j).glm, region(j).mask, s);
+            act_i_to = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', region(i).mask);
+            act_i_fo = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'feedback_onset', region(i).mask);
+            act_j_to = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'trial_onset', region(j).mask);
+            act_j_fo = ccnl_get_beta_series(EXPT, beta_series_glm, s, 'feedback_onset', region(j).mask);
+            act_i_to = nanmean(act_i_to, 2);
+            act_i_fo = nanmean(act_i_fo, 2);
+            act_j_to = nanmean(act_j_to, 2);
+            act_j_fo = nanmean(act_j_fo, 2);
 
             % of trial onsets
-            [r_to,p_to] = corr(act_i(which_to), act_j(which_to));
+            [r_to,p_to] = corr(act_i_to, act_j_to);
             corr_r_to{i,j}(s) = r_to;
 
             % of feedback onsets
-            [r_fo,p_fo] = corr(act_i(which_fo), act_j(which_fo));
+            [r_fo,p_fo] = corr(act_i_fo, act_j_fo);
             corr_r_fo{i,j}(s) = r_fo;
         end
 

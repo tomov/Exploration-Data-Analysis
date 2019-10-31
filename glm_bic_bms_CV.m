@@ -39,7 +39,7 @@ lme = -0.5 * bics;
 pxp
 
 
-save('glm_bic_bms_CV.m');
+save('glm_bic_bms_CV.mat');
 
 
 % revert to original contrast
