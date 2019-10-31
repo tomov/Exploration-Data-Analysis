@@ -1509,7 +1509,7 @@ function multi = exploration_create_multi(glmodel, subj, run, save_output)
         %
         % same as 11 and 35 but with all runs
         %
-        case 36 % <----------------------------------------------------- THIS IS IT ------------------------------
+        case 36 
         
            [V, RU, TU, VTU] = get_latents(data, subj, which_trials, 'abs');
 
