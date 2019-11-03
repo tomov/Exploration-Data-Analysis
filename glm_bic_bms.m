@@ -41,5 +41,5 @@ end
 table(region, pxps)
 
 
-save('glm_bic_bms.m');
+save('glm_bic_bms.mat');
 

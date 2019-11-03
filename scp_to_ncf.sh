@@ -3,9 +3,11 @@
 #scp  run_ccnl_fmri_con.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  glm_bic_bms_CV.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  functional_connectivity_residuals.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
-scp  functional_connectivity_beta_series.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
+#scp  functional_connectivity_beta_series.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp  functional_connectivity_activations.m  mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_residuals_*.mat .
+#scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/glm_bic_bms_CV.mat .
+#scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/sphere_glm29_DV_*.nii .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/functional_connectivity_residuals.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_residuals2_roiglm29_DV_glm29_DV_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat .
 #scp   mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/wtf.mat .
@@ -29,7 +31,7 @@ scp  functional_connectivity_beta_series.m  mtomov13@ncflogin.rc.fas.harvard.edu
 
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/univariate_decoder_both_badre_glm45_RUroi=1_TUroi=2_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1.mat .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/\{jobs.txt,goodjobs.txt\} .
-#scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/output.tar.gz .
+scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/output.tar.gz .
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/run_ccnl_fmri_glm_parallel_jobs.sh .
 
 #scp mtomov13@ncflogin.rc.fas.harvard.edu:/ncf/gershman/Lab/scripts/matlab/Exploration/\{univariate_decoder_refactored_roiglm-1_badre_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat,univariate_decoder_refactored_roiglm-1_badre_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat,univariate_decoder_refactored_roiglm-1_dlpfc_glm45_RU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat,univariate_decoder_refactored_roiglm-1_dlpfc_glm45_TU_orth=0_lambda=1.000000_standardize=2_mixed=1_corr=0_extent=100_Num=1_intercept=1_flip=1_doCV=0_gn=0_s=10.0.mat\} .

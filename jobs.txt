@@ -3874,3 +3874,256 @@ univariate_decoder_refactored.sh univariate_decoder_refactored(-1, \'dlpfc\', 45
 --- Running univariate_decoder_both_badre <-- proper .mat file
 ----------------
 univariate_decoder_both_badre.sh univariate_decoder_both_badre(45, 1, 2, false, 1, 2, true, false, 100, 1, true, true): output/univariate_decoder_both_badre_13290836.out -- Submitted batch job 13290836
+----------------
+--- Running PARALLEL ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 12: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312772.out -- Submitted batch job 13312772
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 31: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312786.out -- Submitted batch job 13312786
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 25: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312791.out -- Submitted batch job 13312791
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 7: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312795.out -- Submitted batch job 13312795
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 14: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312800.out -- Submitted batch job 13312800
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 15: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312803.out -- Submitted batch job 13312803
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 2: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312809.out -- Submitted batch job 13312809
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 20: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312813.out -- Submitted batch job 13312813
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 3: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312815.out -- Submitted batch job 13312815
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 18: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312821.out -- Submitted batch job 13312821
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 8: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312827.out -- Submitted batch job 13312827
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 6: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312832.out -- Submitted batch job 13312832
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 28: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312837.out -- Submitted batch job 13312837
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 23: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312842.out -- Submitted batch job 13312842
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 9: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312846.out -- Submitted batch job 13312846
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 30: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312850.out -- Submitted batch job 13312850
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 1: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312857.out -- Submitted batch job 13312857
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 24: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312865.out -- Submitted batch job 13312865
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 4: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312868.out -- Submitted batch job 13312868
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 13: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312874.out -- Submitted batch job 13312874
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 10: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312880.out -- Submitted batch job 13312880
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 21: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312882.out -- Submitted batch job 13312882
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 17: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312896.out -- Submitted batch job 13312896
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 11: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312911.out -- Submitted batch job 13312911
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 16: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312932.out -- Submitted batch job 13312932
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 5: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312937.out -- Submitted batch job 13312937
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 19: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312949.out -- Submitted batch job 13312949
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 22: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312960.out -- Submitted batch job 13312960
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 29: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312964.out -- Submitted batch job 13312964
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 27: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312971.out -- Submitted batch job 13312971
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 67, subjects 26: output/ccnl_fmri_glm_parallel_67_goodSubjects_13312980.out -- Submitted batch job 13312980
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 31: output/ccnl_fmri_glm_parallel_68_goodSubjects_13312985.out -- Submitted batch job 13312985
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 8: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313000.out -- Submitted batch job 13313000
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 12: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313008.out -- Submitted batch job 13313008
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 21: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313013.out -- Submitted batch job 13313013
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 16: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313017.out -- Submitted batch job 13313017
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 6: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313022.out -- Submitted batch job 13313022
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 10: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313026.out -- Submitted batch job 13313026
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 29: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313034.out -- Submitted batch job 13313034
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 14: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313042.out -- Submitted batch job 13313042
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 13: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313047.out -- Submitted batch job 13313047
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 28: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313052.out -- Submitted batch job 13313052
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 26: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313055.out -- Submitted batch job 13313055
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 9: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313058.out -- Submitted batch job 13313058
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 11: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313062.out -- Submitted batch job 13313062
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 5: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313067.out -- Submitted batch job 13313067
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 20: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313070.out -- Submitted batch job 13313070
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 23: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313076.out -- Submitted batch job 13313076
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 27: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313082.out -- Submitted batch job 13313082
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 22: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313088.out -- Submitted batch job 13313088
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 18: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313108.out -- Submitted batch job 13313108
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 2: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313112.out -- Submitted batch job 13313112
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 17: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313118.out -- Submitted batch job 13313118
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 3: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313133.out -- Submitted batch job 13313133
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 15: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313144.out -- Submitted batch job 13313144
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 19: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313146.out -- Submitted batch job 13313146
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 4: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313149.out -- Submitted batch job 13313149
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 24: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313162.out -- Submitted batch job 13313162
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 25: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313165.out -- Submitted batch job 13313165
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 30: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313168.out -- Submitted batch job 13313168
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 1: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313181.out -- Submitted batch job 13313181
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 68, subjects 7: output/ccnl_fmri_glm_parallel_68_goodSubjects_13313194.out -- Submitted batch job 13313194
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 19: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313206.out -- Submitted batch job 13313206
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 10: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313219.out -- Submitted batch job 13313219
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 21: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313223.out -- Submitted batch job 13313223
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 16: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313226.out -- Submitted batch job 13313226
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 5: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313230.out -- Submitted batch job 13313230
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 18: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313233.out -- Submitted batch job 13313233
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 28: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313237.out -- Submitted batch job 13313237
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 7: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313241.out -- Submitted batch job 13313241
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 25: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313245.out -- Submitted batch job 13313245
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 4: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313249.out -- Submitted batch job 13313249
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 30: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313252.out -- Submitted batch job 13313252
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 11: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313255.out -- Submitted batch job 13313255
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 31: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313263.out -- Submitted batch job 13313263
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 24: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313271.out -- Submitted batch job 13313271
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 15: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313282.out -- Submitted batch job 13313282
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 12: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313292.out -- Submitted batch job 13313292
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 2: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313296.out -- Submitted batch job 13313296
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 27: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313306.out -- Submitted batch job 13313306
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 3: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313319.out -- Submitted batch job 13313319
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 9: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313334.out -- Submitted batch job 13313334
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 29: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313346.out -- Submitted batch job 13313346
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 8: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313355.out -- Submitted batch job 13313355
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 14: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313365.out -- Submitted batch job 13313365
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 6: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313368.out -- Submitted batch job 13313368
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 23: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313379.out -- Submitted batch job 13313379
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 1: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313384.out -- Submitted batch job 13313384
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 26: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313394.out -- Submitted batch job 13313394
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 22: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313406.out -- Submitted batch job 13313406
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 13: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313415.out -- Submitted batch job 13313415
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 17: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313419.out -- Submitted batch job 13313419
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 69, subjects 20: output/ccnl_fmri_glm_parallel_69_goodSubjects_13313422.out -- Submitted batch job 13313422
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 29: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313440.out -- Submitted batch job 13313440
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 2: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313445.out -- Submitted batch job 13313445
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 18: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313449.out -- Submitted batch job 13313449
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 28: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313452.out -- Submitted batch job 13313452
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 26: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313457.out -- Submitted batch job 13313457
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 30: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313459.out -- Submitted batch job 13313459
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 1: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313465.out -- Submitted batch job 13313465
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 3: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313471.out -- Submitted batch job 13313471
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 31: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313473.out -- Submitted batch job 13313473
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 25: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313476.out -- Submitted batch job 13313476
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 15: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313478.out -- Submitted batch job 13313478
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 8: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313479.out -- Submitted batch job 13313479
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 14: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313481.out -- Submitted batch job 13313481
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 21: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313484.out -- Submitted batch job 13313484
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 22: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313489.out -- Submitted batch job 13313489
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 13: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313491.out -- Submitted batch job 13313491
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 9: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313499.out -- Submitted batch job 13313499
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 12: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313510.out -- Submitted batch job 13313510
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 10: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313521.out -- Submitted batch job 13313521
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 23: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313533.out -- Submitted batch job 13313533
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 27: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313553.out -- Submitted batch job 13313553
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 7: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313555.out -- Submitted batch job 13313555
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 17: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313566.out -- Submitted batch job 13313566
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 20: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313578.out -- Submitted batch job 13313578
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 24: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313589.out -- Submitted batch job 13313589
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 6: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313591.out -- Submitted batch job 13313591
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 5: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313602.out -- Submitted batch job 13313602
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 11: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313612.out -- Submitted batch job 13313612
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 4: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313626.out -- Submitted batch job 13313626
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 16: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313628.out -- Submitted batch job 13313628
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 70, subjects 19: output/ccnl_fmri_glm_parallel_70_goodSubjects_13313630.out -- Submitted batch job 13313630
+----------------
+--- Running ccnl_fmri_con <-- 67
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_13345955.out -- Submitted batch job 13345955
+----------------
+--- Running ccnl_fmri_con <-- failed
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_13345991.out -- Submitted batch job 13345991
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_13346164.out -- Submitted batch job 13346164
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_13346271.out -- Submitted batch job 13346271
+----------------
+--- Running ccnl_fmri_con
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_13346392.out -- Submitted batch job 13346392
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 71, subjects 14 1 2 6 21 24 19 27 4 30 9 11 13 15 29 16 26 7 28 31 3 17 5 10 20 12 22 18 8 23 25: output/ccnl_fmri_glm_71_goodSubjects_19255536.out -- Submitted batch job 19255536
+----------------
+--- Running ccnl_fmri_con 71
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_19458667.out -- Submitted batch job 19458667
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 72, subjects 31 10 4 18 16 1 2 25 26 13 24 19 30 21 28 29 23 20 9 5 11 14 22 8 17 12 7 15 27 3 6: output/ccnl_fmri_glm_72_goodSubjects_19495834.out -- Submitted batch job 19495834
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 73, subjects 26 5 15 7 1 2 16 25 27 13 6 22 11 21 18 14 8 20 9 3 30 23 24 4 29 28 19 10 31 17 12: output/ccnl_fmri_glm_73_goodSubjects_30326609.out -- Submitted batch job 30326609
+----------------
+--- Running ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+ccnl_fmri_glm.sh for GLM 74, subjects 1 28 27 9 18 14 11 10 19 7 25 30 31 26 16 15 4 22 13 5 12 2 24 6 21 17 20 8 3 23 29: output/ccnl_fmri_glm_74_goodSubjects_30326630.out -- Submitted batch job 30326630
+----------------
+--- Running univariate_decoder_residuals
+----------------
+univariate_decoder_residuals.sh univariate_decoder_residuals(69, \'V\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30352137.out -- Submitted batch job 30352137
+univariate_decoder_residuals.sh univariate_decoder_residuals(-1, \'vmpfc_l\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30352149.out -- Submitted batch job 30352149
+----------------
+--- Running ccnl_fmri_con -- 73, 74
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_30405716.out -- Submitted batch job 30405716
+----------------
+--- Running univariate_decoder_residuals
+----------------
+univariate_decoder_residuals.sh univariate_decoder_residuals(69, \'V\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30405749.out -- Submitted batch job 30405749
+univariate_decoder_residuals.sh univariate_decoder_residuals(-1, \'vmpfc_l\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30405751.out -- Submitted batch job 30405751
+----------------
+--- Running PARALLEL ccnl_fmri_glm for subjects 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+----------------
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 25: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418289.out -- Submitted batch job 30418289
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 17: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418291.out -- Submitted batch job 30418291
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 22: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418292.out -- Submitted batch job 30418292
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 7: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418293.out -- Submitted batch job 30418293
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 21: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418294.out -- Submitted batch job 30418294
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 18: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418295.out -- Submitted batch job 30418295
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 19: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418296.out -- Submitted batch job 30418296
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 3: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418297.out -- Submitted batch job 30418297
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 10: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418298.out -- Submitted batch job 30418298
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 12: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418299.out -- Submitted batch job 30418299
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 28: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418300.out -- Submitted batch job 30418300
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 6: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418301.out -- Submitted batch job 30418301
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 29: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418302.out -- Submitted batch job 30418302
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 24: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418303.out -- Submitted batch job 30418303
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 15: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418304.out -- Submitted batch job 30418304
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 23: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418305.out -- Submitted batch job 30418305
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 5: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418306.out -- Submitted batch job 30418306
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 11: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418307.out -- Submitted batch job 30418307
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 16: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418308.out -- Submitted batch job 30418308
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 14: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418309.out -- Submitted batch job 30418309
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 9: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418310.out -- Submitted batch job 30418310
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 30: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418312.out -- Submitted batch job 30418312
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 27: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418313.out -- Submitted batch job 30418313
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 1: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418315.out -- Submitted batch job 30418315
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 2: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418326.out -- Submitted batch job 30418326
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 26: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418328.out -- Submitted batch job 30418328
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 20: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418349.out -- Submitted batch job 30418349
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 31: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418350.out -- Submitted batch job 30418350
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 8: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418351.out -- Submitted batch job 30418351
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 13: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418362.out -- Submitted batch job 30418362
+run_ccnl_fmri_glm_parallel_jobs.sh for GLM 75, subjects 4: output/ccnl_fmri_glm_parallel_75_goodSubjects_30418363.out -- Submitted batch job 30418363
+----------------
+--- Running univariate_decoder_residuals2 mistake; didn't ^2 res
+----------------
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(69, \'V\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30470297.out -- Submitted batch job 30470297
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(-1, \'vmpfc_l\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30470303.out -- Submitted batch job 30470303
+----------------
+--- Running ccnl_fmri_con -- 75
+----------------
+ccnl_fmri_con.sh: output/ccnl_fmri_con_30470948.out -- Submitted batch job 30470948
+----------------
+--- Running univariate_decoder_residuals2 <-- mistake; didn't ^2
+----------------
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30482110.out -- Submitted batch job 30482110
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(74, \'DV\', 74, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30482123.out -- Submitted batch job 30482123
+----------------
+--- Running univariate_decoder_residuals <--- super weird negative significant; look into why pears_rs < 0 for univariate_decoder_refactored
+----------------
+univariate_decoder_residuals.sh univariate_decoder_residuals(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30482311.out -- Submitted batch job 30482311
+univariate_decoder_residuals.sh univariate_decoder_residuals(74, \'DV\', 74, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals_30482312.out -- Submitted batch job 30482312
+----------------
+--- Running univariate_decoder_residuals2 <-------------- yes !
+----------------
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(29, \'DV\', 29, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30487301.out -- Submitted batch job 30487301 <------------- positive!
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(74, \'DV\', 74, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30487309.out -- Submitted batch job 30487309 
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(69, \'V\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30487315.out -- Submitted batch job 30487315 <------------ negative
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(-1, \'vmpfc_l\', 69, \'V\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30487327.out -- Submitted batch job 30487327
+----------------
+--- Running univariate_decoder_residuals2
+----------------
+----------------
+--- Running univariate_decoder_residuals2
+----------------
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(-1, \'badre\', 45, \'RU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30619452.out -- Submitted batch job 30619452
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(-1, \'dlpfc\', 45, \'TU\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30619478.out -- Submitted batch job 30619478
+----------------
+--- Running univariate_decoder_residuals2
+----------------
+univariate_decoder_residuals2.sh univariate_decoder_residuals2(29, \'DV\', 74, \'DV\', false, 1, 2, true, false, 100, 1, true, true, false, false): output/univariate_decoder_residuals2_30934252.out -- Submitted batch job 30934252
